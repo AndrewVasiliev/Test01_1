@@ -61,7 +61,7 @@ public class TestMainField implements Screen {
 
         gamefield = new GameField(this, 0, locHeightMeter/9f, locWidthMeter, locHeightMeter - locHeightMeter/9f, 16*5, 8*5);
 
-        mainFieldStage.addActor(background);
+        //mainFieldStage.addActor(background);
         mainFieldStage.addActor(gamefield);
 
     }
