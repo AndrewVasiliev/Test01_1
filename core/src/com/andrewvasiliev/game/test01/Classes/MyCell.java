@@ -6,8 +6,11 @@ import com.badlogic.gdx.graphics.Color;
  * Created by ava on 23.12.16.
  */
 
+
 public class MyCell {
+    public enum CellShape { RECTANGLE, TRIANGLE, RHOMBUS, HEX };
     public float x,y;       //координаты центра ячейки
+    public float invertY;
     public Color color;     //цвет ячейки
     public int owner;       //какому игроку принадлежит ячейка
     public int phaseIdx;    //текущий номер фазы анимации
