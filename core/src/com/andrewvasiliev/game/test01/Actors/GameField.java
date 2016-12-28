@@ -92,11 +92,15 @@ public class GameField extends Actor {
             case RHOMBUS:
                 vertexCount = rhombusVertexCount;
                 coord = rhombusCoord;
-                countRow = countRow * 2; //для ромбов надо в двое больше рядов
+                countRow = countRow * 2 -1; 
                 break;
             case HEX:
                 vertexCount = hexVertexCount;
                 coord = hexCoord;
+                countRow = countRow * 3 -1;
+                //countCol = countCol * 3 / 2;
+                cellWidth = widthX/countCol/1.5f;
+                cellHeight = cellWidth;//heightY/countRow*2.0f;
                 break;
         }
 
@@ -151,14 +155,20 @@ public class GameField extends Actor {
                     case RHOMBUS:
                         cells[GetIndex(j, i)].invertY = 1.0f;
                         _x = leftX + (float)j * cellWidth + cellWidth/2.0f +
-                                (!even ? 0 : cellWidth/2); //для нечетных рядов сдвигаем
-                        _y = leftY + heightY - (float)i * cellHeight/2.0f - cellHeight +
-                                (even ? 0.0f : cellHeight); //для четных рядов сдвигаем
-                        if (even && j==(countCol-1)) {
+                                (even ? 0 : cellWidth/2); //для нечетных рядов сдвигаем
+                        _y = leftY + heightY - (float)i * cellHeight/2.0f - cellHeight/2.0f;
+                        if (!even && j==(countCol-1)) {
                             cells[GetIndex(j, i)].owner = -1; //метим лишние(выходят за пределы экрана) ячейки
                         }
                         break;
                     case HEX:
+                        cells[GetIndex(j, i)].invertY = 1.0f;
+                        _x = leftX + (float)j * cellWidth/2.0f*3 + cellWidth/2.0f +
+                                (even ? 0 : cellWidth/2.0f*1.5f); //для нечетных рядов сдвигаем
+                        _y = leftY + heightY - (float)i * cellHeight/2.0f - cellHeight/2.0f;
+                        if (!even && j==(countCol-1)) {
+                            cells[GetIndex(j, i)].owner = -1; //метим лишние(выходят за пределы экрана) ячейки
+                        }
                         break;
                 }
 
@@ -251,6 +261,8 @@ public class GameField extends Actor {
 
             }
         }
+
+        locScreen.shapeRenderer.line(0,0, 100,100);
 
         locScreen.shapeRenderer.end();
     }
