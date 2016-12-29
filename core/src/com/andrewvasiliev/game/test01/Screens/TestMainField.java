@@ -2,6 +2,7 @@ package com.andrewvasiliev.game.test01.Screens;
 
 import com.andrewvasiliev.game.test01.Actors.BackgroundActor;
 import com.andrewvasiliev.game.test01.Actors.GameField;
+import com.andrewvasiliev.game.test01.Actors.Hud;
 import com.andrewvasiliev.game.test01.Classes.MyCell;
 import com.andrewvasiliev.game.test01.MyGdxGame;
 import com.badlogic.gdx.Gdx;
@@ -12,8 +13,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -34,6 +33,7 @@ public class TestMainField implements Screen {
     Viewport view;
     private BackgroundActor background;
     private GameField gamefield;
+    private Hud hud;
 
     public TestMainField(MyGdxGame myGdxGame) {
         locGame = myGdxGame;
@@ -60,11 +60,17 @@ public class TestMainField implements Screen {
         background = new BackgroundActor(myGdxGame);
         background.setPosition(0, 0);
 
-        gamefield = new GameField(this, 0, locHeightMeter/9f, locWidthMeter, locHeightMeter - locHeightMeter/9f,
-                16*2, 8*2, MyCell.CellShape.RHOMBUS);
+        float hudHeight = locHeightMeter/9f;
+        hud = new Hud(this, 0, 0, locWidthMeter, hudHeight);
+        hud.setPosition(0, 0);
+
+        gamefield = new GameField(this, 0, hudHeight, locWidthMeter, locHeightMeter - hudHeight,
+                16*1+8, /*8*2,*/ MyCell.CellShape.HEX);  //лучше чтобы кол-во столбцов было кратно 8
 
         mainFieldStage.addActor(background);
         mainFieldStage.addActor(gamefield);
+        mainFieldStage.addActor(hud);
+
 
     }
 
