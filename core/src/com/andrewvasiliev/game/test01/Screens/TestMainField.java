@@ -71,7 +71,19 @@ public class TestMainField implements Screen {
         mainFieldStage.addActor(gamefield);
         mainFieldStage.addActor(hud);
 
+        Gdx.input.setInputProcessor(mainFieldStage);
+        System.out.println("started");
 
+    }
+
+    @Override
+    public void dispose() {
+        gamefield.dispose();
+        hud.dispose();
+        mainFieldStage.dispose();
+        shapeRenderer.dispose();
+        batch.dispose();
+        img.dispose();
     }
 
     @Override
@@ -144,8 +156,4 @@ public class TestMainField implements Screen {
 
     }
 
-    @Override
-    public void dispose() {
-
-    }
 }

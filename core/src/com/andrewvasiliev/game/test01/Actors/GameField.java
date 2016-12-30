@@ -225,4 +225,9 @@ public class GameField extends Actor {
 
         locScreen.shapeRenderer.end();
     }
+
+    public void dispose()   {
+
+    }
+
 }
