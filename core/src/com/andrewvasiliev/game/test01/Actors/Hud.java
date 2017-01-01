@@ -17,24 +17,27 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 public class Hud extends Actor {
     private float hudWidth, hudHeight, leftX, leftY;
-    private float diametr;
+    private float diametrV, diametrH;
     private Vector2 colorButton[];
     private TestMainField locScreen;
 
 
-    public Hud(TestMainField testMainField, float x, float y, float hudWidth, float hudHeight) {
+    public Hud(TestMainField testMainField, float x, float y, float hudWidth, final float hudHeight) {
         this.hudHeight = hudHeight;
         this.hudWidth = hudWidth;
         leftX = x;
         leftY = y;
         locScreen = testMainField;
 
-        diametr = hudHeight*0.9f; //размер цветных кнопок
+        diametrV = hudHeight; //размер цветных кнопок
+        diametrH =  hudWidth/MyCell.ColorCount;
+
         colorButton = new Vector2[MyCell.ColorCount];
         for (int i=0; i< MyCell.ColorCount; i++) {
             colorButton[i] = new Vector2();
-            colorButton[i].y = leftY /*+ hudHeight/2.0f*/;
-            colorButton[i].x = leftX + (hudWidth - diametr * MyCell.ColorCount)/2 + i * diametr + diametr/2;
+            colorButton[i].y = leftY /*+ hudHeight/2.0f*/ - diametrV/2;
+            //colorButton[i].x = leftX + (hudWidth - diametrV * MyCell.ColorCount)/2 + i * diametrV + diametrV/2;
+            colorButton[i].x = leftX + /*diametrH/2 +*/ i * diametrH;
         }
 
         //установим размеры нашего интерфейса (только тут будут срабатывать нажатия)
@@ -47,15 +50,16 @@ public class Hud extends Actor {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 //проверим нажали ли мы на цветную кнопку (проверим по простому - квадратную область)
                 for (int i=0; i< MyCell.ColorCount; i++) {
-                    if (x>=(colorButton[i].x-diametr/2) && x<=(colorButton[i].x+diametr/2) &&
-                            y>=(colorButton[i].y-diametr/2) && )
-                    colorButton[i].y = leftY /*+ hudHeight/2.0f*/;
-                    colorButton[i].x = leftX + (hudWidth - diametr * MyCell.ColorCount)/2 + i * diametr + diametr/2;
+                    if (x>=(colorButton[i].x) && x<=(colorButton[i].x+diametrH) &&
+                            y>=(colorButton[i].y) && y<=(colorButton[i].y+hudHeight + diametrV/2)) {
+                        //Gdx.app.log("Touch", "touch down");
+                        System.out.format("%d%n", i);
+                    }
                 }
 
 
-                Gdx.app.log("Touch", "touch down");
-                System.out.println("touch");
+                //Gdx.app.log("Touch", "touch down");
+                //System.out.println("touch");
                 return true;
             }
         });
@@ -72,7 +76,8 @@ public class Hud extends Actor {
         locScreen.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         for (int i=0; i< MyCell.ColorCount; i++) {
             locScreen.shapeRenderer.setColor(MyCell.colorArr[i]);
-            locScreen.shapeRenderer.circle(colorButton[i].x, colorButton[i].y, diametr*0.9f/2);
+//            locScreen.shapeRenderer.circle(colorButton[i].x, colorButton[i].y, diametrV*0.9f/2);
+            locScreen.shapeRenderer.ellipse(colorButton[i].x, colorButton[i].y, diametrH, diametrV*0.9f);
         }
         locScreen.shapeRenderer.end();
 

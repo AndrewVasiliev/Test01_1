@@ -221,7 +221,7 @@ public class GameField extends Actor {
             }
         }
 
-        locScreen.shapeRenderer.line(0,0, 100,100);
+        //locScreen.shapeRenderer.line(0,0, 100,100);
 
         locScreen.shapeRenderer.end();
     }
