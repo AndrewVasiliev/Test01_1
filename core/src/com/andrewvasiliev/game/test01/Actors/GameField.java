@@ -1,12 +1,15 @@
 package com.andrewvasiliev.game.test01.Actors;
 
+import com.andrewvasiliev.game.test01.Classes.Const;
 import com.andrewvasiliev.game.test01.Classes.MyCell;
 import com.andrewvasiliev.game.test01.Screens.TestMainField;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import java.util.Arrays;
 import java.util.Random;
 
 
@@ -20,10 +23,11 @@ public class GameField extends Actor {
     private TestMainField locScreen;
     private MyCell cells[];
     private float innerR;
+    private ShapeRenderer shapeRenderer;
 
-    private MyCell.CellShape cellShape;
+    private Const.CellShape cellShape;
 
-    //квадрат без прыжка
+    //квадрат
     private float rectangleCoord[] = {-50,-50 ,50,-50 ,50,50 ,-50,50 ,-55,-56 ,44,-45 ,44,45 ,-55,56 ,-57,-63 ,38,-42 ,38,42 ,-57,63 ,-57,-71 ,31,-39 ,31,39 ,-57,71 ,-53,-80 ,24,-36 ,24,36 ,-53,80 ,-44,-88 ,17,-35 ,17,35 ,-44,88 ,-29,-95 ,10,-34 ,10,34 ,-29,95 ,-10,-99 ,3,-33 ,3,33 ,-10,99 ,10,-99 ,-3,-33 ,-3,33 ,10,99 ,29,-95 ,-10,-34 ,-10,34 ,29,95 ,44,-88 ,-17,-35 ,-17,35 ,44,88 ,53,-80 ,-24,-36 ,-24,36 ,53,80 ,57,-71 ,-31,-39 ,-31,39 ,57,71 ,57,-63 ,-38,-42 ,-38,42 ,57,63 ,55,-56 ,-44,-45 ,-44,45 ,55,56 ,50,-50 ,-50,-50 ,-50,50 ,50,50};
     private int rectangleVertexCount = 4;
 
@@ -46,13 +50,20 @@ public class GameField extends Actor {
     private int phaseCount = 16;
     private float animationSpeed = 0.5f; //за сколько секунд должна закончиться анимация
 
-    public GameField(TestMainField testMainField, float x, float y, float width, float height, int countColIn, MyCell.CellShape cellType) {
+    public GameField(TestMainField testMainField, float x, float y, float width, float height) {
+        locScreen = testMainField;
         leftX = x;
         leftY = y;
         widthX = width;
         heightY = height;
+        countCol = 0;
+        countRow = 0;
+        //shapeRenderer = new ShapeRenderer();
+        shapeRenderer = locScreen.shapeRenderer;
+    }
+
+    public void GenerateField (int countColIn, Const.CellShape cellType) {
         countCol = countColIn;
-        locScreen = testMainField;
 
         cellWidth = widthX/countCol;
         cellHeight = cellWidth;
@@ -62,22 +73,22 @@ public class GameField extends Actor {
         switch (cellShape) {
             case RECTANGLE:
                 vertexCount = rectangleVertexCount;
-                coord = rectangleCoord;
+                coord = Arrays.copyOf(rectangleCoord, rectangleCoord.length);
                 countRow = (int)(heightY / cellWidth);
                 break;
             case TRIANGLE:
                 vertexCount = triangleVertexCount;
-                coord = triangleCoord;
+                coord = Arrays.copyOf(triangleCoord, triangleCoord.length);
                 countRow = (int)(heightY / cellWidth) * 2;
                 break;
             case RHOMBUS:
                 vertexCount = rhombusVertexCount;
-                coord = rhombusCoord;
+                coord = Arrays.copyOf(rhombusCoord, rhombusCoord.length);
                 countRow = (int)(heightY / cellWidth) * 2 - 1;
                 break;
             case HEX:
                 vertexCount = hexVertexCount;
-                coord = hexCoord;
+                coord = Arrays.copyOf(hexCoord, hexCoord.length);
                 cellWidth = widthX/countCol/1.5f;
                 innerR = cellWidth * (float) Math.sqrt(3) / 2.0f; //внутренний радиус гекса
                 //попробуем вычислять кол-во рядов исходя из размеров фигуры
@@ -99,7 +110,7 @@ public class GameField extends Actor {
 
         float _x = 0.0f;
         float _y = 0.0f;
-        boolean even = false; //четный ряд
+        boolean even; //четный ряд
         for (int i=0; i<countRow; i++) {
             for (int j=0; j<countCol; j++) {
                 even = (i & 1) == 0; // четный ряд?
@@ -143,16 +154,12 @@ public class GameField extends Actor {
                         break;
                 }
 
-                cells[GetIndex(j, i)].color = MyCell.colorArr[random.nextInt(MyCell.ColorCount)];
+                cells[GetIndex(j, i)].color = Const.colorArr[random.nextInt(Const.ColorCount)];
                 cells[GetIndex(j, i)].phaseIdx = 0;
                 cells[GetIndex(j, i)].animDuration = 0f;
                 cells[GetIndex(j, i)].setPosition(_x,_y);
             }
         }
-
-
-
-
     }
 
     private int GetIndex (int col, int row) {
@@ -165,14 +172,13 @@ public class GameField extends Actor {
         float locX, locY, invertY, deltaTime;
         int idx;
 
-        super.draw(batch, alpha);
+        batch.end();
+       // shapeRenderer.setProjectionMatrix(locScreen.locGame.camera.combined);
 
         deltaTime = Gdx.graphics.getDeltaTime();
-        //locGroup.act(Gdx.graphics.getDeltaTime());
-        locScreen.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        //locScreen.shapeRenderer.triangle();
 
-//        locScreen.shapeRenderer.rect(leftX, leftY, widthX, heightY);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
         for (int i=0; i<countRow; i++) {
             for (int j=0; j<countCol; j++) {
                 if (cells[GetIndex(j, i)].owner == -1) {continue;} //owner=-1 неотображаемые ячейки (лишние)
@@ -200,20 +206,20 @@ public class GameField extends Actor {
 
                 //отрисуем фигуру заполненными треугольниками
                 //сначала отрисуем полную фигуру
-                locScreen.shapeRenderer.setColor(MyCell.borderColor);
+                shapeRenderer.setColor(Const.borderColor);
                 for (int k=2; k<vertexCount; k++) {
-                    locScreen.shapeRenderer.triangle(
-                            locX + coord[idx + 0], locY + coord[idx + 1] * invertY,
+                    shapeRenderer.triangle(
+                            locX + coord[idx], locY + coord[idx + 1] * invertY,
                             locX + coord[idx + k*2], locY + coord[idx + k*2+1] * invertY,
                             locX + coord[idx + (k-1)*2], locY + coord[idx + (k-1)*2+1] * invertY);
                 }
 
                 //теперь чуть меньшую, чтоб получился контур
                 float scale = 0.9f;
-                locScreen.shapeRenderer.setColor(cells[GetIndex(j, i)].color);
+                shapeRenderer.setColor(cells[GetIndex(j, i)].color);
                 for (int k=2; k<vertexCount; k++) {
-                    locScreen.shapeRenderer.triangle(
-                            locX + coord[idx + 0] * scale, locY + coord[idx + 1] * scale * invertY,
+                    shapeRenderer.triangle(
+                            locX + coord[idx] * scale, locY + coord[idx + 1] * scale * invertY,
                             locX + coord[idx + k*2] * scale, locY + coord[idx + k*2+1] * scale * invertY,
                             locX + coord[idx + (k-1)*2] * scale, locY + coord[idx + (k-1)*2+1] * scale * invertY);
                 }
@@ -222,12 +228,12 @@ public class GameField extends Actor {
         }
 
         //locScreen.shapeRenderer.line(0,0, 100,100);
-
-        locScreen.shapeRenderer.end();
-    }
+        shapeRenderer.end();
+        batch.begin();
+        super.draw(batch, alpha);    }
 
     public void dispose()   {
-
+        shapeRenderer.dispose();
     }
 
 }

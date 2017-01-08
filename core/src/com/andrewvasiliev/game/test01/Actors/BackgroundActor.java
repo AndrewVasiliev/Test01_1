@@ -56,5 +56,6 @@ public class BackgroundActor extends Actor {
     public void draw(Batch batch, float alpha) {
         locGroup.act(Gdx.graphics.getDeltaTime());
         locGroup.draw(batch, alpha);
+        super.draw(batch, alpha);
     }
 }

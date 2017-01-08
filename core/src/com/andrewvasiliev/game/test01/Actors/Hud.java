@@ -1,5 +1,6 @@
 package com.andrewvasiliev.game.test01.Actors;
 
+import com.andrewvasiliev.game.test01.Classes.Const;
 import com.andrewvasiliev.game.test01.Classes.MyCell;
 import com.andrewvasiliev.game.test01.Screens.TestMainField;
 import com.badlogic.gdx.Gdx;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 /**
  * Created by ava on 29.12.16.
@@ -20,20 +22,22 @@ public class Hud extends Actor {
     private float diametrV, diametrH;
     private Vector2 colorButton[];
     private TestMainField locScreen;
+    private ShapeRenderer shapeRenderer;
 
 
-    public Hud(TestMainField testMainField, float x, float y, float hudWidth, final float hudHeight) {
-        this.hudHeight = hudHeight;
-        this.hudWidth = hudWidth;
+
+    public Hud(TestMainField testMainField, float x, float y, float hudWidthIn, final float hudHeightIn) {
+        hudHeight = hudHeightIn;
+        hudWidth = hudWidthIn;
         leftX = x;
         leftY = y;
         locScreen = testMainField;
 
         diametrV = hudHeight; //размер цветных кнопок
-        diametrH =  hudWidth/MyCell.ColorCount;
+        diametrH =  hudWidth/ Const.ColorCount;
 
-        colorButton = new Vector2[MyCell.ColorCount];
-        for (int i=0; i< MyCell.ColorCount; i++) {
+        colorButton = new Vector2[Const.ColorCount];
+        for (int i=0; i< Const.ColorCount; i++) {
             colorButton[i] = new Vector2();
             colorButton[i].y = leftY /*+ hudHeight/2.0f*/ - diametrV/2;
             //colorButton[i].x = leftX + (hudWidth - diametrV * MyCell.ColorCount)/2 + i * diametrV + diametrV/2;
@@ -49,7 +53,7 @@ public class Hud extends Actor {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 //проверим нажали ли мы на цветную кнопку (проверим по простому - квадратную область)
-                for (int i=0; i< MyCell.ColorCount; i++) {
+                for (int i=0; i< Const.ColorCount; i++) {
                     if (x>=(colorButton[i].x) && x<=(colorButton[i].x+diametrH) &&
                             y>=(colorButton[i].y) && y<=(colorButton[i].y+hudHeight + diametrV/2)) {
                         //Gdx.app.log("Touch", "touch down");
@@ -65,25 +69,30 @@ public class Hud extends Actor {
         });
 
 
+        //shapeRenderer = new ShapeRenderer();
+        shapeRenderer = locScreen.shapeRenderer;
+
+
 
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        //super.draw(batch, parentAlpha);
 
+        //shapeRenderer.setProjectionMatrix(locScreen.locGame.camera.combined);
         //deltaTime = Gdx.graphics.getDeltaTime();
-        locScreen.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (int i=0; i< MyCell.ColorCount; i++) {
-            locScreen.shapeRenderer.setColor(MyCell.colorArr[i]);
-//            locScreen.shapeRenderer.circle(colorButton[i].x, colorButton[i].y, diametrV*0.9f/2);
-            locScreen.shapeRenderer.ellipse(colorButton[i].x, colorButton[i].y, diametrH, diametrV*0.9f);
+        batch.end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (int i=0; i< Const.ColorCount; i++) {
+            shapeRenderer.setColor(Const.colorArr[i]);
+            shapeRenderer.ellipse(colorButton[i].x, colorButton[i].y, diametrH, diametrV*0.9f);
         }
-        locScreen.shapeRenderer.end();
-
+        shapeRenderer.end();
+        batch.begin();
+        super.draw(batch, parentAlpha);
     }
 
     public void dispose()   {
-
+        shapeRenderer.dispose();
     }
 }
