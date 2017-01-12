@@ -45,6 +45,8 @@ public class TestMainField implements Screen {
     private Table infoTable;
     private Label plr1LabelName, plr2LabelName, plr1Score, plr2Score;
 
+    private Label lblFps;
+
     public TestMainField(MyGdxGame myGdxGame) {
         locGame = myGdxGame;
         locWidthMeter = locGame.iWidthMeter;
@@ -95,10 +97,15 @@ public class TestMainField implements Screen {
         infoTable.add(plr2Score).width(150).left();
         infoTable.add(plr2LabelName).expandX().right();
 
+        lblFps = new Label("", locGame.skin, "default-font", Color.YELLOW);
+        lblFps.setPosition(10,20);
+
         //mainFieldStage.addActor(background);
         mainFieldStage.addActor(gamefield);
         mainFieldStage.addActor(hud);
         mainFieldStage.addActor(infoTable);
+
+        mainFieldStage.addActor(lblFps);
 
 
         System.out.println("started");
@@ -126,6 +133,8 @@ public class TestMainField implements Screen {
 
     @Override
     public void render(float delta) {
+        lblFps.setText("FPS:"+Integer.toString (Gdx.graphics.getFramesPerSecond()));
+
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         locGame.camera.update();

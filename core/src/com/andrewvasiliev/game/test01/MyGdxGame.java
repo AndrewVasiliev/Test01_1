@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -32,6 +33,8 @@ public class MyGdxGame extends Game {
     public int maxPlr = 2; //максимальное количество игроков в игре
 
 
+
+
 	@Override
 	public void create () {
         //iWidth = Gdx.graphics.getWidth();
@@ -41,8 +44,6 @@ public class MyGdxGame extends Game {
 
         camera = new OrthographicCamera(iWidthMeter, iHeightMeter);
         view = new FitViewport(iWidthMeter, iHeightMeter, camera);
-
-
 
         skin = new Skin();
         skin.addRegions(new TextureAtlas("skin/ui-orange.atlas"));
@@ -66,6 +67,7 @@ public class MyGdxGame extends Game {
         skin.load(Gdx.files.internal("skin/uiskin.json"));
 
 
+
         plr = new Player[maxPlr];
         for (int i=0; i<maxPlr; i++)
             plr[i] = new Player();
@@ -79,6 +81,7 @@ public class MyGdxGame extends Game {
 	@Override
 	public void render () {
 		super.render();
+
 	}
 	
 	@Override
