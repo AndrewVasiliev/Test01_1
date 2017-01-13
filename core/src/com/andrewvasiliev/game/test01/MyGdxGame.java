@@ -1,30 +1,23 @@
 package com.andrewvasiliev.game.test01;
 
-import com.andrewvasiliev.game.test01.Actors.BackgroundActor;
 import com.andrewvasiliev.game.test01.Classes.Player;
 import com.andrewvasiliev.game.test01.Screens.MainMenu;
-import com.andrewvasiliev.game.test01.Screens.TestMainField;
-import com.badlogic.gdx.ApplicationAdapter;
+import com.andrewvasiliev.game.test01.Screens.GameFieldScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MyGdxGame extends Game {
     public int iWidthMeter, iHeightMeter;
-	public TestMainField gameScreen;
+	public GameFieldScreen gameScreen;
     public Screen mainMenu;
     public Skin skin;
     public OrthographicCamera camera;
@@ -58,9 +51,9 @@ public class MyGdxGame extends Game {
         BitmapFont menuFont = generator.generateFont(parameter);
         skin.add("menuFont", menuFont);
 
-        parameter.size = (int)(48 * ratio);
+        parameter.size = (int)(/*48*/64 * ratio);
         parameter.borderColor = Color.BLACK;
-        parameter.borderWidth = 1;
+        parameter.borderWidth = 2;
         BitmapFont normalFont = generator.generateFont(parameter);
         skin.add("normalFont", normalFont);
 
@@ -71,10 +64,13 @@ public class MyGdxGame extends Game {
         plr = new Player[maxPlr];
         for (int i=0; i<maxPlr; i++)
             plr[i] = new Player();
+        plr[0].SetPlayer("Игрок 1", 1, false, 0, 3);
+        plr[1].SetPlayer("Android 1231232", 1, false, 0, 4);
 
         mainMenu = new MainMenu(this);
-        gameScreen = new TestMainField(this);
+        gameScreen = new GameFieldScreen(this);
 
+        gameScreen.StartGame();
 		this.setScreen(gameScreen);
 	}
 

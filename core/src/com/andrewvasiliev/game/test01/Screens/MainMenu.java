@@ -58,8 +58,8 @@ public class MainMenu implements Screen {
         startButton.addListener(new ClickListener() {
                @Override
                public void clicked(InputEvent event, float x, float y) {
-                   locGame.plr[0].SetPlayer("Влад", 1, false, 0);
-                   locGame.plr[1].SetPlayer("Android", 1, true, 1);
+                   //locGame.plr[0].SetPlayer("Влад", 1, false, 0,);
+                   //locGame.plr[1].SetPlayer("Android", 1, true, 1,);
 
                    locGame.gameScreen.GenerateField(16*2+8*1, Const.CellShape.TRIANGLE);
                    locGame.setScreen(locGame.gameScreen);

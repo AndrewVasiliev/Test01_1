@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -23,13 +24,16 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.Random;
+
 import static com.badlogic.gdx.graphics.Color.RED;
+import static com.badlogic.gdx.graphics.Color.abgr8888ToColor;
 
 /**
  * Created by ava on 23.12.16.
  */
 
-public class TestMainField implements Screen {
+public class GameFieldScreen implements Screen {
     public MyGdxGame locGame;
     //Texture img;
     //SpriteBatch batch;
@@ -43,11 +47,14 @@ public class TestMainField implements Screen {
     private GameField gamefield;
     private Hud hud;
     private Table infoTable;
-    private Label plr1LabelName, plr2LabelName, plr1Score, plr2Score;
+    //private Label plr1LabelName, plr2LabelName, plr1Score, plr2Score;
+    private Label plrLabelName[], plrScore[];
+    public int currentPlayer; //индекс в массиве locGame.plr[] текущего игрока
+    public boolean hudEnabled = false; //если истина, то от интерфейса ожидается нажатие (на цвет, например)
 
     private Label lblFps;
 
-    public TestMainField(MyGdxGame myGdxGame) {
+    public GameFieldScreen(MyGdxGame myGdxGame) {
         locGame = myGdxGame;
         locWidthMeter = locGame.iWidthMeter;
         locHeightMeter = locGame.iHeightMeter;
@@ -76,7 +83,7 @@ public class TestMainField implements Screen {
         hud.setPosition(0, 0);
 
         gamefield = new GameField(this, 0, hudHeight, locWidthMeter, locHeightMeter - hudHeight);
-        gamefield.GenerateField(16*2+8*1, Const.CellShape.HEX); //лучше чтобы кол-во столбцов было кратно 8
+        //gamefield.GenerateField(16*2+8*1, Const.CellShape.RECTANGLE); //лучше чтобы кол-во столбцов было кратно 8
 
         infoTable = new Table();
         infoTable.align(Align.bottom);
@@ -85,20 +92,29 @@ public class TestMainField implements Screen {
         infoTable.background(new Image(new Texture(Gdx.files.internal("quad.png"))).getDrawable());
 
         infoTable.setPosition(0, hudHeight/2);
-        infoTable.setDebug(true);
-        plr1LabelName = new Label("Игрок 1", locGame.skin, "default-font", Color.GREEN);
-        plr1Score = new Label("1", locGame.skin, "default-font", Color.WHITE);
-        plr1Score.setAlignment(Align.center);
-        plr2LabelName = new Label("Android", locGame.skin, "default-font", Color.GREEN);
-        plr2Score = new Label("100", locGame.skin, "default-font", Color.WHITE);
-        plr2Score.setAlignment(Align.center);
-        infoTable.add(plr1LabelName).expandX().left();
-        infoTable.add(plr1Score).width(150).right();
-        infoTable.add(plr2Score).width(150).left();
-        infoTable.add(plr2LabelName).expandX().right();
+        //infoTable.setDebug(true);
+        plrLabelName = new Label[locGame.maxPlr];
+        plrScore = new Label[locGame.maxPlr];
+        plrLabelName[0] = new Label("", locGame.skin, "default-font", Color.WHITE);
+        plrScore[0] = new Label("", locGame.skin, "default-font", Color.WHITE);
+        plrScore[0].setAlignment(Align.center);
+
+        plrLabelName[1] = new Label("", locGame.skin, "default-font", Color.WHITE);
+        plrLabelName[1].setAlignment(Align.right);
+        plrScore[1] = new Label("", locGame.skin, "default-font", Color.WHITE);
+        plrScore[1].setAlignment(Align.center);
+
+
+        float _scoreWidth = 150;
+        infoTable.add(plrLabelName[0]).width(locWidthMeter/2f-_scoreWidth);
+        infoTable.add(plrScore[0]).width(_scoreWidth);
+        infoTable.add(plrScore[1]).width(_scoreWidth);
+        infoTable.add(plrLabelName[1]).width(locWidthMeter/2f-_scoreWidth);
 
         lblFps = new Label("", locGame.skin, "default-font", Color.YELLOW);
         lblFps.setPosition(10,20);
+
+
 
         //mainFieldStage.addActor(background);
         mainFieldStage.addActor(gamefield);
@@ -116,6 +132,22 @@ public class TestMainField implements Screen {
         gamefield.GenerateField(countColIn,cellType); //лучше чтобы кол-во столбцов было кратно 8
     }
 
+    public void StartGame() {
+        gamefield.GenerateField(16*2+8*1, Const.CellShape.HEX); //лучше чтобы кол-во столбцов было кратно 8
+
+        for (int i=0; i<locGame.maxPlr; i++) {
+            plrLabelName[i].setText(locGame.plr[i].name);
+            plrScore[i].setText(Integer.toString(locGame.plr[i].score));
+        }
+
+        //решаем какой игрок ходит первым
+        currentPlayer = new Random().nextInt(locGame.maxPlr);
+        ColoringPlayers ();
+        //разрешаем нажимать унопки
+        hud.colorIdx = -1;
+        hudEnabled = true;
+    }
+
     @Override
     public void dispose() {
         gamefield.dispose();
@@ -131,8 +163,46 @@ public class TestMainField implements Screen {
         Gdx.input.setInputProcessor(mainFieldStage);
     }
 
+    private void SetCurrentPlayerColor (Color colorIn) {
+        plrLabelName[currentPlayer].setColor(colorIn);
+        plrScore[currentPlayer].setColor(colorIn);
+    }
+
+    private void ColoringPlayers () {
+        for (int i=0; i<locGame.maxPlr; i++) {
+            if (i == currentPlayer) {
+                plrLabelName[i].setColor(Color.WHITE);
+                plrScore[i].setColor(Color.WHITE);
+            } else {
+                plrLabelName[i].setColor(Color.BLACK);
+                plrScore[i].setColor(Color.BLACK);
+            }
+        }
+
+    }
+
     @Override
     public void render(float delta) {
+        if (hudEnabled) {
+            if (hud.colorIdx != -1) { //нажата цветовая кнопка
+                hudEnabled = false;
+                //заливаем цветом для текущего игрока
+                gamefield.PlayerMove(Const.colorArr[hud.colorIdx]);
+                //меняем вол-во очков
+                plrScore[0].setText(Integer.toString(locGame.plr[0].score));
+                plrScore[1].setText(Integer.toString(locGame.plr[1].score));
+                //передаем ход следующему игроку
+                currentPlayer += 1;
+                if (currentPlayer == locGame.maxPlr){currentPlayer = 0;}
+                //отобразим цветом кто ходит следующим
+                ColoringPlayers();
+                //включаем ожидание нажатия цветовых кнопок
+                hud.colorIdx = -1;
+                hudEnabled = true;
+                // !!! а что делать если следующий игрок - компьютер ????
+
+            }
+        }
         lblFps.setText("FPS:"+Integer.toString (Gdx.graphics.getFramesPerSecond()));
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
