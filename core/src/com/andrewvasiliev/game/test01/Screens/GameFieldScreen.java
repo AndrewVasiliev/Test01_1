@@ -111,8 +111,8 @@ public class GameFieldScreen implements Screen {
         infoTable.add(plrScore[1]).width(_scoreWidth);
         infoTable.add(plrLabelName[1]).width(locWidthMeter/2f-_scoreWidth);
 
-        lblFps = new Label("", locGame.skin, "default-font", Color.YELLOW);
-        lblFps.setPosition(10,20);
+        lblFps = new Label("FPS", locGame.skin, "default-font", Color.YELLOW);
+        lblFps.setPosition(0, 0);
 
 
 

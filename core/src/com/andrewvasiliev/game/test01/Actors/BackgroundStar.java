@@ -21,7 +21,7 @@ public class BackgroundStar extends Actor {
         dx = 0;
         layer = lr;
         starSprite = sp;
-        setBounds(getX(), getY(), starSprite.getRegionWidth()*2f, starSprite.getRegionHeight()*2f /*0.1f, 0.1f*/);
+        setBounds(getX(), getY(), starSprite.getRegionWidth(), starSprite.getRegionHeight());
     }
 
     @Override
