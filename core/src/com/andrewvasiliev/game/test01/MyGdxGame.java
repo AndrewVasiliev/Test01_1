@@ -72,7 +72,7 @@ public class MyGdxGame extends Game {
         for (int i=0; i<maxPlr; i++)
             plr[i] = new Player();
         plr[0].SetPlayer("Игрок 1", 1, false, 0, 3);
-        plr[1].SetPlayer("Android 1231232", 1, false, 0, 4);
+        plr[1].SetPlayer("Android 1231232", 1, true, 4, 4);
 
         mainMenu = new MainMenu(this);
         gameScreen = new GameFieldScreen(this);

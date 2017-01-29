@@ -22,7 +22,7 @@ public class GameField extends Actor {
     private float leftX, leftY, widthX, heightY, cellWidth, cellHeight;
     private int countCol, countRow;
     private GameFieldScreen locScreen;
-    private MyCell cells[];
+    public MyCell cells[];
     private float innerR;
     private ShapeRenderer shapeRenderer;
     private int NOBODYCELL = -1; //ячейка никому не принадлежит
@@ -99,7 +99,9 @@ public class GameField extends Actor {
                 vertexCount = hexVertexCount;
                 coord = Arrays.copyOf(hexCoord, hexCoord.length);
                 cellWidth = widthX/countCol/1.5f;
+                //cellWidth = (float)Math.ceil(cellWidth);
                 innerR = cellWidth * (float) Math.sqrt(3) / 2.0f; //внутренний радиус гекса
+                //innerR = (float)Math.ceil(innerR);
                 //попробуем вычислять кол-во рядов исходя из размеров фигуры
                 countRow = (int)(heightY / innerR) * 2;
                 cellHeight = cellWidth;//heightY/countRow*2.0f;
@@ -290,11 +292,6 @@ public class GameField extends Actor {
                 if (cells[currIdx].owner == WASTECELL) {continue;} //неотображаемые ячейки (лишние)
 
                 //для теста анимации
-                /*if ((i==10 || i==11) && j==10 && cells[currIdx].phaseIdx==-1) {
-                    cells[currIdx].colorNext = Color.WHITE;
-                    cells[currIdx].phaseIdx = 0;
-                }*/
-                //для теста анимации
 
                 if (cells[currIdx].phaseIdx != -1) { //-1 состояние покоя и фаза 0
                     cells[currIdx].animDuration += deltaTime;
@@ -329,9 +326,11 @@ public class GameField extends Actor {
 
                 //теперь чуть меньшую, чтоб получился контур
                 scale = 0.9f;
-/*                if ((cells[currIdx].owner != NOBODYCELL) && (cells[currIdx].phaseIdx == -1)) {
-                    scale = 1f;
-                }*/
+                /*
+                if ((cells[currIdx].owner != NOBODYCELL) && (cells[currIdx].phaseIdx == -1)) {
+                    scale = 1.01f;
+                }
+                */
                 if (cells[currIdx].phaseIdx >= phaseCount/2) {
                     //цвет с другой стороны
                     shapeRenderer.setColor(cells[currIdx].colorNext);
@@ -348,7 +347,6 @@ public class GameField extends Actor {
             }
         }
 
-        //locScreen.shapeRenderer.line(0,0, 100,100);
         shapeRenderer.end();
         batch.begin();
         super.draw(batch, alpha);    }
@@ -357,18 +355,41 @@ public class GameField extends Actor {
         shapeRenderer.dispose();
     }
 
-    private int CountScore(int playerIdx) {
+    public int CountScore(int playerIdx, MyCell[] locCells) {
         int score = 0;
         for (int i=0; i<countCol*countRow; i++)
-            if (cells[i].owner == playerIdx) {score++;}
+            if (locCells[i].owner == playerIdx) {score++;}
         return score;
+    }
+
+    public void FillColor (Color colorIn, int locPlayerIdx, MyCell[] locCells) {
+        MyCell ce;
+        Queue<MyCell> qe = new Queue();
+        for (int i=0; i<countCol*countRow; i++)
+            if (locCells[i].owner == locPlayerIdx) {
+                locCells[i].colorNext = colorIn; //устанавливаем новый цвет
+                locCells[i].phaseIdx = 0; //устанавливаем начальную фазу анимации
+                qe.addLast(locCells[i]);
+            }
+        while (qe.size > 0) {
+            ce = qe.removeFirst();
+            for (int k=0; k<maxNearby; k++) {
+                if (ce.nearby[k] == -1) {continue;}
+                if ((locCells[ce.nearby[k]].owner == NOBODYCELL) && (locCells[ce.nearby[k]].color == colorIn)) {
+                    //если ячейка свободна и ее цвет совпадает с цветом "хода", то присвоим ее
+                    locCells[ce.nearby[k]].owner = locPlayerIdx;
+                    locCells[ce.nearby[k]].phaseIdx = 0;
+                    qe.addLast(locCells[ce.nearby[k]]); //добавим ее в очередь, вдруг и у нее есть наши "соседи"
+                }
+            }
+        }
     }
 
     public void PlayerMove(Color colorIn) {
         //ход очередного игрока цветом colorIn
-
-        MyCell ce;
         int playerIdx = locScreen.currentPlayer;
+/*
+        MyCell ce;
         Queue<MyCell> qe = new Queue();
         for (int i=0; i<countCol*countRow; i++)
             if (cells[i].owner == playerIdx) {
@@ -388,10 +409,11 @@ public class GameField extends Actor {
                 }
             }
         }
-
+*/
+        FillColor(colorIn, playerIdx, cells);
 
         //locScreen.locGame.plr[locScreen.currentPlayer].score +=1;
-        locScreen.locGame.plr[playerIdx].score = CountScore(playerIdx);
+        locScreen.locGame.plr[playerIdx].score = CountScore(playerIdx, cells);
 
     }
 }

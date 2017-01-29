@@ -4,12 +4,14 @@
          menu-font: menuFont
     }
     com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
-        menuStyle: {down: button_01, up: button_02, font: menu-font },
-        default: {down: button_01, up: button_02, font: default-font },
+        menuStyle: { down: button_01, up: button_02, font: menu-font },
+        default: { down: button_01, up: button_02, font: default-font },
     },
     com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
-        default: {
-            titleFont: default-font
-        }
+        default: { titleFont: default-font }
+    }
+    com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+        default: { font: default-font },
+        popupMessage: { font: default-font, background: button_06 }
     }
 }

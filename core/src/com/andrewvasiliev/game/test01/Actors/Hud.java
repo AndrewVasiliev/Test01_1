@@ -57,7 +57,7 @@ public class Hud extends Actor {
                                 y >= (colorButton[i].y) && y <= (colorButton[i].y + hudHeight + diametrV / 2)) {
                             //Gdx.app.log("Touch", "touch down");
                             colorIdx = i;
-                            System.out.format("%d%n", i);
+                            //System.out.format("%d%n", i);
                         }
                     }
                 }
