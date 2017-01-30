@@ -230,13 +230,29 @@ public class GameFieldScreen implements Screen {
             locCells[j] = new MyCell();
         }
         //для каждого цвета сделаем ход и сохраним полученные очки
+        boolean skipColor;
         for (i = 0; i < scores.length; i++) {
+
+            if (deepLevel == (locGame.plr[plrIdx].deepLevel-1)) {
+                //пропускаем цвет если он совпадает с текущим цветом, кого-то из игроков
+                skipColor = false;
+                for (int j = 0; j < locGame.maxPlr; j++) {
+                    if (locGame.plr[j].colorIdx == i) {
+                        skipColor = true;
+                        break;
+                    }
+                }
+                if (skipColor) {
+                    continue;
+                }
+            }
+
             for (int j = 0; j < locCells.length; j++) {
                 locCells[j].owner = inCells[j].owner;
-                locCells[j].color = inCells[j].color;
+                locCells[j].colorIdx = inCells[j].colorIdx;
                 locCells[j].nearby = inCells[j].nearby.clone();
             }
-            gamefield.FillColor(Const.colorArr[i], plrIdx, locCells);
+            gamefield.FillColor(i, plrIdx, locCells);
             scores[i] = gamefield.CountScore(plrIdx, locCells);
             if (deepLevel > 0) {
                 scores[i] += AndroidAI(plrIdx, deepLevel, locCells);
@@ -245,7 +261,9 @@ public class GameFieldScreen implements Screen {
 
         int maxIndex = 0;
         for (i = 0; i < scores.length; i++) {
-            System.out.format("scores[%d]=%d%n", i, scores[i]);
+            if (deepLevel == (locGame.plr[plrIdx].deepLevel-1)) {
+                System.out.format("scores[%d]=%d%n", i, scores[i]);
+            }
             if (scores[maxIndex] < scores[i]) {
                 maxIndex = i;
             } else if (scores[maxIndex] == scores[i]) {
@@ -268,7 +286,7 @@ public class GameFieldScreen implements Screen {
                 if (hud.colorIdx != -1) { //нажата цветовая кнопка
                     hudEnabled = false;
                     //заливаем цветом для текущего игрока
-                    gamefield.PlayerMove(Const.colorArr[hud.colorIdx]);
+                    gamefield.PlayerMove(hud.colorIdx);
                     //меняем вол-во очков
                     plrScore[0].setText(Integer.toString(locGame.plr[0].score));
                     plrScore[1].setText(Integer.toString(locGame.plr[1].score));

@@ -124,6 +124,7 @@ public class GameField extends Actor {
         boolean even; //четный ряд
         int currIdx;
         int nx,ny;  //координаты возможных соседей для ячейки
+        int firstPlrIdx = 0, secondPlrIdx = 0;
         for (int i=0; i<countRow; i++) {
             for (int j=0; j<countCol; j++) {
                 even = (i & 1) == 0; // четный ряд?
@@ -249,20 +250,55 @@ public class GameField extends Actor {
                         break;
                 }
 
-                cells[currIdx].color = Const.colorArr[random.nextInt(Const.ColorCount)];
-                cells[currIdx].colorNext = cells[currIdx].color;
+                cells[currIdx].colorIdx = random.nextInt(Const.ColorCount);
+                cells[currIdx].colorIdxNext = cells[currIdx].colorIdx;
                 cells[currIdx].phaseIdx = 0;
                 cells[currIdx].animDuration = 0f;
                 cells[currIdx].setPosition(_x,_y);
                 //установим угловые ячеки как стартовые позиции
                 if (i==(countRow-1) && j==0) { //левый нижний угол
                     cells[currIdx].owner = 0;
+                    locScreen.locGame.plr[0].colorIdx = cells[currIdx].colorIdx;
+                    firstPlrIdx = currIdx;
                 }
                 if (i==0 && j==(countCol-1)) { //правый верхний угол
                     cells[currIdx].owner = 1;
+                    locScreen.locGame.plr[1].colorIdx = cells[currIdx].colorIdx;
+                    secondPlrIdx = currIdx;
                 }
 
 
+            }
+        }
+        //скорректируем цвета игроков, чтобы они не совпадали друг с другом
+        if (cells[firstPlrIdx].colorIdx == cells[secondPlrIdx].colorIdx) {
+            cells[secondPlrIdx].colorIdx++;
+            if (cells[secondPlrIdx].colorIdx >= Const.ColorCount) {
+                cells[secondPlrIdx].colorIdx = 0;
+            }
+            locScreen.locGame.plr[1].colorIdx = cells[secondPlrIdx].colorIdx;
+        }
+        //скорректируем цвета соседних ячеек, чтобы они не совпадали со стартовыми цветами игроков
+        //для игрока 1
+        for (int k=0; k<maxNearby; k++) {
+            if (cells[firstPlrIdx].nearby[k] == -1) {continue;}
+            int nearbyIdx = cells[firstPlrIdx].nearby[k];
+            if (cells[nearbyIdx].colorIdx == cells[firstPlrIdx].colorIdx) {
+                cells[nearbyIdx].colorIdx++;
+                if (cells[nearbyIdx].colorIdx >= Const.ColorCount) {
+                    cells[nearbyIdx].colorIdx = 0;
+                }
+            }
+        }
+        //для игрока 2
+        for (int k=0; k<maxNearby; k++) {
+            if (cells[secondPlrIdx].nearby[k] == -1) {continue;}
+            int nearbyIdx = cells[secondPlrIdx].nearby[k];
+            if (cells[nearbyIdx].colorIdx == cells[secondPlrIdx].colorIdx) {
+                cells[nearbyIdx].colorIdx++;
+                if (cells[nearbyIdx].colorIdx >= Const.ColorCount) {
+                    cells[nearbyIdx].colorIdx = 0;
+                }
             }
         }
     }
@@ -299,7 +335,7 @@ public class GameField extends Actor {
                     if (cells[currIdx].phaseIdx >= phaseCount) {
                         cells[currIdx].phaseIdx = -1;
                         cells[currIdx].animDuration = 0.0f;
-                        cells[currIdx].color = cells[currIdx].colorNext;
+                        cells[currIdx].colorIdx = cells[currIdx].colorIdxNext;
 
                     }
 
@@ -333,9 +369,9 @@ public class GameField extends Actor {
                 */
                 if (cells[currIdx].phaseIdx >= phaseCount/2) {
                     //цвет с другой стороны
-                    shapeRenderer.setColor(cells[currIdx].colorNext);
+                    shapeRenderer.setColor(Const.colorArr[cells[currIdx].colorIdxNext]);
                 } else {
-                    shapeRenderer.setColor(cells[currIdx].color);
+                    shapeRenderer.setColor(Const.colorArr[cells[currIdx].colorIdx]);
                 }
                 for (int k=2; k<vertexCount; k++) {
                     shapeRenderer.triangle(
@@ -362,12 +398,12 @@ public class GameField extends Actor {
         return score;
     }
 
-    public void FillColor (Color colorIn, int locPlayerIdx, MyCell[] locCells) {
+    public void FillColor (/*Color colorIn*/ int colorIn, int locPlayerIdx, MyCell[] locCells) {
         MyCell ce;
         Queue<MyCell> qe = new Queue();
         for (int i=0; i<countCol*countRow; i++)
             if (locCells[i].owner == locPlayerIdx) {
-                locCells[i].colorNext = colorIn; //устанавливаем новый цвет
+                locCells[i].colorIdxNext = colorIn; //устанавливаем новый цвет
                 locCells[i].phaseIdx = 0; //устанавливаем начальную фазу анимации
                 qe.addLast(locCells[i]);
             }
@@ -375,7 +411,7 @@ public class GameField extends Actor {
             ce = qe.removeFirst();
             for (int k=0; k<maxNearby; k++) {
                 if (ce.nearby[k] == -1) {continue;}
-                if ((locCells[ce.nearby[k]].owner == NOBODYCELL) && (locCells[ce.nearby[k]].color == colorIn)) {
+                if ((locCells[ce.nearby[k]].owner == NOBODYCELL) && (locCells[ce.nearby[k]].colorIdx == colorIn)) {
                     //если ячейка свободна и ее цвет совпадает с цветом "хода", то присвоим ее
                     locCells[ce.nearby[k]].owner = locPlayerIdx;
                     locCells[ce.nearby[k]].phaseIdx = 0;
@@ -385,9 +421,11 @@ public class GameField extends Actor {
         }
     }
 
-    public void PlayerMove(Color colorIn) {
+    public void PlayerMove(/*Color colorIn*/ int colorIdx) {
         //ход очередного игрока цветом colorIn
         int playerIdx = locScreen.currentPlayer;
+
+        locScreen.locGame.plr[playerIdx].colorIdx = colorIdx;
 /*
         MyCell ce;
         Queue<MyCell> qe = new Queue();
@@ -410,7 +448,7 @@ public class GameField extends Actor {
             }
         }
 */
-        FillColor(colorIn, playerIdx, cells);
+        FillColor(colorIdx, playerIdx, cells);
 
         //locScreen.locGame.plr[locScreen.currentPlayer].score +=1;
         locScreen.locGame.plr[playerIdx].score = CountScore(playerIdx, cells);

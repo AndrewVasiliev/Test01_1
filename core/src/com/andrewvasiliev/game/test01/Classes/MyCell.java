@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.Color;
 public class MyCell {
     public float x,y;       //координаты центра ячейки
     public float invertY;
-    public Color color, colorNext; //текущий и следующий (тот цвет которым походил игрок. для анимации) цвет ячейки
+    public int colorIdx, colorIdxNext; //текущий и следующий (тот цвет которым походил игрок. для анимации) цвет ячейки
     public int owner;       //какому игроку принадлежит ячейка
     public int phaseIdx;    //текущий номер фазы анимации
     public float animDuration;  //продолжительность текущей анимации (для расчета фазы, которую надо показать)

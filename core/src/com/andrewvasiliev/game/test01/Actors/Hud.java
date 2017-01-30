@@ -53,6 +53,8 @@ public class Hud extends Actor {
                 //проверим нажали ли мы на цветную кнопку (проверим по простому - квадратную область)
                 if (locScreen.hudEnabled) { //если нажатие ожидается, то....
                     for (int i = 0; i < Const.ColorCount; i++) {
+                        //нельзя нажать цвета, которые сейчас заняты игроками
+                        if ((locScreen.locGame.plr[0].colorIdx == i)||((locScreen.locGame.plr[1].colorIdx == i))) { continue;}
                         if (x >= (colorButton[i].x) && x <= (colorButton[i].x + diametrH) &&
                                 y >= (colorButton[i].y) && y <= (colorButton[i].y + hudHeight + diametrV / 2)) {
                             //Gdx.app.log("Touch", "touch down");
@@ -86,9 +88,9 @@ public class Hud extends Actor {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         //рисуем полосы заработанных очков
         float _scoreX = hudWidth * locScreen.locGame.plr[0].score /(float)(locScreen.locGame.plr[0].score + locScreen.locGame.plr[1].score);
-        shapeRenderer.setColor(Const.colorArr[locScreen.locGame.plr[0].color]);
+        shapeRenderer.setColor(Const.colorArr[locScreen.locGame.plr[0].colorIdx]);
         shapeRenderer.rect(leftX, hudHeight/2f, _scoreX, hudHeight/2f);
-        shapeRenderer.setColor(Const.colorArr[locScreen.locGame.plr[1].color]);
+        shapeRenderer.setColor(Const.colorArr[locScreen.locGame.plr[1].colorIdx]);
         shapeRenderer.rect(leftX+_scoreX, hudHeight/2f, hudWidth-_scoreX, hudHeight/2f);
         //рисуем отметки посередине полос очков
         _scoreX = hudWidth/2f+leftX;
@@ -98,6 +100,9 @@ public class Hud extends Actor {
 
         //рисуем цветные кнопки
         for (int i=0; i< Const.ColorCount; i++) {
+            //не рисуем цвета, которые сейчас заняты игроками
+            if ((locScreen.locGame.plr[0].colorIdx == i)||((locScreen.locGame.plr[1].colorIdx == i))) { continue;}
+
             shapeRenderer.setColor(Const.colorArr[i]);
             shapeRenderer.ellipse(colorButton[i].x, colorButton[i].y, diametrH, diametrV*0.9f);
         }

@@ -9,13 +9,13 @@ public class Player {
     public int deepLevel; //количество ходов вперед, на которое Android будет просчитывать ход. Сложность противника.
     public String name; //имя игрока
     public int score; // количество набранных очков
-    public int color; // текущий цвет игрока (индекс в массиве Const.Color)
+    public int colorIdx; // текущий цвет игрока (индекс в массиве Const.Color)
 
     public void SetPlayer (String inName, int inScore, boolean inIsAndroid, int inDeepLevel, int inColor) {
         name = inName;
         score = inScore;
         isAndroid = inIsAndroid;
         deepLevel = inDeepLevel;
-        color = inColor;
+        colorIdx = inColor;
     }
 }
