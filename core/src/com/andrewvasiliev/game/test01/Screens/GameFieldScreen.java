@@ -62,6 +62,9 @@ public class GameFieldScreen implements Screen {
     private Label lblNextPlayerDialog;
     private Random random;
     private float nextPlayerDelay = 1.0f;
+    private boolean aiSkipOneFrame; //т.к. расчет хода AI происходит в render, то это задерживает отрисовку
+    // и в результате анимация поворота начинается с середины или вообще не происходит. поэтому после хода AI
+    // пропустим одну отрисовку render-а
 
 
     private Label lblFps;
@@ -142,6 +145,7 @@ public class GameFieldScreen implements Screen {
 
         System.out.println("started");
         random = new Random();
+        aiSkipOneFrame = false;
 
     }
 
@@ -259,40 +263,47 @@ public class GameFieldScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (hudEnabled) {
-            if (hud.colorIdx != -1) { //нажата цветовая кнопка
-                hudEnabled = false;
-                //заливаем цветом для текущего игрока
-                gamefield.PlayerMove(Const.colorArr[hud.colorIdx]);
-                //меняем вол-во очков
-                plrScore[0].setText(Integer.toString(locGame.plr[0].score));
-                plrScore[1].setText(Integer.toString(locGame.plr[1].score));
-                //передаем ход следующему игроку
-                currentPlayer += 1;
-                if (currentPlayer == locGame.maxPlr){currentPlayer = 0;}
-                //отобразим цветом кто ходит следующим
-                ColoringPlayers();
-                //выводим на экран сообщение о том кто следующий ходит
-                PrintNextPlayerName();
-                //включаем ожидание нажатия цветовых кнопок
-                hud.colorIdx = -1;
-                if (!locGame.plr[currentPlayer].isAndroid) {
-                    hudEnabled = true;
+        if (!aiSkipOneFrame) {
+            if (hudEnabled) {
+                if (hud.colorIdx != -1) { //нажата цветовая кнопка
+                    hudEnabled = false;
+                    //заливаем цветом для текущего игрока
+                    gamefield.PlayerMove(Const.colorArr[hud.colorIdx]);
+                    //меняем вол-во очков
+                    plrScore[0].setText(Integer.toString(locGame.plr[0].score));
+                    plrScore[1].setText(Integer.toString(locGame.plr[1].score));
+                    //передаем ход следующему игроку
+                    currentPlayer += 1;
+                    if (currentPlayer == locGame.maxPlr) {
+                        currentPlayer = 0;
+                    }
+                    //отобразим цветом кто ходит следующим
+                    ColoringPlayers();
+                    //выводим на экран сообщение о том кто следующий ходит
+                    PrintNextPlayerName();
+                    //включаем ожидание нажатия цветовых кнопок
+                    hud.colorIdx = -1;
+                    if (!locGame.plr[currentPlayer].isAndroid) {
+                        hudEnabled = true;
+                    }
                 }
             }
+            // ход делает андроид
+            if (locGame.plr[currentPlayer].isAndroid) {
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        Timer.instance().clear();
+                        //hud.colorIdx = random.nextInt(Const.ColorCount);
+                        hud.colorIdx = AndroidAI(currentPlayer, locGame.plr[currentPlayer].deepLevel, gamefield.cells);
+                        hudEnabled = true;
+                        aiSkipOneFrame = true;
+                    }
+                }, nextPlayerDelay);
+            }
+        } else {
+            aiSkipOneFrame = false;
         }
-        // ход делает андроид
-        if (locGame.plr[currentPlayer].isAndroid) {
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    Timer.instance().clear();
-                    //hud.colorIdx = random.nextInt(Const.ColorCount);
-                    hud.colorIdx = AndroidAI(currentPlayer, locGame.plr[currentPlayer].deepLevel, gamefield.cells);
-                    hudEnabled = true;
-                }
-            }, nextPlayerDelay);
-        };
 
         lblFps.setText("FPS:"+Integer.toString (Gdx.graphics.getFramesPerSecond()));
 
