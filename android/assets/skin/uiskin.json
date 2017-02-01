@@ -8,7 +8,8 @@
         default: { down: button_01, up: button_02, font: default-font },
     },
     com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
-        default: { titleFont: default-font }
+        default: { titleFont: default-font },
+        result_window: { titleFont: default-font, background: window_02 }
     }
     com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
         default: { font: default-font },

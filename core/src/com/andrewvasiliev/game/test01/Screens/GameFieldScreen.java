@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -58,13 +59,18 @@ public class GameFieldScreen implements Screen {
     private Label plrLabelName[], plrScore[];
     public int currentPlayer; //индекс в массиве locGame.plr[] текущего игрока
     public boolean hudEnabled = false; //если истина, то от интерфейса ожидается нажатие (на цвет, например)
-    private Dialog NextPlayerMoveDialog;
+    private Dialog NextPlayerMoveDialog, WinningDialog;
+    private Label lblWinningDialog, lblWinningName;
+    private TextButton RetryButton, ToMenuButton;
     private Label lblNextPlayerDialog;
     private Random random;
     private float nextPlayerDelay = 1.0f;
     private boolean aiSkipOneFrame; //т.к. расчет хода AI происходит в render, то это задерживает отрисовку
     // и в результате анимация поворота начинается с середины или вообще не происходит. поэтому после хода AI
     // пропустим одну отрисовку render-а
+    // !!! и все равно это не помогло
+
+    private boolean isGameEnded;
 
 
     private Label lblFps;
@@ -89,6 +95,26 @@ public class GameFieldScreen implements Screen {
         NextPlayerMoveDialog = new Dialog("", locGame.skin);
         lblNextPlayerDialog = new Label("", locGame.skin, "popupMessage");
         NextPlayerMoveDialog.text(lblNextPlayerDialog);
+
+        WinningDialog= new Dialog("Результаты:", locGame.skin, "result_window"){
+            protected void result(Object object) {
+                this.hide();
+                System.out.println("Chosen: " + object);
+                if (object.toString().equals("true")) {
+                    StartGame();
+                } else {
+                    locGame.setScreen(locGame.mainMenu);
+                }
+            }
+        };
+        WinningDialog.padTop(30).padBottom(30);
+        lblWinningDialog = new Label("Победил", locGame.skin, "default");
+        lblWinningName = new Label("тут имя", locGame.skin, "default");
+        WinningDialog.getContentTable().add(lblWinningDialog).row();
+        WinningDialog.getContentTable().add(lblWinningName).row();
+        WinningDialog.getButtonTable().padTop(25);
+        WinningDialog.button("Сыграть еще", true).row();
+        WinningDialog.button("Вернуться в меню", false).row();
 
         shapeRenderer = new ShapeRenderer();
 
@@ -154,7 +180,8 @@ public class GameFieldScreen implements Screen {
     }
 
     public void StartGame() {
-        gamefield.GenerateField(24, Const.CellShape.HEX); //лучше чтобы кол-во столбцов было кратно 8
+        //GenerateField(/*24*/ 4, Const.CellShape.HEX); //лучше чтобы кол-во столбцов было кратно 8
+        GenerateField(16*2+8*1, Const.CellShape.TRIANGLE);
 
         for (int i=0; i<locGame.maxPlr; i++) {
             plrLabelName[i].setText(locGame.plr[i].name);
@@ -168,6 +195,7 @@ public class GameFieldScreen implements Screen {
         hud.colorIdx = -1;
         hudEnabled = true;
         PrintNextPlayerName();
+        isGameEnded = false;
     }
 
     @Override
@@ -281,7 +309,7 @@ public class GameFieldScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (!aiSkipOneFrame) {
+        if ((!aiSkipOneFrame) && (!isGameEnded)) {
             if (hudEnabled) {
                 if (hud.colorIdx != -1) { //нажата цветовая кнопка
                     hudEnabled = false;
@@ -297,8 +325,20 @@ public class GameFieldScreen implements Screen {
                     }
                     //отобразим цветом кто ходит следующим
                     ColoringPlayers();
-                    //выводим на экран сообщение о том кто следующий ходит
-                    PrintNextPlayerName();
+                    //проверим есть ли еще возможность для хода у игрока
+                    //если нет, то заканчиваем игру и пишем кто выиграл
+                    if (!gamefield.isPossibleMoves(currentPlayer)) {
+                        //возможных ходов больше нет.
+                        isGameEnded = true;
+                        //расширим владения соперника до конца
+                        //выведем сообщение о победителе и спросим "продолжать или выйти в меню"
+                        lblWinningDialog.setText("тут будет про победителей");
+                        WinningDialog.show(mainFieldStage);
+                    } else {
+                        //выводим на экран сообщение о том кто следующий ходит
+                        PrintNextPlayerName();
+                    }
+
                     //включаем ожидание нажатия цветовых кнопок
                     hud.colorIdx = -1;
                     if (!locGame.plr[currentPlayer].isAndroid) {

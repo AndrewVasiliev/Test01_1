@@ -22,7 +22,7 @@ public class GameField extends Actor {
     private float leftX, leftY, widthX, heightY, cellWidth, cellHeight;
     private int countCol, countRow;
     private GameFieldScreen locScreen;
-    public MyCell cells[];
+    public MyCell[] cells;
     private float innerR;
     private ShapeRenderer shapeRenderer;
     private int NOBODYCELL = -1; //ячейка никому не принадлежит
@@ -117,7 +117,10 @@ public class GameField extends Actor {
 
         Random random = new Random();
 
-        cells = new MyCell[countCol*countRow];
+        cells = new MyCell[countCol * countRow];
+        for (int i=0; i<cells.length; i++) {
+            cells[i] = new MyCell();
+        }
 
         float _x = 0.0f;
         float _y = 0.0f;
@@ -129,7 +132,7 @@ public class GameField extends Actor {
             for (int j=0; j<countCol; j++) {
                 even = (i & 1) == 0; // четный ряд?
                 currIdx = GetIndex(j, i);
-                cells[currIdx] = new MyCell();
+                //cells[currIdx] = new MyCell();
                 cells[currIdx].owner = NOBODYCELL; // никому не принадлежит
 
                 cells[currIdx].nearby = new int[maxNearby]; //массив индексов соседних ячеек
@@ -453,5 +456,20 @@ public class GameField extends Actor {
         //locScreen.locGame.plr[locScreen.currentPlayer].score +=1;
         locScreen.locGame.plr[playerIdx].score = CountScore(playerIdx, cells);
 
+    }
+
+    public boolean isPossibleMoves (int playerIdx) {
+        for (int i=0; i<countCol*countRow; i++)
+            if (cells[i].owner == playerIdx) {
+                for (int k=0; k<maxNearby; k++) {
+                    if (cells[i].nearby[k] == -1) {continue;}
+                    if (cells[cells[i].nearby[k]].owner == NOBODYCELL) {
+                        //у игрока еще есть возможность для расширения его владений
+                        return true;
+                    }
+                }
+            }
+        //игрок уже захватил все, доступное ему пространство.
+        return false;
     }
 }
