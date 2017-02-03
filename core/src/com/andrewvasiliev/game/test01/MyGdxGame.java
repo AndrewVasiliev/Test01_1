@@ -59,6 +59,8 @@ public class MyGdxGame extends Game {
         skin.add("menuFont", menuFont);
 
         parameter.size = (int)(32 * ratio);
+        //parameter.borderColor = Color.BLACK;
+        parameter.color = Color.GRAY;
         parameter.borderColor = Color.BLACK;
         parameter.borderWidth = 1;
         BitmapFont normalFont = generator.generateFont(parameter);

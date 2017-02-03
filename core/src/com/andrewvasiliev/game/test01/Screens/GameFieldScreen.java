@@ -180,8 +180,8 @@ public class GameFieldScreen implements Screen {
     }
 
     public void StartGame() {
-        //GenerateField(/*24*/ 4, Const.CellShape.HEX); //лучше чтобы кол-во столбцов было кратно 8
-        GenerateField(16*2+8*1, Const.CellShape.TRIANGLE);
+        GenerateField(/*24*/ 4, Const.CellShape.HEX); //лучше чтобы кол-во столбцов было кратно 8
+        //GenerateField(16*2+8*1, Const.CellShape.TRIANGLE);
 
         for (int i=0; i<locGame.maxPlr; i++) {
             plrLabelName[i].setText(locGame.plr[i].name);
@@ -319,6 +319,7 @@ public class GameFieldScreen implements Screen {
                     plrScore[0].setText(Integer.toString(locGame.plr[0].score));
                     plrScore[1].setText(Integer.toString(locGame.plr[1].score));
                     //передаем ход следующему игроку
+                    int prevIdx = currentPlayer; //если следующему игроку уже некуда будет ходить, то текущий игрок атоматически забирает остальное пространство, чтобы не тянуть время
                     currentPlayer += 1;
                     if (currentPlayer == locGame.maxPlr) {
                         currentPlayer = 0;
@@ -331,8 +332,24 @@ public class GameFieldScreen implements Screen {
                         //возможных ходов больше нет.
                         isGameEnded = true;
                         //расширим владения соперника до конца
+                        for (int j = 0; j < gamefield.cells.length; j++) {
+                            if (gamefield.cells[j].owner == gamefield.NOBODYCELL) {
+                                gamefield.cells[j].owner = prevIdx;
+                                gamefield.cells[j].phaseIdx = 0;
+                            }
+                        }
                         //выведем сообщение о победителе и спросим "продолжать или выйти в меню"
-                        lblWinningDialog.setText("тут будет про победителей");
+                        if (locGame.plr[0].score == locGame.plr[1].score) {
+                            lblWinningDialog.setText("Победила");
+                            lblWinningName.setText("ДРУЖБА !!!");
+                        } else {
+                            lblWinningDialog.setText("Победил(а)");
+                            if (locGame.plr[0].score > locGame.plr[1].score) {
+                                lblWinningName.setText(locGame.plr[0].name);
+                            } else {
+                                lblWinningName.setText(locGame.plr[1].name);
+                            }
+                        }
                         WinningDialog.show(mainFieldStage);
                     } else {
                         //выводим на экран сообщение о том кто следующий ходит

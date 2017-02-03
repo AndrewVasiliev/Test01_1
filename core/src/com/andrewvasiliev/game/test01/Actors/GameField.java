@@ -25,7 +25,7 @@ public class GameField extends Actor {
     public MyCell[] cells;
     private float innerR;
     private ShapeRenderer shapeRenderer;
-    private int NOBODYCELL = -1; //ячейка никому не принадлежит
+    public int NOBODYCELL = -1; //ячейка никому не принадлежит
     private int WASTECELL = -2; //лишняя ячейка. не отображается. присутствуют в гексах
     private int maxNearby; //количество соседних ячеек. зависит от формы ячеек
 
