@@ -184,6 +184,7 @@ public class GameFieldScreen implements Screen {
         //GenerateField(16*2+8*1, Const.CellShape.TRIANGLE);
 
         for (int i=0; i<locGame.maxPlr; i++) {
+            locGame.plr[i].score = 1;
             plrLabelName[i].setText(locGame.plr[i].name);
             plrScore[i].setText(Integer.toString(locGame.plr[i].score));
         }
@@ -336,6 +337,7 @@ public class GameFieldScreen implements Screen {
                             if (gamefield.cells[j].owner == gamefield.NOBODYCELL) {
                                 gamefield.cells[j].owner = prevIdx;
                                 gamefield.cells[j].phaseIdx = 0;
+                                gamefield.cells[j].colorIdxNext = locGame.plr[prevIdx].colorIdx;
                             }
                         }
                         //выведем сообщение о победителе и спросим "продолжать или выйти в меню"
