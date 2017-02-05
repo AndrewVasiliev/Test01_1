@@ -95,17 +95,14 @@ public class GameField extends Actor {
                 break;
             case HEX:
                 maxNearby = 6;
-                //countCol += 1;
                 vertexCount = hexVertexCount;
                 coord = Arrays.copyOf(hexCoord, hexCoord.length);
                 cellWidth = widthX/countCol/1.5f;
-                //cellWidth = (float)Math.ceil(cellWidth);
                 innerR = cellWidth * (float) Math.sqrt(3) / 2.0f; //внутренний радиус гекса
-                //innerR = (float)Math.ceil(innerR);
                 //попробуем вычислять кол-во рядов исходя из размеров фигуры
                 countRow = (int)(heightY / innerR) * 2;
                 cellHeight = cellWidth;//heightY/countRow*2.0f;
-                leftX += cellWidth / 4; //сдвинем на половину радиуса, т.к. справа получается пустота шириной в радиус
+                //leftX += cellWidth / 4; //сдвинем на половину радиуса, т.к. справа получается пустота шириной в радиус
                 break;
         }
 
@@ -218,7 +215,7 @@ public class GameField extends Actor {
                         break;
                     case HEX:
                         cells[currIdx].invertY = 1.0f;
-                        _x = leftX + (float)j * cellWidth/2.0f*3 + cellWidth/2.0f +
+                        _x = leftX + cellWidth/4.0f + (float)j * cellWidth/2.0f*3 + cellWidth/2.0f +
                                 (even ? 0 : cellWidth/2.0f*1.5f); //для нечетных рядов сдвигаем
                         //_y = leftY + heightY - (float)i * cellHeight/2.0f - cellHeight/2.0f;
                         _y = leftY + heightY - (float)i * innerR/2.0f - innerR/2.0f; //т.к. гекс по высоте меньше чем по ширине, то используем в расчетах внутренний радиус
@@ -279,6 +276,7 @@ public class GameField extends Actor {
             if (cells[secondPlrIdx].colorIdx >= Const.ColorCount) {
                 cells[secondPlrIdx].colorIdx = 0;
             }
+            cells[secondPlrIdx].colorIdxNext =  cells[secondPlrIdx].colorIdx;
             locScreen.locGame.plr[1].colorIdx = cells[secondPlrIdx].colorIdx;
         }
         //скорректируем цвета соседних ячеек, чтобы они не совпадали со стартовыми цветами игроков
@@ -291,6 +289,7 @@ public class GameField extends Actor {
                 if (cells[nearbyIdx].colorIdx >= Const.ColorCount) {
                     cells[nearbyIdx].colorIdx = 0;
                 }
+                cells[nearbyIdx].colorIdxNext =  cells[nearbyIdx].colorIdx;
             }
         }
         //для игрока 2
@@ -302,6 +301,7 @@ public class GameField extends Actor {
                 if (cells[nearbyIdx].colorIdx >= Const.ColorCount) {
                     cells[nearbyIdx].colorIdx = 0;
                 }
+                cells[nearbyIdx].colorIdxNext =  cells[nearbyIdx].colorIdx;
             }
         }
     }
@@ -310,6 +310,14 @@ public class GameField extends Actor {
         return row*countCol + col;
     }
 
+    private void DrawShape (float locX, float locY, float invertY, float scale, int idx) {
+        for (int k=2; k<vertexCount; k++) {
+            shapeRenderer.triangle(
+                    locX + coord[idx] * scale * invertY, locY + coord[idx + 1] * scale * invertY,
+                    locX + coord[idx + k*2] * scale * invertY, locY + coord[idx + k*2+1] * scale * invertY,
+                    locX + coord[idx + (k-1)*2] * scale * invertY, locY + coord[idx + (k-1)*2+1] * scale * invertY);
+        }
+    }
 
     @Override
     public void draw(Batch batch, float alpha) {
@@ -330,7 +338,6 @@ public class GameField extends Actor {
                 currIdx = GetIndex(j, i);
                 if (cells[currIdx].owner == WASTECELL) {continue;} //неотображаемые ячейки (лишние)
 
-                //для теста анимации
 
                 if (cells[currIdx].phaseIdx != -1) { //-1 состояние покоя и фаза 0
                     cells[currIdx].animDuration += deltaTime;
@@ -339,9 +346,7 @@ public class GameField extends Actor {
                         cells[currIdx].phaseIdx = -1;
                         cells[currIdx].animDuration = 0.0f;
                         cells[currIdx].colorIdx = cells[currIdx].colorIdxNext;
-
                     }
-
                 }
 
                 idx = (cells[currIdx].phaseIdx==-1 ? 0 : cells[currIdx].phaseIdx) * vertexCount*2; //номер фазы анимации * vetrexCount * 2 (это x и y)
@@ -351,38 +356,28 @@ public class GameField extends Actor {
 
                 //отрисуем фигуру заполненными треугольниками
                 //сначала отрисуем полную фигуру
+                scale = 1.01f;
                 if (locScreen.currentPlayer == cells[currIdx].owner) {
                     shapeRenderer.setColor(Color.WHITE); // ячейка активного игрока
                 } else {
                     shapeRenderer.setColor(Const.borderColor);
                 }
-                for (int k=2; k<vertexCount; k++) {
-                    shapeRenderer.triangle(
-                            locX + coord[idx] * invertY, locY + coord[idx + 1] * invertY,
-                            locX + coord[idx + k*2] * invertY, locY + coord[idx + k*2+1] * invertY,
-                            locX + coord[idx + (k-1)*2] * invertY, locY + coord[idx + (k-1)*2+1] * invertY);
-                }
+                DrawShape(locX, locY, invertY, scale, idx);
 
                 //теперь чуть меньшую, чтоб получился контур
                 scale = 0.9f;
-                /*
+
                 if ((cells[currIdx].owner != NOBODYCELL) && (cells[currIdx].phaseIdx == -1)) {
                     scale = 1.01f;
                 }
-                */
+
                 if (cells[currIdx].phaseIdx >= phaseCount/2) {
                     //цвет с другой стороны
                     shapeRenderer.setColor(Const.colorArr[cells[currIdx].colorIdxNext]);
                 } else {
                     shapeRenderer.setColor(Const.colorArr[cells[currIdx].colorIdx]);
                 }
-                for (int k=2; k<vertexCount; k++) {
-                    shapeRenderer.triangle(
-                            locX + coord[idx] * scale * invertY, locY + coord[idx + 1] * scale * invertY,
-                            locX + coord[idx + k*2] * scale * invertY, locY + coord[idx + k*2+1] * scale * invertY,
-                            locX + coord[idx + (k-1)*2] * scale * invertY, locY + coord[idx + (k-1)*2+1] * scale * invertY);
-                }
-
+                DrawShape(locX, locY, invertY, scale, idx);
             }
         }
 

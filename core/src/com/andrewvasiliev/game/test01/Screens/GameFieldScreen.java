@@ -180,8 +180,8 @@ public class GameFieldScreen implements Screen {
     }
 
     public void StartGame() {
-        GenerateField(/*24*/ 4, Const.CellShape.HEX); //лучше чтобы кол-во столбцов было кратно 8
-        //GenerateField(16*2+8*1, Const.CellShape.TRIANGLE);
+        //GenerateField(/*24*/ 4, Const.CellShape.HEX); //лучше чтобы кол-во столбцов было кратно 8
+        GenerateField(16*2+8*1, Const.CellShape.TRIANGLE);
 
         for (int i=0; i<locGame.maxPlr; i++) {
             locGame.plr[i].score = 1;
@@ -340,6 +340,10 @@ public class GameFieldScreen implements Screen {
                                 gamefield.cells[j].colorIdxNext = locGame.plr[prevIdx].colorIdx;
                             }
                         }
+                        locGame.plr[0].score = gamefield.CountScore(0, gamefield.cells);
+                        locGame.plr[1].score = gamefield.CountScore(1, gamefield.cells);
+                        plrScore[0].setText(Integer.toString(locGame.plr[0].score));
+                        plrScore[1].setText(Integer.toString(locGame.plr[1].score));
                         //выведем сообщение о победителе и спросим "продолжать или выйти в меню"
                         if (locGame.plr[0].score == locGame.plr[1].score) {
                             lblWinningDialog.setText("Победила");
