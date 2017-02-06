@@ -396,7 +396,7 @@ public class GameField extends Actor {
         return score;
     }
 
-    public void FillColor (/*Color colorIn*/ int colorIn, int locPlayerIdx, MyCell[] locCells) {
+    public void FillColor (int colorIn, int locPlayerIdx, MyCell[] locCells) {
         MyCell ce;
         Queue<MyCell> qe = new Queue();
         for (int i=0; i<countCol*countRow; i++)
@@ -419,36 +419,13 @@ public class GameField extends Actor {
         }
     }
 
-    public void PlayerMove(/*Color colorIn*/ int colorIdx) {
+    public void PlayerMove(int colorIdx) {
         //ход очередного игрока цветом colorIn
         int playerIdx = locScreen.currentPlayer;
 
         locScreen.locGame.plr[playerIdx].colorIdx = colorIdx;
-/*
-        MyCell ce;
-        Queue<MyCell> qe = new Queue();
-        for (int i=0; i<countCol*countRow; i++)
-            if (cells[i].owner == playerIdx) {
-                cells[i].colorNext = colorIn; //устанавливаем новый цвет
-                cells[i].phaseIdx = 0; //устанавливаем начальную фазу анимации
-                qe.addLast(cells[i]);
-            }
-        while (qe.size > 0) {
-            ce = qe.removeFirst();
-            for (int k=0; k<maxNearby; k++) {
-                if (ce.nearby[k] == -1) {continue;}
-                if ((cells[ce.nearby[k]].owner == NOBODYCELL) && (cells[ce.nearby[k]].color == colorIn)) {
-                    //если ячейка свободна и ее цвет совпадает с цветом "хода", то присвоим ее
-                    cells[ce.nearby[k]].owner = playerIdx;
-                    cells[ce.nearby[k]].phaseIdx = 0;
-                    qe.addLast(cells[ce.nearby[k]]); //добавим ее в очередь, вдруг и у нее есть наши "соседи"
-                }
-            }
-        }
-*/
         FillColor(colorIdx, playerIdx, cells);
 
-        //locScreen.locGame.plr[locScreen.currentPlayer].score +=1;
         locScreen.locGame.plr[playerIdx].score = CountScore(playerIdx, cells);
 
     }

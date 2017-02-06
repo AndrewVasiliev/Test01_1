@@ -19,6 +19,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.actions.RemoveActorAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.scenes.scene2d.actions.VisibleAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -65,12 +69,9 @@ public class GameFieldScreen implements Screen {
     private Label lblNextPlayerDialog;
     private Random random;
     private float nextPlayerDelay = 1.0f;
-    private boolean aiSkipOneFrame; //т.к. расчет хода AI происходит в render, то это задерживает отрисовку
-    // и в результате анимация поворота начинается с середины или вообще не происходит. поэтому после хода AI
-    // пропустим одну отрисовку render-а
-    // !!! и все равно это не помогло
 
     private boolean isGameEnded;
+    private Label popUpScores;
 
 
     private Label lblFps;
@@ -159,8 +160,6 @@ public class GameFieldScreen implements Screen {
         lblFps = new Label("FPS", locGame.skin, "default-font", Color.YELLOW);
         lblFps.setPosition(0, 0);
 
-
-
         //mainFieldStage.addActor(background);
         mainFieldStage.addActor(gamefield);
         mainFieldStage.addActor(hud);
@@ -168,11 +167,15 @@ public class GameFieldScreen implements Screen {
 
         mainFieldStage.addActor(lblFps);
 
+        //всплывающее кол-во очков на очередном ходе
+        popUpScores = new Label("xxx", locGame.skin, "menu-font", Color.YELLOW);
+        popUpScores.setVisible(false);
+        mainFieldStage.addActor(popUpScores);
+
+
 
         System.out.println("started");
         random = new Random();
-        aiSkipOneFrame = false;
-
     }
 
     public void GenerateField (int countColIn, Const.CellShape cellType) {
@@ -194,9 +197,16 @@ public class GameFieldScreen implements Screen {
         ColoringPlayers ();
         //разрешаем нажимать кнопки
         hud.colorIdx = -1;
-        hudEnabled = true;
+        hudEnabled = false;
         PrintNextPlayerName();
         isGameEnded = false;
+        if (!locGame.plr[currentPlayer].isAndroid) {
+            //ход игрока
+            hudEnabled = true;
+        } else {
+            // ход делает андроид
+            RunAiThread();
+        }
     }
 
     @Override
@@ -212,11 +222,6 @@ public class GameFieldScreen implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(mainFieldStage);
-    }
-
-    private void SetCurrentPlayerColor (Color colorIn) {
-        plrLabelName[currentPlayer].setColor(colorIn);
-        plrScore[currentPlayer].setColor(colorIn);
     }
 
     private void ColoringPlayers () {
@@ -244,9 +249,27 @@ public class GameFieldScreen implements Screen {
         }, nextPlayerDelay);
     }
 
+    private void RunAiThread() {
+        //запускаем в потоке расчет следующего хода AI
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final int AndroidAiResult = AndroidAI(currentPlayer, locGame.plr[currentPlayer].deepLevel, gamefield.cells);
+
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        hud.colorIdx = AndroidAiResult;
+                        hudEnabled = true;
+                    }
+                });
+            }
+        }).start();
+    }
+
     private int AndroidAI (int plrIdx, int deepLevel, MyCell[] inCells) {
         int[] scores = new int[Const.ColorCount];
-        int i;
+        int i, prevScore;
         MyCell[] locCells;
 
         deepLevel--;
@@ -281,9 +304,14 @@ public class GameFieldScreen implements Screen {
                 locCells[j].colorIdx = inCells[j].colorIdx;
                 locCells[j].nearby = inCells[j].nearby.clone();
             }
+            //кол-во очков до хода очередным цветом
+            prevScore = gamefield.CountScore(plrIdx, locCells);
+            //ход очередным цветом
             gamefield.FillColor(i, plrIdx, locCells);
+            //кол-во очков после хода очередным цветом
             scores[i] = gamefield.CountScore(plrIdx, locCells);
-            if (deepLevel > 0) {
+            //если кол-во очков увеличилось и еще не достигнуто дно рекурсии (сложность/глубина AI), то вызываем рекурсию
+            if ((prevScore < scores[i]) && (deepLevel > 0)) {
                 scores[i] += AndroidAI(plrIdx, deepLevel, locCells);
             }
         }
@@ -308,14 +336,40 @@ public class GameFieldScreen implements Screen {
         }
     }
 
+    private void PopUpScores(int idx, int deltaScore) {
+        float x, y;
+        x = hud.colorButton[idx].x + hud.diametrH/2.0f;
+        y = hud.colorButton[idx].y;
+        popUpScores.setText("+" + Integer.toString(deltaScore));
+        popUpScores.setPosition(x, y);
+
+        MoveToAction moveAction = new MoveToAction();
+        moveAction.setPosition(x, y+250);
+        moveAction.setDuration(1.0f);
+        VisibleAction showAction = new VisibleAction();
+        showAction.setVisible(true);
+        VisibleAction hideAction = new VisibleAction();
+        hideAction.setVisible(false);
+        //RemoveActorAction removeActor = new RemoveActorAction();
+        SequenceAction mySequence = new SequenceAction(showAction, moveAction, hideAction);
+        popUpScores.addAction(mySequence);
+
+        //popUpScores.setVisible(true);
+    }
+
     @Override
     public void render(float delta) {
-        if ((!aiSkipOneFrame) && (!isGameEnded)) {
+        if (!isGameEnded) {
             if (hudEnabled) {
                 if (hud.colorIdx != -1) { //нажата цветовая кнопка
                     hudEnabled = false;
+                    //тут будет заработанное кол-во очков на этом ходе
+                    int deltaScore = gamefield.CountScore(currentPlayer, gamefield.cells);
                     //заливаем цветом для текущего игрока
                     gamefield.PlayerMove(hud.colorIdx);
+                    deltaScore = gamefield.CountScore(currentPlayer, gamefield.cells) - deltaScore;
+                    //всплывающее кол-во очков над нажатой кнопкой
+                    PopUpScores(hud.colorIdx, deltaScore);
                     //меняем вол-во очков
                     plrScore[0].setText(Integer.toString(locGame.plr[0].score));
                     plrScore[1].setText(Integer.toString(locGame.plr[1].score));
@@ -366,24 +420,12 @@ public class GameFieldScreen implements Screen {
                     hud.colorIdx = -1;
                     if (!locGame.plr[currentPlayer].isAndroid) {
                         hudEnabled = true;
+                    } else {
+                        // ход делает андроид
+                        RunAiThread();
                     }
                 }
             }
-            // ход делает андроид
-            if (locGame.plr[currentPlayer].isAndroid) {
-                Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        Timer.instance().clear();
-                        //hud.colorIdx = random.nextInt(Const.ColorCount);
-                        hud.colorIdx = AndroidAI(currentPlayer, locGame.plr[currentPlayer].deepLevel, gamefield.cells);
-                        hudEnabled = true;
-                        aiSkipOneFrame = true;
-                    }
-                }, nextPlayerDelay);
-            }
-        } else {
-            aiSkipOneFrame = false;
         }
 
         lblFps.setText("FPS:"+Integer.toString (Gdx.graphics.getFramesPerSecond()));

@@ -60,7 +60,7 @@ public class MyGdxGame extends Game {
 
         parameter.size = (int)(32 * ratio);
         //parameter.borderColor = Color.BLACK;
-        parameter.color = Color.GRAY;
+        parameter.color = Color.WHITE;
         parameter.borderColor = Color.BLACK;
         parameter.borderWidth = 1;
         BitmapFont normalFont = generator.generateFont(parameter);

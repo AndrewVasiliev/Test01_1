@@ -16,8 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 public class Hud extends Actor {
     private float hudWidth, hudHeight, leftX, leftY;
-    private float diametrV, diametrH;
-    private Vector2 colorButton[];
+    public float diametrV, diametrH;
+    public Vector2 colorButton[];
     private GameFieldScreen locScreen;
     private ShapeRenderer shapeRenderer;
     public int colorIdx; // номер нажатой кнопки/цвета
@@ -37,9 +37,8 @@ public class Hud extends Actor {
         colorButton = new Vector2[Const.ColorCount];
         for (int i=0; i< Const.ColorCount; i++) {
             colorButton[i] = new Vector2();
-            colorButton[i].y = leftY /*+ hudHeight/2.0f*/ - diametrV/2;
-            //colorButton[i].x = leftX + (hudWidth - diametrV * MyCell.ColorCount)/2 + i * diametrV + diametrV/2;
-            colorButton[i].x = leftX + /*diametrH/2 +*/ i * diametrH;
+            colorButton[i].y = leftY - diametrV/2;
+            colorButton[i].x = leftX + i * diametrH;
         }
 
         //установим размеры нашего интерфейса (только тут будут срабатывать нажатия)
@@ -63,27 +62,14 @@ public class Hud extends Actor {
                         }
                     }
                 }
-
-
-                //Gdx.app.log("Touch", "touch down");
-                //System.out.println("touch");
                 return true;
             }
         });
-
-
-        //shapeRenderer = new ShapeRenderer();
         shapeRenderer = locScreen.shapeRenderer;
-
-
-
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-
-        //shapeRenderer.setProjectionMatrix(locScreen.locGame.camera.combined);
-        //deltaTime = Gdx.graphics.getDeltaTime();
         batch.end();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         //рисуем полосы заработанных очков
