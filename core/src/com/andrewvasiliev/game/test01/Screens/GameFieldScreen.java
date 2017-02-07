@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -39,6 +40,7 @@ import java.util.Random;
 
 import static com.badlogic.gdx.graphics.Color.RED;
 import static com.badlogic.gdx.graphics.Color.abgr8888ToColor;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 /**
@@ -71,7 +73,8 @@ public class GameFieldScreen implements Screen {
     private float nextPlayerDelay = 1.0f;
 
     private boolean isGameEnded;
-    private Label popUpScores;
+    //private Label popUpScores;
+    Pool<Label> poolPopUpLabel;
 
 
     private Label lblFps;
@@ -168,23 +171,28 @@ public class GameFieldScreen implements Screen {
         mainFieldStage.addActor(lblFps);
 
         //всплывающее кол-во очков на очередном ходе
-        popUpScores = new Label("xxx", locGame.skin, "menu-font", Color.YELLOW);
-        popUpScores.setVisible(false);
-        mainFieldStage.addActor(popUpScores);
+        //popUpScores = new Label("xxx", locGame.skin, "menu-font", Color.YELLOW);
+        //popUpScores.setVisible(false);
+        //mainFieldStage.addActor(popUpScores);
+        poolPopUpLabel = new Pool<Label>() {
+            protected Label newObject () {
+                return new Label("", locGame.skin, "menu-font", Color.YELLOW);
+            }
+        };
 
 
 
         System.out.println("started");
         random = new Random();
     }
-
+/*
     public void GenerateField (int countColIn, Const.CellShape cellType) {
         gamefield.GenerateField(countColIn,cellType); //лучше чтобы кол-во столбцов было кратно 8
     }
-
+*/
     public void StartGame() {
-        //GenerateField(/*24*/ 4, Const.CellShape.HEX); //лучше чтобы кол-во столбцов было кратно 8
-        GenerateField(16*2+8*1, Const.CellShape.TRIANGLE);
+        gamefield.GenerateField(24, Const.CellShape.HEX); //лучше чтобы кол-во столбцов было кратно 8
+        //GenerateField(16*2+8*1, Const.CellShape.TRIANGLE);
 
         for (int i=0; i<locGame.maxPlr; i++) {
             locGame.plr[i].score = 1;
@@ -338,23 +346,34 @@ public class GameFieldScreen implements Screen {
 
     private void PopUpScores(int idx, int deltaScore) {
         float x, y;
+
+        //Label popUpScores = new Label("xxx", locGame.skin, "menu-font", Color.YELLOW);
+        System.out.format("poolPopUpLabel.getFree()=%d%n", poolPopUpLabel.getFree());
+        final Label popUpScores = poolPopUpLabel.obtain();
+
+        popUpScores.setVisible(false);
+        mainFieldStage.addActor(popUpScores);
+
         x = hud.colorButton[idx].x + hud.diametrH/2.0f;
         y = hud.colorButton[idx].y;
         popUpScores.setText("+" + Integer.toString(deltaScore));
         popUpScores.setPosition(x, y);
 
         MoveToAction moveAction = new MoveToAction();
-        moveAction.setPosition(x, y+250);
-        moveAction.setDuration(1.0f);
+        moveAction.setPosition(x, y+150);
+        moveAction.setDuration(2.0f);
         VisibleAction showAction = new VisibleAction();
         showAction.setVisible(true);
         VisibleAction hideAction = new VisibleAction();
         hideAction.setVisible(false);
-        //RemoveActorAction removeActor = new RemoveActorAction();
-        SequenceAction mySequence = new SequenceAction(showAction, moveAction, hideAction);
+        RemoveActorAction removeActor = new RemoveActorAction();
+        SequenceAction mySequence = new SequenceAction(showAction, moveAction, hideAction, /*removeActor,*/ run(new Runnable() {
+            public void run () {
+                System.out.println("Action complete!");
+                poolPopUpLabel.free(popUpScores);
+            }
+            }));
         popUpScores.addAction(mySequence);
-
-        //popUpScores.setVisible(true);
     }
 
     @Override

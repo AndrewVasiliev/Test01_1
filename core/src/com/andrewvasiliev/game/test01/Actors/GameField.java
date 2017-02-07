@@ -380,10 +380,17 @@ public class GameField extends Actor {
                 DrawShape(locX, locY, invertY, scale, idx);
             }
         }
-
         shapeRenderer.end();
+
+        //нарисуем черные линии по периметру, чтобы поле не сливалось с панелью
+/*        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.BLACK);
+        shapeRenderer.rect(leftX+1, leftY+1, widthX-1, heightY-1);
+        shapeRenderer.end();
+*/
         batch.begin();
-        super.draw(batch, alpha);    }
+        super.draw(batch, alpha);
+    }
 
     public void dispose()   {
         shapeRenderer.dispose();
