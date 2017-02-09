@@ -16,10 +16,10 @@ public class BackgroundStar extends Actor {
     private float dx;
 
 
-    public BackgroundStar (TextureRegion sp, int lr, float maxX) {
-        this.maxX = maxX;
+    public BackgroundStar (TextureRegion sp, int layerIn, float maxXIn) {
+        maxX = maxXIn;
         dx = 0;
-        layer = lr;
+        layer = layerIn;
         starSprite = sp;
         setBounds(getX(), getY(), starSprite.getRegionWidth(), starSprite.getRegionHeight());
     }
