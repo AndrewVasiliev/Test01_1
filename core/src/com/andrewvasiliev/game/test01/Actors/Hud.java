@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 public class Hud extends Actor {
     private float hudWidth, hudHeight, leftX, leftY;
     public float diametrV, diametrH;
-    public Vector2 colorButton[];
+    public Vector2[] colorButton;
     private GameFieldScreen locScreen;
     private ShapeRenderer shapeRenderer;
     public int colorIdx; // номер нажатой кнопки/цвета

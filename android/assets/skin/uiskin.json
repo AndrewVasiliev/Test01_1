@@ -1,4 +1,11 @@
 {
+com.badlogic.gdx.graphics.Color: {
+	green: { a: 1, b: 0, g: 1, r: 0 },
+	white: { a: 1, b: 1, g: 1, r: 1 },
+	red: { a: 1, b: 0, g: 0, r: 1 },
+	black: { a: 1, b: 0, g: 0, r: 0 },
+}
+
     com.badlogic.gdx.graphics.g2d.BitmapFont: {
          default-font: normalFont,
          menu-font: menuFont
@@ -6,7 +13,7 @@
     com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
         menuStyle: { down: button_01, up: button_02, font: menu-font },
         default: { down: button_01, up: button_02, font: default-font },
-    },
+    }
     com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
         default: { titleFont: default-font },
         result_window: { titleFont: default-font, background: window_02 }
@@ -15,4 +22,11 @@
         default: { font: default-font },
         popupMessage: { font: default-font, background: button_06 }
     }
+    com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
+        default: { font: default-font, checkboxOn: checkbox_on, checkboxOff: checkbox_off },
+    }
+    com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+        default: { font: default-font, fontColor: black , background: textbox_02, cursor: textbox_cursor_02 },
+    }
+
 }

@@ -3,6 +3,7 @@ package com.andrewvasiliev.game.test01;
 import com.andrewvasiliev.game.test01.Classes.Player;
 import com.andrewvasiliev.game.test01.Screens.MainMenu;
 import com.andrewvasiliev.game.test01.Screens.GameFieldScreen;
+import com.andrewvasiliev.game.test01.Screens.PreStartMenu;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class MyGdxGame extends Game {
     public int iWidthMeter, iHeightMeter;
 	public GameFieldScreen gameScreen;
+    public PreStartMenu preStartMenu;
     public Screen mainMenu;
     public Skin skin;
     public OrthographicCamera camera;
@@ -78,9 +80,10 @@ public class MyGdxGame extends Game {
 
         mainMenu = new MainMenu(this);
         gameScreen = new GameFieldScreen(this);
+        preStartMenu = new PreStartMenu(this);
 
         gameScreen.StartGame();
-		this.setScreen(gameScreen);
+		this.setScreen(preStartMenu);
 	}
 
 	@Override
