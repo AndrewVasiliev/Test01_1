@@ -13,6 +13,10 @@ com.badlogic.gdx.graphics.Color: {
     com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
         menuStyle: { down: button_01, up: button_02, font: menu-font },
         default: { down: button_01, up: button_02, font: default-font },
+        toggleButton: { down: button_01, up: button_02,  font: default-font, checkedFontColor: red, checkedOverFontColor: white },
+    }
+    com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+        toggleButton: { up: button_02, checked: textbox_01},
     }
     com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
         default: { titleFont: default-font },
