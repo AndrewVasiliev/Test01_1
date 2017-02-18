@@ -32,26 +32,26 @@ public class GameField extends Actor {
     private Const.CellShape cellShape;
 
     //квадрат
-    private float rectangleCoord[] = {-50,-50 ,50,-50 ,50,50 ,-50,50 ,-55,-56 ,44,-45 ,44,45 ,-55,56 ,-57,-63 ,38,-42 ,38,42 ,-57,63 ,-57,-71 ,31,-39 ,31,39 ,-57,71 ,-53,-80 ,24,-36 ,24,36 ,-53,80 ,-44,-88 ,17,-35 ,17,35 ,-44,88 ,-29,-95 ,10,-34 ,10,34 ,-29,95 ,-10,-99 ,3,-33 ,3,33 ,-10,99 ,10,-99 ,-3,-33 ,-3,33 ,10,99 ,29,-95 ,-10,-34 ,-10,34 ,29,95 ,44,-88 ,-17,-35 ,-17,35 ,44,88 ,53,-80 ,-24,-36 ,-24,36 ,53,80 ,57,-71 ,-31,-39 ,-31,39 ,57,71 ,57,-63 ,-38,-42 ,-38,42 ,57,63 ,55,-56 ,-44,-45 ,-44,45 ,55,56 ,50,-50 ,-50,-50 ,-50,50 ,50,50};
-    private int rectangleVertexCount = 4;
+//    private float rectangleCoord[] = {-50,-50 ,50,-50 ,50,50 ,-50,50 ,-55,-56 ,44,-45 ,44,45 ,-55,56 ,-57,-63 ,38,-42 ,38,42 ,-57,63 ,-57,-71 ,31,-39 ,31,39 ,-57,71 ,-53,-80 ,24,-36 ,24,36 ,-53,80 ,-44,-88 ,17,-35 ,17,35 ,-44,88 ,-29,-95 ,10,-34 ,10,34 ,-29,95 ,-10,-99 ,3,-33 ,3,33 ,-10,99 ,10,-99 ,-3,-33 ,-3,33 ,10,99 ,29,-95 ,-10,-34 ,-10,34 ,29,95 ,44,-88 ,-17,-35 ,-17,35 ,44,88 ,53,-80 ,-24,-36 ,-24,36 ,53,80 ,57,-71 ,-31,-39 ,-31,39 ,57,71 ,57,-63 ,-38,-42 ,-38,42 ,57,63 ,55,-56 ,-44,-45 ,-44,45 ,55,56 ,50,-50 ,-50,-50 ,-50,50 ,50,50};
+//    private int rectangleVertexCount = 4;
 
     //треугольник
-    private float triangleCoord[] = {-50,-50 ,0,50 ,50,-50 ,-55,-56 ,0,50 ,44,-45 ,-57,-63 ,0,50 ,38,-42 ,-57,-71 ,0,50 ,31,-39 ,-53,-80 ,0,50 ,24,-36 ,-44,-88 ,0,50 ,17,-35 ,-29,-95 ,0,50 ,10,-34 ,-10,-99 ,0,50 ,3,-33 ,10,-99 ,0,50 ,-3,-33 ,29,-95 ,0,50 ,-10,-34 ,44,-88 ,0,50 ,-17,-35 ,53,-80 ,0,50 ,-24,-36 ,57,-71 ,0,50 ,-31,-39 ,57,-63 ,0,50 ,-38,-42 ,55,-56 ,0,50 ,-44,-45 ,50,-50 ,0,50 ,-50,-50};
-    private int triangleVertexCount = 3;
+//    private float triangleCoord[] = {-50,-50 ,0,50 ,50,-50 ,-55,-56 ,0,50 ,44,-45 ,-57,-63 ,0,50 ,38,-42 ,-57,-71 ,0,50 ,31,-39 ,-53,-80 ,0,50 ,24,-36 ,-44,-88 ,0,50 ,17,-35 ,-29,-95 ,0,50 ,10,-34 ,-10,-99 ,0,50 ,3,-33 ,10,-99 ,0,50 ,-3,-33 ,29,-95 ,0,50 ,-10,-34 ,44,-88 ,0,50 ,-17,-35 ,53,-80 ,0,50 ,-24,-36 ,57,-71 ,0,50 ,-31,-39 ,57,-63 ,0,50 ,-38,-42 ,55,-56 ,0,50 ,-44,-45 ,50,-50 ,0,50 ,-50,-50};
+//    private int triangleVertexCount = 3;
 
     //ромб
-    private float rhombusCoord[] = {-50,0 ,0,50 ,50,0 ,0,-50 ,-55,0 ,0,50 ,44,0 ,0,-50 ,-57,0 ,0,50 ,38,0 ,0,-50 ,-57,0 ,0,50 ,31,0 ,0,-50 ,-53,0 ,0,50 ,24,0 ,0,-50 ,-44,0 ,0,50 ,17,0 ,0,-50 ,-29,0 ,0,50 ,10,0 ,0,-50 ,-10,0 ,0,50 ,3,0 ,0,-50 ,10,0 ,0,50 ,-3,0 ,0,-50 ,29,0 ,0,50 ,-10,0 ,0,-50 ,44,0 ,0,50 ,-17,0 ,0,-50 ,53,0 ,0,50 ,-24,0 ,0,-50 ,57,0 ,0,50 ,-31,0 ,0,-50 ,57,0 ,0,50 ,-38,0 ,0,-50 ,55,0 ,0,50 ,-44,0 ,0,-50 ,50,0 ,0,50 ,-50,0 ,0,-50};
-    private int rhombusVertexCount = 4;
+//    private float rhombusCoord[] = {-50,0 ,0,50 ,50,0 ,0,-50 ,-55,0 ,0,50 ,44,0 ,0,-50 ,-57,0 ,0,50 ,38,0 ,0,-50 ,-57,0 ,0,50 ,31,0 ,0,-50 ,-53,0 ,0,50 ,24,0 ,0,-50 ,-44,0 ,0,50 ,17,0 ,0,-50 ,-29,0 ,0,50 ,10,0 ,0,-50 ,-10,0 ,0,50 ,3,0 ,0,-50 ,10,0 ,0,50 ,-3,0 ,0,-50 ,29,0 ,0,50 ,-10,0 ,0,-50 ,44,0 ,0,50 ,-17,0 ,0,-50 ,53,0 ,0,50 ,-24,0 ,0,-50 ,57,0 ,0,50 ,-31,0 ,0,-50 ,57,0 ,0,50 ,-38,0 ,0,-50 ,55,0 ,0,50 ,-44,0 ,0,-50 ,50,0 ,0,50 ,-50,0 ,0,-50};
+//    private int rhombusVertexCount = 4;
 
     //гексагон
-    private float hexCoord[] = {50,0 ,25,43 ,-25,43 ,-50,0 ,-25,-43 ,25,-43 ,44,0 ,23,41 ,-26,46 ,-55,0 ,-26,-46 ,23,-41 ,38,0 ,21,39 ,-25,48 ,-57,0 ,-25,-48 ,21,-39 ,31,0 ,18,38 ,-24,51 ,-57,0 ,-24,-51 ,18,-38 ,24,0 ,14,37 ,-21,53 ,-53,0 ,-21,-53 ,14,-37 ,17,0 ,10,36 ,-16,55 ,-44,0 ,-16,-55 ,10,-36 ,10,0 ,6,35 ,-10,57 ,-29,0 ,-10,-57 ,6,-35 ,3,0 ,2,35 ,-3,58 ,-10,0 ,-3,-58 ,2,-35 ,-3,0 ,-2,35 ,3,58 ,10,0 ,3,-58 ,-2,-35 ,-10,0 ,-6,35 ,10,57 ,29,0 ,10,-57 ,-6,-35 ,-17,0 ,-10,36 ,16,55 ,44,0 ,16,-55 ,-10,-36 ,-24,0 ,-14,37 ,21,53 ,53,0 ,21,-53 ,-14,-37 ,-31,0 ,-18,38 ,24,51 ,57,0 ,24,-51 ,-18,-38 ,-38,0 ,-21,39 ,25,48 ,57,0 ,25,-48 ,-21,-39 ,-44,0 ,-23,41 ,26,46 ,55,0 ,26,-46 ,-23,-41 ,-50,0 ,-25,43 ,25,43 ,50,0 ,25,-43 ,-25,-43};
-    private int hexVertexCount = 6;
+//    private float hexCoord[] = {50,0 ,25,43 ,-25,43 ,-50,0 ,-25,-43 ,25,-43 ,44,0 ,23,41 ,-26,46 ,-55,0 ,-26,-46 ,23,-41 ,38,0 ,21,39 ,-25,48 ,-57,0 ,-25,-48 ,21,-39 ,31,0 ,18,38 ,-24,51 ,-57,0 ,-24,-51 ,18,-38 ,24,0 ,14,37 ,-21,53 ,-53,0 ,-21,-53 ,14,-37 ,17,0 ,10,36 ,-16,55 ,-44,0 ,-16,-55 ,10,-36 ,10,0 ,6,35 ,-10,57 ,-29,0 ,-10,-57 ,6,-35 ,3,0 ,2,35 ,-3,58 ,-10,0 ,-3,-58 ,2,-35 ,-3,0 ,-2,35 ,3,58 ,10,0 ,3,-58 ,-2,-35 ,-10,0 ,-6,35 ,10,57 ,29,0 ,10,-57 ,-6,-35 ,-17,0 ,-10,36 ,16,55 ,44,0 ,16,-55 ,-10,-36 ,-24,0 ,-14,37 ,21,53 ,53,0 ,21,-53 ,-14,-37 ,-31,0 ,-18,38 ,24,51 ,57,0 ,24,-51 ,-18,-38 ,-38,0 ,-21,39 ,25,48 ,57,0 ,25,-48 ,-21,-39 ,-44,0 ,-23,41 ,26,46 ,55,0 ,26,-46 ,-23,-41 ,-50,0 ,-25,43 ,25,43 ,50,0 ,25,-43 ,-25,-43};
+//    private int hexVertexCount = 6;
 
     private float coord[];
     private int vertexCount;
 
 
-    private int phaseCount = 16;
+    private int phaseCount;
     private float animationSpeed = 0.5f; //за сколько секунд должна закончиться анимация
 
     public GameField(GameFieldScreen gameFieldScreen, float x, float y, float width, float height) {
@@ -64,6 +64,7 @@ public class GameField extends Actor {
         countRow = 0;
         //shapeRenderer = new ShapeRenderer();
         shapeRenderer = locScreen.shapeRenderer;
+        phaseCount = Const.phaseCount;
     }
 
     public void GenerateField (int countColIn, Const.CellShape cellType) {
@@ -77,26 +78,26 @@ public class GameField extends Actor {
         switch (cellShape) {
             case RECTANGLE:
                 maxNearby = 4;
-                vertexCount = rectangleVertexCount;
-                coord = Arrays.copyOf(rectangleCoord, rectangleCoord.length);
+                vertexCount = Const.rectangleVertexCount;
+                coord = Arrays.copyOf(Const.rectangleCoord, Const.rectangleCoord.length);
                 countRow = (int)(heightY / cellWidth);
                 break;
             case TRIANGLE:
                 maxNearby = 4;
-                vertexCount = triangleVertexCount;
-                coord = Arrays.copyOf(triangleCoord, triangleCoord.length);
+                vertexCount = Const.triangleVertexCount;
+                coord = Arrays.copyOf(Const.triangleCoord, Const.triangleCoord.length);
                 countRow = (int)(heightY / cellWidth) * 2;
                 break;
             case RHOMBUS:
                 maxNearby = 4;
-                vertexCount = rhombusVertexCount;
-                coord = Arrays.copyOf(rhombusCoord, rhombusCoord.length);
+                vertexCount = Const.rhombusVertexCount;
+                coord = Arrays.copyOf(Const.rhombusCoord, Const.rhombusCoord.length);
                 countRow = (int)(heightY / cellWidth) * 2 - 1;
                 break;
             case HEX:
                 maxNearby = 6;
-                vertexCount = hexVertexCount;
-                coord = Arrays.copyOf(hexCoord, hexCoord.length);
+                vertexCount = Const.hexVertexCount;
+                coord = Arrays.copyOf(Const.hexCoord, Const.hexCoord.length);
                 cellWidth = widthX/countCol/1.5f;
                 innerR = cellWidth * (float) Math.sqrt(3) / 2.0f; //внутренний радиус гекса
                 //попробуем вычислять кол-во рядов исходя из размеров фигуры

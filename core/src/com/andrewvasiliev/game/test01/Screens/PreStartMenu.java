@@ -1,6 +1,8 @@
 package com.andrewvasiliev.game.test01.Screens;
 
 import com.andrewvasiliev.game.test01.Actors.BackgroundActor;
+import com.andrewvasiliev.game.test01.Classes.AniButton;
+import com.andrewvasiliev.game.test01.Classes.Const;
 import com.andrewvasiliev.game.test01.MyGdxGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -12,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -38,6 +41,8 @@ public class PreStartMenu implements Screen {
     //private TextButton btnPvP, btnPvAI;
     private Button btnPvP, btnPvAI;
     private TextButton btnStartGame;
+    private AniButton btnRectangle;
+
 
     public PreStartMenu(MyGdxGame myGdxGame) {
         locGame = myGdxGame;
@@ -69,9 +74,6 @@ public class PreStartMenu implements Screen {
         lblPlayer1 = new Label("Имя игрока 1", locGame.skin, "default");
         edPlayer1 = new TextField("Игрок 1", locGame.skin, "default" );
         edPlayer1.setMaxLength(15);
-
-
-/*
         edPlayer1.setOnscreenKeyboard(new TextField.OnscreenKeyboard() {
             @Override
             public void show(boolean visible) {
@@ -89,11 +91,27 @@ public class PreStartMenu implements Screen {
                 }, lblPlayer1.getText().toString(), edPlayer1.getText(), "");
             }
         });
-*/
 
         lblPlayer2 = new Label("Имя игрока 2", locGame.skin, "default");
         edPlayer2 = new TextField("Игрок 2", locGame.skin, "default" );
         edPlayer2.setMaxLength(15);
+        edPlayer2.setOnscreenKeyboard(new TextField.OnscreenKeyboard() {
+            @Override
+            public void show(boolean visible) {
+                //Gdx.input.setOnscreenKeyboardVisible(true);
+                Gdx.input.getTextInput(new Input.TextInputListener() {
+                    @Override
+                    public void input(String text) {
+                        edPlayer2.setText(text);
+                    }
+
+                    @Override
+                    public void canceled() {
+
+                    }
+                }, lblPlayer2.getText().toString(), edPlayer2.getText(), "");
+            }
+        });
 
         lblDifficulty = new Label("Сложность Андроида", locGame.skin, "default");
         btnEasy = new Button(locGame.skin, "toggleButton");
@@ -113,7 +131,10 @@ public class PreStartMenu implements Screen {
 
         lblFieldType = new Label("Тип ячеек", locGame.skin, "default");
         //.. тип ячеек
+        btnRectangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RECTANGLE);
+
         tblFieldType = new Table();
+        tblFieldType.add(btnRectangle).align(Align.left).pad(cnPad);
 
         btnStartGame = new TextButton("Начать игру", locGame.skin, "default");
 
