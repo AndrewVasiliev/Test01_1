@@ -35,13 +35,13 @@ public class PreStartMenu implements Screen {
     private TextField edPlayer1, edPlayer2;
     private Label lblPlayer1, lblPlayer2;
     private Label lblDifficulty, lblFieldType;
-    private ButtonGroup btnGroupDifficulty;
+    private ButtonGroup btnGroupDifficulty, btnGroupFielType;
     private Button btnEasy, btnMid, btnHard;
     private Label lblGameType;
     //private TextButton btnPvP, btnPvAI;
     private Button btnPvP, btnPvAI;
     private TextButton btnStartGame;
-    private AniButton btnRectangle;
+    private AniButton btnRectangle, btnTriangle, btnRhombus, btnHex;
 
 
     public PreStartMenu(MyGdxGame myGdxGame) {
@@ -130,11 +130,20 @@ public class PreStartMenu implements Screen {
         tblDifficulty.add(btnHard).align(Align.left).pad(cnPad);
 
         lblFieldType = new Label("Тип ячеек", locGame.skin, "default");
-        //.. тип ячеек
         btnRectangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RECTANGLE);
+        btnTriangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.TRIANGLE);
+        btnRhombus = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RHOMBUS);
+        btnHex = new AniButton(locGame.skin, "toggleButton", Const.CellShape.HEX);
+        btnGroupFielType = new ButtonGroup(btnRectangle, btnTriangle, btnRhombus, btnHex);
+        btnGroupFielType.setMaxCheckCount(1);
+        btnGroupFielType.setMinCheckCount(1);
+        btnGroupFielType.setUncheckLast(true);
 
         tblFieldType = new Table();
         tblFieldType.add(btnRectangle).align(Align.left).pad(cnPad);
+        tblFieldType.add(btnTriangle).align(Align.left).pad(cnPad);
+        tblFieldType.add(btnRhombus).align(Align.left).pad(cnPad);
+        tblFieldType.add(btnHex).align(Align.left).pad(cnPad);
 
         btnStartGame = new TextButton("Начать игру", locGame.skin, "default");
 
@@ -169,6 +178,7 @@ public class PreStartMenu implements Screen {
 
         btnPvP.setChecked(true);
         btnEasy.setChecked(true);
+        btnRectangle.setChecked(true);
 
         backgroundActor = new BackgroundActor(locGame);
         backgroundActor.setPosition(0, 0);
