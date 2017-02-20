@@ -109,6 +109,7 @@ public class AniCell  /*implements Disposable*/ {
     public void draw (float deltaTime) {
         float scale;
 
+
         if (phaseIdx != -1) { //-1 состояние покоя и фаза 0
             animDuration += deltaTime;
             phaseIdx = (int)(animDuration/(animationSpeed/(float)Const.phaseCount));

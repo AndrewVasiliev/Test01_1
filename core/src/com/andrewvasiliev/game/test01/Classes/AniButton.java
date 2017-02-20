@@ -55,7 +55,8 @@ public class AniButton extends Button implements Disposable {
     @Override
     public void setChecked(boolean isChecked) {
         super.setChecked(isChecked);
-        aniCell.setAnimNonStop(isChecked);
+        // :( когда нажимается кнопка это событие не вызывается. так что будем в draw всегда его проверять
+        //aniCell.setAnimNonStop(isChecked);
     }
 
     @Override
@@ -63,6 +64,8 @@ public class AniButton extends Button implements Disposable {
         super.draw(batch, parentAlpha);
         batch.end();
         aniCell.setPosition(getX()+getWidth()/2.0f, getY()+getHeight()/2.0f);
+        //событие setChecked не вызывается когда нажимается кнопка, поэтому будем всегда его проверять :(
+        aniCell.setAnimNonStop(isChecked());
         aniCell.draw(Gdx.graphics.getDeltaTime());
 /*
         sr.begin(ShapeRenderer.ShapeType.Filled);
