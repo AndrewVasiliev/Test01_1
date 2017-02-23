@@ -51,11 +51,8 @@ public class PreStartMenu implements Screen {
         table = new Table ();
         table.setFillParent(true);
         //table.pad(30);
-        //table.debugAll();
+        table.debugAll();
         float cnPad = 5;
-
-        //btnPvP = new CheckBox("Игрок против Игрока", locGame.skin, "default");
-        //btnPvAI = new CheckBox("Игрок против Андроида", locGame.skin, "default");
 
         lblGameType = new Label("Игра против", locGame.skin, "default");
         btnPvP = new Button(locGame.skin, "toggleButton");
@@ -174,7 +171,7 @@ public class PreStartMenu implements Screen {
         btnCancel.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    locGame.setScreen(locGame.mainMenu);
+                locGame.setScreen(locGame.mainMenu);
                 }
             }
         );
@@ -182,36 +179,38 @@ public class PreStartMenu implements Screen {
         btnStartGame.addListener(new ClickListener() {
               @Override
               public void clicked(InputEvent event, float x, float y) {
-                  locGame.plr[0].SetPlayer(edPlayer1.getText(), 1, false, 0);
-                  if (btnPvP.isChecked()) {
-                      //игра против игрока
-                      locGame.plr[1].SetPlayer(edPlayer2.getText(), 1, false, 0);
-                  } else {
-                      //игра против андроида
-                      locGame.plr[1].SetPlayer("Android-"+String.valueOf(btnGroupDifficulty.getCheckedIndex()+1), 1, true, btnGroupDifficulty.getCheckedIndex()+1);
-                  }
+              locGame.plr[0].SetPlayer(edPlayer1.getText(), 1, false, 0);
+              if (btnPvP.isChecked()) {
+                  //игра против игрока
+                  locGame.plr[1].SetPlayer(edPlayer2.getText(), 1, false, 0);
+              } else {
+                  //игра против андроида
+                  locGame.plr[1].SetPlayer("Android-"+String.valueOf(btnGroupDifficulty.getCheckedIndex()+1), 1, true, btnGroupDifficulty.getCheckedIndex()+1);
+              }
 
-                  Const.CellShape startCellShape = Const.CellShape.RECTANGLE;
-                  switch (btnGroupFielType.getCheckedIndex()) {
-                      case 0:   startCellShape = Const.CellShape.RECTANGLE; break;
-                      case 1:   startCellShape = Const.CellShape.TRIANGLE; break;
-                      case 2:   startCellShape = Const.CellShape.RHOMBUS; break;
-                      case 3:   startCellShape = Const.CellShape.HEX; break;
-                  }
+              Const.CellShape startCellShape = Const.CellShape.RECTANGLE;
+              switch (btnGroupFielType.getCheckedIndex()) {
+                  case 0:   startCellShape = Const.CellShape.RECTANGLE; break;
+                  case 1:   startCellShape = Const.CellShape.TRIANGLE; break;
+                  case 2:   startCellShape = Const.CellShape.RHOMBUS; break;
+                  case 3:   startCellShape = Const.CellShape.HEX; break;
+              }
 
-                  int startFieldSize = 8;
-                  switch (btnGroupFielSize.getCheckedIndex()) {
-                      case 0:   startFieldSize = 8; break;
-                      case 1:   startFieldSize = 16; break;
-                      case 2:   startFieldSize = 24; break;
-                      case 3:   startFieldSize = 32; break;
-                  }
+              int startFieldSize = 8;
+              switch (btnGroupFielSize.getCheckedIndex()) {
+                  case 0:   startFieldSize = 8; break;
+                  case 1:   startFieldSize = 16; break;
+                  case 2:   startFieldSize = 24; break;
+                  case 3:   startFieldSize = 32; break;
+              }
 
-                  locGame.gameScreen.StartGame(startFieldSize, startCellShape);
-                  locGame.setScreen(locGame.gameScreen);
+              locGame.gameScreen.StartGame(startFieldSize, startCellShape);
+              locGame.setScreen(locGame.gameScreen);
               }
           }
         );
+
+
 
 
 
@@ -232,6 +231,7 @@ public class PreStartMenu implements Screen {
         table.add(tblDifficulty).align(Align.left);
         table.row();
         //тип ячеек
+        //table.row().minHeight(btnPvP.getHeight());
         table.add(lblFieldType).align(Align.right).pad(cnPad);
         table.add(tblFieldType);
         table.row();
