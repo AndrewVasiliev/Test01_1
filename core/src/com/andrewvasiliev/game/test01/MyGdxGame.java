@@ -75,15 +75,15 @@ public class MyGdxGame extends Game {
         plr = new Player[maxPlr];
         for (int i=0; i<maxPlr; i++)
             plr[i] = new Player();
-        plr[0].SetPlayer("Игрок 1", 1, false, 0, 3);
-        plr[1].SetPlayer("Android", 1, true, 4, 4);
+        //plr[0].SetPlayer("Игрок 1", 1, false, 0, 3);
+        //plr[1].SetPlayer("Android", 1, true, 4, 4);
 
         mainMenu = new MainMenu(this);
         gameScreen = new GameFieldScreen(this);
         preStartMenu = new PreStartMenu(this);
 
-        gameScreen.StartGame();
-		this.setScreen(preStartMenu);
+        //gameScreen.StartGame();
+		this.setScreen(mainMenu);
 	}
 
 	@Override

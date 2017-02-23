@@ -25,6 +25,7 @@ public class AniCell  /*implements Disposable*/ {
     private int colorIdx, colorIdxNext;
     private float animationSpeed; //за сколько секунд должна закончиться анимация
     private boolean animNonStop;
+    private float maxScale, minScale;
 
 
     public AniCell(Const.CellShape inCellShape, ShapeRenderer inSR) {
@@ -36,6 +37,8 @@ public class AniCell  /*implements Disposable*/ {
         animationSpeed = 0.5f;
         colorIdx = 0;
         animNonStop = false;
+        maxScale = 1.0f;
+        minScale = 0.8f;
         InitCellCoord(cellShape);
     }
 
@@ -50,6 +53,11 @@ public class AniCell  /*implements Disposable*/ {
 
     public void setAnimationSpeed (float inAnimationSpeed) {
         animationSpeed = inAnimationSpeed;
+    }
+
+    public void setScale (float inMaxScale, float inMinScale) {
+        maxScale = inMaxScale;
+        minScale = inMinScale;
     }
 
     public void setPosition(float x, float y) {
@@ -109,11 +117,10 @@ public class AniCell  /*implements Disposable*/ {
     public void draw (float deltaTime) {
         float scale;
 
-
         if (phaseIdx != -1) { //-1 состояние покоя и фаза 0
             animDuration += deltaTime;
             phaseIdx = (int)(animDuration/(animationSpeed/(float)Const.phaseCount));
-            if (phaseIdx >= Const.phaseCount) {
+            if (phaseIdx >= Const.phaseCount-1) {
                 phaseIdx = -1;
                 animDuration = 0.0f;
             }
@@ -127,14 +134,16 @@ public class AniCell  /*implements Disposable*/ {
         sr.begin(ShapeRenderer.ShapeType.Filled);
         int idx = (phaseIdx==-1 ? 0 : phaseIdx) * vertexCount*2; //номер фазы анимации * vetrexCount * 2 (это x и y)
 
+        //System.out.format("(%f,%f)-(%f,%f)-(%f,%f)%n", coord[idx],coord[idx+1], coord[idx+2],coord[idx+3], coord[idx+4],coord[idx+5]);
+
         //отрисуем фигуру заполненными треугольниками
         //сначала отрисуем полную фигуру
-        scale = 1.01f;
+        scale = maxScale;
         sr.setColor(Const.borderColor);
         DrawShape(x, y, invertY, scale, idx);
 
         //теперь чуть меньшую, чтоб получился контур
-        scale = 0.9f;
+        scale = minScale;
 
         if (phaseIdx >= Const.phaseCount/2) {
                 //цвет с другой стороны

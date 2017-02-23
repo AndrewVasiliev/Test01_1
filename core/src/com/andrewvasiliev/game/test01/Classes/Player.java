@@ -12,12 +12,12 @@ public class Player {
     public int colorIdx; // текущий цвет игрока (индекс в массиве Const.Color)
     //public int plrIdx; // индекс игрока
 
-    public void SetPlayer (String inName, int inScore, boolean inIsAndroid, int inDeepLevel, int inColor/*, int inplrIdx*/) {
+    public void SetPlayer (String inName, int inScore, boolean inIsAndroid, int inDeepLevel/*, int inColor*/ /*, int inplrIdx*/) {
         name = inName;
         score = inScore;
         isAndroid = inIsAndroid;
         deepLevel = inDeepLevel;
-        colorIdx = inColor;
+        //colorIdx = inColor;
         //plrIdx = inplrIdx;
     }
 }

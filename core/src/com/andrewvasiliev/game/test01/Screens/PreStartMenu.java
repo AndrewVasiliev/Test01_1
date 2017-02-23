@@ -29,18 +29,18 @@ import com.badlogic.gdx.utils.Align;
 public class PreStartMenu implements Screen {
     private MyGdxGame locGame;
     private Stage stage;
-    private Table table, tblGameType, tblDifficulty, tblFieldType;
+    private Table table, tblGameType, tblDifficulty, tblFieldType, tblFieldSize;
     public BackgroundActor backgroundActor;
     private ButtonGroup btnGroupGameType;
     private TextField edPlayer1, edPlayer2;
     private Label lblPlayer1, lblPlayer2;
-    private Label lblDifficulty, lblFieldType;
-    private ButtonGroup btnGroupDifficulty, btnGroupFielType;
+    private Label lblDifficulty, lblFieldType, lblFieldSize;
+    private ButtonGroup btnGroupDifficulty, btnGroupFielType, btnGroupFielSize;
     private Button btnEasy, btnMid, btnHard;
     private Label lblGameType;
     //private TextButton btnPvP, btnPvAI;
-    private Button btnPvP, btnPvAI;
-    private TextButton btnStartGame;
+    private Button btnPvP, btnPvAI, btnSmall, btnMiddle, btnLarge, btnXLarge;
+    private TextButton btnStartGame, btnCancel;
     private AniButton btnRectangle, btnTriangle, btnRhombus, btnHex;
 
 
@@ -129,6 +129,7 @@ public class PreStartMenu implements Screen {
         tblDifficulty.add(btnMid).align(Align.left).pad(cnPad);
         tblDifficulty.add(btnHard).align(Align.left).pad(cnPad);
 
+        //-- тип ячеек
         lblFieldType = new Label("Тип ячеек", locGame.skin, "default");
         btnRectangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RECTANGLE);
         btnTriangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.TRIANGLE);
@@ -145,10 +146,72 @@ public class PreStartMenu implements Screen {
         tblFieldType.add(btnRhombus).align(Align.left).pad(cnPad);
         tblFieldType.add(btnHex).align(Align.left).pad(cnPad);
 
+        //-- размер поля
+        lblFieldSize = new Label("Размер поля", locGame.skin, "default");
+        btnSmall = new Button(locGame.skin, "toggleButton");
+        btnSmall.add(new Label("S", locGame.skin, "default"));
+        btnMiddle = new Button(locGame.skin, "toggleButton");
+        btnMiddle.add(new Label("M", locGame.skin, "default"));
+        btnLarge = new Button(locGame.skin, "toggleButton");
+        btnLarge.add(new Label("L", locGame.skin, "default"));
+        btnXLarge = new Button(locGame.skin, "toggleButton");
+        btnXLarge.add(new Label("XL", locGame.skin, "default"));
+
+        btnGroupFielSize = new ButtonGroup(btnSmall, btnMiddle, btnLarge, btnXLarge);
+        btnGroupFielSize.setMaxCheckCount(1);
+        btnGroupFielSize.setMinCheckCount(1);
+        btnGroupFielSize.setUncheckLast(true);
+
+        tblFieldSize = new Table();
+        tblFieldSize.add(btnSmall).align(Align.left).pad(cnPad);
+        tblFieldSize.add(btnMiddle).align(Align.left).pad(cnPad);
+        tblFieldSize.add(btnLarge).align(Align.left).pad(cnPad);
+        tblFieldSize.add(btnXLarge).align(Align.left).pad(cnPad);
+
         btnStartGame = new TextButton("Начать игру", locGame.skin, "default");
+        btnCancel = new TextButton("Назад", locGame.skin, "default");
 
+        btnCancel.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    locGame.setScreen(locGame.mainMenu);
+                }
+            }
+        );
 
+        btnStartGame.addListener(new ClickListener() {
+              @Override
+              public void clicked(InputEvent event, float x, float y) {
+                  locGame.plr[0].SetPlayer(edPlayer1.getText(), 1, false, 0);
+                  if (btnPvP.isChecked()) {
+                      //игра против игрока
+                      locGame.plr[1].SetPlayer(edPlayer2.getText(), 1, false, 0);
+                  } else {
+                      //игра против андроида
+                      locGame.plr[1].SetPlayer("Android-"+String.valueOf(btnGroupDifficulty.getCheckedIndex()+1), 1, true, btnGroupDifficulty.getCheckedIndex()+1);
+                  }
 
+                  Const.CellShape startCellShape = Const.CellShape.RECTANGLE;
+                  switch (btnGroupFielType.getCheckedIndex()) {
+                      case 0:   startCellShape = Const.CellShape.RECTANGLE; break;
+                      case 1:   startCellShape = Const.CellShape.TRIANGLE; break;
+                      case 2:   startCellShape = Const.CellShape.RHOMBUS; break;
+                      case 3:   startCellShape = Const.CellShape.HEX; break;
+                  }
+
+                  int startFieldSize = 8;
+                  switch (btnGroupFielSize.getCheckedIndex()) {
+                      case 0:   startFieldSize = 8; break;
+                      case 1:   startFieldSize = 16; break;
+                      case 2:   startFieldSize = 24; break;
+                      case 3:   startFieldSize = 32; break;
+                  }
+
+                  locGame.gameScreen.StartGame(startFieldSize, startCellShape);
+                  locGame.setScreen(locGame.gameScreen);
+              }
+          }
+        );
 
 
 
@@ -166,24 +229,34 @@ public class PreStartMenu implements Screen {
         table.row();
         //сложность Андроида
         table.add(lblDifficulty).align(Align.right).pad(cnPad);
-        table.add(tblDifficulty);
+        table.add(tblDifficulty).align(Align.left);
         table.row();
         //тип ячеек
         table.add(lblFieldType).align(Align.right).pad(cnPad);
         table.add(tblFieldType);
         table.row();
+        //размер поля
+        table.add(lblFieldSize).align(Align.right).pad(cnPad);
+        table.add(tblFieldSize);
+        table.row();
+
+
+        float maxWidth = (btnCancel.getWidth() > btnStartGame.getWidth()) ? btnCancel.getWidth() : btnStartGame.getWidth();
+        //кнопка Назад
+        table.add(btnCancel).width(maxWidth).align(Align.left).padTop(20);
         //кнопка начать игру
-        table.add(btnStartGame).align(Align.center).padTop(20).colspan(2);
+        table.add(btnStartGame).width(maxWidth).align(Align.right).padTop(20);
 
 
         btnPvP.setChecked(true);
         btnEasy.setChecked(true);
         btnRectangle.setChecked(true);
+        btnSmall.setChecked(true);
 
         backgroundActor = new BackgroundActor(locGame);
         backgroundActor.setPosition(0, 0);
 
-        //stage.addActor(backgroundActor);
+        stage.addActor(backgroundActor);
         stage.addActor(table);
     }
 

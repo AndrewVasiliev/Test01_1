@@ -61,8 +61,8 @@ public class MainMenu implements Screen {
                    //locGame.plr[0].SetPlayer("Влад", 1, false, 0,);
                    //locGame.plr[1].SetPlayer("Android", 1, true, 1,);
 
-                   locGame.gameScreen.StartGame();
-                   locGame.setScreen(locGame.gameScreen);
+                   //locGame.gameScreen.StartGame();
+                   locGame.setScreen(locGame.preStartMenu);
                }
            }
         );

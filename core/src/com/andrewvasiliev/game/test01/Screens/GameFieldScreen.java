@@ -71,6 +71,8 @@ public class GameFieldScreen implements Screen {
     private Label lblNextPlayerDialog;
     private Random random;
     private float nextPlayerDelay = 1.0f;
+    private int prevFieldSize;
+    private Const.CellShape prevCellShape;
 
     private boolean isGameEnded;
     //private Label popUpScores;
@@ -105,7 +107,7 @@ public class GameFieldScreen implements Screen {
                 this.hide();
                 System.out.println("Chosen: " + object);
                 if (object.toString().equals("true")) {
-                    StartGame();
+                    StartGame(prevFieldSize, prevCellShape);
                 } else {
                     locGame.setScreen(locGame.mainMenu);
                 }
@@ -190,8 +192,10 @@ public class GameFieldScreen implements Screen {
         gamefield.GenerateField(countColIn,cellType); //лучше чтобы кол-во столбцов было кратно 8
     }
 */
-    public void StartGame() {
-        gamefield.GenerateField(24, Const.CellShape.HEX); //лучше чтобы кол-во столбцов было кратно 8
+    public void StartGame(int fieldSize, Const.CellShape inCellShape) {
+        prevFieldSize = fieldSize;
+        prevCellShape = inCellShape;
+        gamefield.GenerateField(fieldSize, inCellShape); //лучше чтобы кол-во столбцов было кратно 8
         //GenerateField(16*2+8*1, Const.CellShape.TRIANGLE);
 
         for (int i=0; i<locGame.maxPlr; i++) {
