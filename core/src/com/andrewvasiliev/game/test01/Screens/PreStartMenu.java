@@ -51,7 +51,7 @@ public class PreStartMenu implements Screen {
         table = new Table ();
         table.setFillParent(true);
         //table.pad(30);
-        table.debugAll();
+        //table.debugAll();
         float cnPad = 5;
 
         lblGameType = new Label("Игра против", locGame.skin, "default");
@@ -129,9 +129,13 @@ public class PreStartMenu implements Screen {
         //-- тип ячеек
         lblFieldType = new Label("Тип ячеек", locGame.skin, "default");
         btnRectangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RECTANGLE);
+        btnRectangle.add(new Label(" ", locGame.skin, "default"));
         btnTriangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.TRIANGLE);
+        btnTriangle.add(new Label(" ", locGame.skin, "default"));
         btnRhombus = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RHOMBUS);
+        btnRhombus.add(new Label(" ", locGame.skin, "default"));
         btnHex = new AniButton(locGame.skin, "toggleButton", Const.CellShape.HEX);
+        btnHex.add(new Label(" ", locGame.skin, "default"));
         btnGroupFielType = new ButtonGroup(btnRectangle, btnTriangle, btnRhombus, btnHex);
         btnGroupFielType.setMaxCheckCount(1);
         btnGroupFielType.setMinCheckCount(1);
