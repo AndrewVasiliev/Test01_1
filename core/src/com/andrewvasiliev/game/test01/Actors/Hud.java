@@ -2,6 +2,7 @@ package com.andrewvasiliev.game.test01.Actors;
 
 import com.andrewvasiliev.game.test01.Classes.Const;
 import com.andrewvasiliev.game.test01.Screens.GameFieldScreen;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -63,6 +64,17 @@ public class Hud extends Actor {
                     }
                 }
                 return true;
+            }
+
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                //return super.keyDown(event, keycode);
+                System.out.format("key down%n");
+                if(keycode == Input.Keys.BACK){
+                    System.out.format("set mainscreen%n");
+                    locScreen.locGame.setScreen(locScreen.locGame.mainMenu);
+                }
+                return false;
             }
         });
         shapeRenderer = locScreen.shapeRenderer;

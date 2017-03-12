@@ -178,7 +178,7 @@ public class GameFieldScreen implements Screen {
         //mainFieldStage.addActor(popUpScores);
         poolPopUpLabel = new Pool<Label>() {
             protected Label newObject () {
-                return new Label("", locGame.skin, "menu-font", Color.YELLOW);
+                return new Label("", locGame.skin, "default-font", Color.YELLOW);
             }
         };
 

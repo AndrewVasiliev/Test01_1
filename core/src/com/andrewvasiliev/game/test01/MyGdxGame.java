@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -26,12 +27,15 @@ public class MyGdxGame extends Game {
     public Viewport view;
     public Player plr[]; //массив игроков
     public int maxPlr = 2; //максимальное количество игроков в игре
+    public ShapeRenderer sr;
 
 
 
 
 	@Override
 	public void create () {
+        sr = new ShapeRenderer();
+
         //вариант с использованием всей площади устройства
         //iWidthMeter = Gdx.graphics.getWidth();
         //iHeightMeter = Gdx.graphics.getHeight();
@@ -77,6 +81,8 @@ public class MyGdxGame extends Game {
             plr[i] = new Player();
         //plr[0].SetPlayer("Игрок 1", 1, false, 0, 3);
         //plr[1].SetPlayer("Android", 1, true, 4, 4);
+
+        Gdx.input.setCatchBackKey(true);
 
         mainMenu = new MainMenu(this);
         gameScreen = new GameFieldScreen(this);

@@ -1,6 +1,7 @@
 package com.andrewvasiliev.game.test01.Screens;
 
 import com.andrewvasiliev.game.test01.Actors.BackgroundActor;
+import com.andrewvasiliev.game.test01.Actors.BackgroundField;
 import com.andrewvasiliev.game.test01.Classes.Const;
 import com.andrewvasiliev.game.test01.MyGdxGame;
 import com.badlogic.gdx.Gdx;
@@ -26,7 +27,8 @@ public class MainMenu implements Screen {
     private Stage stage;
     private Table table;
     private TextButton startButton, quitButton;
-    public BackgroundActor backgroundActor;
+    //public BackgroundActor backgroundActor;
+    private BackgroundField bf;
     //private Label testLabel;
 
 
@@ -80,10 +82,13 @@ public class MainMenu implements Screen {
             }
         );
 
-        backgroundActor = new BackgroundActor(locGame);
-        backgroundActor.setPosition(0, 0);
+        //backgroundActor = new BackgroundActor(locGame);
+        //backgroundActor.setPosition(0, 0);
+        bf = new BackgroundField(locGame.sr, 0, 0, locGame.view.getScreenWidth(), locGame.view.getScreenHeight());
+        bf.GenerateField(32, Const.CellShape.HEX);
 
-        stage.addActor(backgroundActor);
+        //stage.addActor(backgroundActor);
+        stage.addActor(bf);
         stage.addActor(table);
         //stage.addActor(testLabel);
     }
