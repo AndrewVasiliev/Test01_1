@@ -29,7 +29,6 @@ public class MainMenu implements Screen {
     private TextButton startButton, quitButton;
     //public BackgroundActor backgroundActor;
     private BackgroundField bf;
-    //private Label testLabel;
 
 
     public MainMenu(MyGdxGame myGdxGame) {
@@ -51,9 +50,6 @@ public class MainMenu implements Screen {
         table.add(startButton).padBottom(30);
         table.row();
         table.add(quitButton);
-
-        //testLabel = new Label("Игрок 1", locGame.skin, "default-font", Color.WHITE);
-        //testLabel.setPosition(100,100);
 
         final Dialog dialog = new Dialog("Click message", locGame.skin);
 
@@ -85,12 +81,11 @@ public class MainMenu implements Screen {
         //backgroundActor = new BackgroundActor(locGame);
         //backgroundActor.setPosition(0, 0);
         bf = new BackgroundField(locGame.sr, 0, 0, locGame.view.getScreenWidth(), locGame.view.getScreenHeight());
-        bf.GenerateField(32, Const.CellShape.HEX);
+        bf.GenerateField(32, Const.CellShape.TRIANGLE);
 
         //stage.addActor(backgroundActor);
         stage.addActor(bf);
-        stage.addActor(table);
-        //stage.addActor(testLabel);
+        //stage.addActor(table); //кнопки меню
     }
 
     @Override

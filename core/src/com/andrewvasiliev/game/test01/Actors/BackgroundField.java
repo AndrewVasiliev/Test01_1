@@ -22,7 +22,7 @@ public class BackgroundField  extends Actor {
     private float leftX, leftY, widthX, heightY, cellWidth, cellHeight;
     private int countCol, countRow;
     private int phaseCount;
-    private float animationSpeed = 0.5f; //за сколько секунд должна закончиться анимация
+    private float animationSpeed = 1.0f; //0.5f; //за сколько секунд должна закончиться анимация
     private Const.CellShape cellShape;
     private BaseCell cell;
     public int NOBODYCELL = -1; //ячейка никому не принадлежит
@@ -40,7 +40,7 @@ public class BackgroundField  extends Actor {
         countCol = 0;
         countRow = 0;
         sr = inSR;
-        phaseCount = 16;
+        //phaseCount = 16;
         setBounds(x, y, width, height);
 
         addListener(new ActorGestureListener() {
@@ -105,10 +105,17 @@ public class BackgroundField  extends Actor {
                 break;
         }
 
-        cell = new BaseCell(cellShape, cellWidth, cellHeight);
+        cell = new BaseCell(cellShape, cellWidth/*, cellHeight*/);
+        phaseCount = cell.GetPhaseCount();
+        cellHeight = cell.GetHeight(); //чуть позже надо сделать
 
 
         Random random = new Random();
+
+//для теста
+        countCol = 3;
+        countRow = 1;
+//для теста
 
         cells = new MyCell[countCol * countRow];
         for (int i=0; i<cells.length; i++) {
@@ -151,9 +158,9 @@ public class BackgroundField  extends Actor {
                     case TRIANGLE:
                         cells[currIdx].invertY = even ? -1.0f : 1.0f;
                         _x = leftX + (float)j * cellWidth + cellWidth/2.0f +
-                                (even ? 0 : cellWidth/2) - cellWidth/2; //для четных рядов сдвигаем и просто сдвигаем влево, чтобі заполнить весь єкран
-                        _y = leftY + heightY - (float)i * cellHeight/2.0f - cellHeight/2.0f +
-                                (even ? 0.0f : cellHeight/2.0f); //для четных рядов сдвигаем
+                                (even ? 0 : cellWidth/2) - cellWidth/2; //для четных рядов сдвигаем и просто сдвигаем влево, чтобы заполнить весь єкран
+                        //_y = leftY + heightY - (float)i * cellHeight/2.0f - cellHeight/2.0f + (even ? 0.0f : cellHeight/2.0f); //для четных рядов сдвигаем
+                        _y = leftY + heightY  - (float)(i/2) * cellHeight - (even ? cellHeight * (float)Math.sqrt(3) : 0f);
                         /*if (!even && j==(countCol-1)) {
                             cells[currIdx].owner = WASTECELL; //метим лишние(выходят за пределы экрана) ячейки
                         }*/
@@ -268,13 +275,20 @@ public class BackgroundField  extends Actor {
         for (int i=0; i<cells.length; i++) {
             if (cells[i].owner == WASTECELL) {continue;} //неотображаемые ячейки (лишние)
 
-
             if (cells[i].phaseIdx != -1) { //-1 состояние покоя и фаза 0
                 cells[i].animDuration += locDelta;
                 cells[i].phaseIdx = (int)(cells[i].animDuration/(animationSpeed/(float)phaseCount));
                 if (cells[i].phaseIdx >= phaseCount) {
+
                     cells[i].phaseIdx = -1;
                     cells[i].animDuration = 0.0f;
+
+                    //для теста бесконечного вращения (начало)
+                    //cells[i].phaseIdx = 0;
+                    //cells[i].animDuration -= animationSpeed;
+                    //для теста (конец)
+
+
                     cells[i].colorIdx = cells[i].colorIdxNext;
                 }
             }

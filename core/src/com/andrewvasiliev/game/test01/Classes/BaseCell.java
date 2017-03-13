@@ -4,6 +4,8 @@ package com.andrewvasiliev.game.test01.Classes;
 
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 
 
 import java.util.Arrays;
@@ -16,6 +18,17 @@ public class BaseCell  /*implements Disposable*/ {
     private Const.CellShape cellShape;
     private float coord[];
     private int vertexCount;
+    private float locWidth, locHeight;
+    private int phaseCount;
+
+
+
+    //private Quaternion testQ;
+
+
+
+
+
 
     //private float x,y;           //координаты центра ячейки
     //private float invertY;
@@ -27,8 +40,10 @@ public class BaseCell  /*implements Disposable*/ {
     private float maxScale, minScale;
 
 
-    public BaseCell(Const.CellShape inCellShape, float inWidth, float inHeight) {
+    public BaseCell(Const.CellShape inCellShape, float inWidth/*, float inHeight*/) {
         cellShape = inCellShape;
+        locWidth = inWidth;
+        locHeight = 1.0f;
         //invertY = 1.0f; //не перевернуто по вертикали
         //phaseIdx = -1; //состояние покоя
         //animDuration = 0.0f;
@@ -36,9 +51,9 @@ public class BaseCell  /*implements Disposable*/ {
         //colorIdx = 0;
         //animNonStop = false;
         maxScale = 1.0f;
-        minScale = 0.8f;
+        minScale = 0.9f;
         InitCellCoord(cellShape);
-        CorrectSize(inWidth, inHeight);
+        CorrectSize(inWidth/*, inHeight*/); //в зависимости от фигуры, высота будет отличаться
     }
 
     /*private int GetNextIdxColor () {
@@ -82,24 +97,29 @@ public class BaseCell  /*implements Disposable*/ {
         return maxX-minX;
     }
 
-    private float GetHeight () {
+    public float GetHeight () {
+        return locHeight;
+    }
+
+    private void CalcHeight() {
         float minY = coord[0*2+1];
         float maxY = coord[0*2+1];
         for (int k=1; k<vertexCount; k++) {
             minY = minY > coord[k*2+1] ? coord[k*2+1] : minY;
             maxY = maxY < coord[k*2+1] ? coord[k*2+1] : maxY;
         }
-        return maxY-minY;
+        locHeight = maxY-minY;
     }
 
-    private void CorrectSize (float inWidth, float inHeight) {
-        float zoomX = inWidth / GetWidth();
-        float zoomY = inHeight / GetHeight();
+    private void CorrectSize (float inWidth/*, float inHeight*/) {
+        float zoom = inWidth / GetWidth();
+        //float zoomY = inHeight / GetHeight();
 
-        for (int i = 0; i<Const.phaseCount*vertexCount; i++) {
-            coord[i*2] = coord[i*2]*zoomX;
-            coord[i*2+1] = coord[i*2+1]*zoomY;
+        for (int i = 0; i<phaseCount*vertexCount; i++) {
+            coord[i*2] = coord[i*2]*zoom;
+            coord[i*2+1] = coord[i*2+1]*zoom;
         }
+        CalcHeight();
     }
 /*
     public void CalcZoom (float inWidth, float inHeight, float inAniZoom) {
@@ -114,6 +134,7 @@ public class BaseCell  /*implements Disposable*/ {
     }*/
 
     private void InitCellCoord (Const.CellShape inCellShape) {
+/*
         switch (inCellShape) {
             case RECTANGLE:
                 vertexCount = Const.rectangleVertexCount;
@@ -132,6 +153,76 @@ public class BaseCell  /*implements Disposable*/ {
                 coord = Arrays.copyOf(Const.hexCoord, Const.hexCoord.length);
                 break;
         }
+        phaseCount = 16;
+        */
+
+        Vector3[] baseC;
+        float angle = 10.0f;
+        phaseCount = Math.round(180f / angle);
+        baseC = new Vector3[6];
+        for (int i=0; i<baseC.length; i++) {
+            baseC[i] = new Vector3();
+        }
+
+        switch (inCellShape) {
+            case RECTANGLE:
+                vertexCount = 4;
+                baseC[0].set(-50f, -50f, 0);
+                baseC[1].set(-50f,  50f, 0);
+                baseC[2].set( 50f,  50f, 0);
+                baseC[3].set( 50f, -50f, 0);
+                break;
+            case TRIANGLE:
+                vertexCount = 3;
+                baseC[0].set(-50f, -(float)Math.sqrt(3) / 6.0f * 100.0f, 0);
+                baseC[1].set(  0f,  (float)Math.sqrt(3) / 3.0f * 100.0f, 0);
+                baseC[2].set( 50f, -(float)Math.sqrt(3) / 6.0f * 100.0f, 0);
+                break;
+            case RHOMBUS:
+                vertexCount = 4;
+                baseC[0].set(  0f, -50f, 0);
+                baseC[1].set(-50f,   0f, 0);
+                baseC[2].set(  0f,  50f, 0);
+                baseC[3].set( 50f,   0f, 0);
+                break;
+            case HEX:
+                vertexCount = 6;
+                //coord = Arrays.copyOf(Const.hexCoord, Const.hexCoord.length);
+                break;
+        }
+
+        coord = new float[vertexCount * 2 * phaseCount];
+        Vector3 RotateAxis = new Vector3(0f, 1f, 0f);
+        Quaternion q = new Quaternion();
+        Quaternion p = new Quaternion();
+        Quaternion q2 = new Quaternion();
+        Quaternion q3 = new Quaternion();
+
+        for (int i=0; i<phaseCount; i++) {
+            float phi = (float)Math.PI / 180.0f * angle * i;
+            float cosphi = (float)Math.cos(phi / 2.0f);
+            float sinphi = (float)Math.sin(phi / 2.0f);
+            q.set(RotateAxis.x * sinphi, RotateAxis.y * sinphi, RotateAxis.z * sinphi, cosphi);
+            q.nor();
+
+            for (int ncoor=0; ncoor<vertexCount; ncoor++) {
+                p.set(baseC[ncoor].x, baseC[ncoor].y, baseC[ncoor].z, 0);
+                q3.set(q);
+                q2.set(q);
+                q2.nor().conjugate();
+                p.set(q3.mul(p.mul(q2)));
+                coord[i * vertexCount * 2 + ncoor * 2    ] = d3tod2 (p.x, p.z);
+                coord[i * vertexCount * 2 + ncoor * 2 + 1] = d3tod2 (p.y, p.z);
+            }
+        }
+    }
+
+    private float d3tod2 (float a1, float a2) {
+        return (600.0f * a1/(a2 + 600.0f));
+    }
+
+    public int GetPhaseCount () {
+       return phaseCount;
     }
 
     private void DrawShape (float locX, float locY, float invertY, float scale, int idx, ShapeRenderer inSR) {
