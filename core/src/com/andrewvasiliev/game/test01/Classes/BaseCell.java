@@ -187,7 +187,12 @@ public class BaseCell  /*implements Disposable*/ {
                 break;
             case HEX:
                 vertexCount = 6;
-                //coord = Arrays.copyOf(Const.hexCoord, Const.hexCoord.length);
+                baseC[0].set(-50f / 2f, -(float)Math.sqrt(3) * 50f / 2f, 0);
+                baseC[1].set(-50f,       0f, 0);
+                baseC[2].set(-50f / 2f,  (float)Math.sqrt(3) * 50f / 2f, 0);
+                baseC[3].set( 50f / 2f,  (float)Math.sqrt(3) * 50f / 2f, 0);
+                baseC[4].set( 50f,       0f, 0);
+                baseC[5].set( 50f / 2f, -(float)Math.sqrt(3) * 50f / 2f, 0);
                 break;
         }
 

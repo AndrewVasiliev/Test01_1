@@ -107,14 +107,14 @@ public class BackgroundField  extends Actor {
 
         cell = new BaseCell(cellShape, cellWidth/*, cellHeight*/);
         phaseCount = cell.GetPhaseCount();
-        cellHeight = cell.GetHeight(); //чуть позже надо сделать
+        cellHeight = (float)Math.floor(cell.GetHeight()); //чуть позже надо сделать
 
 
         Random random = new Random();
 
 //для теста
-        countCol = 3;
-        countRow = 1;
+        //countCol = 3;
+        //countRow = 3;
 //для теста
 
         cells = new MyCell[countCol * countRow];
@@ -159,8 +159,8 @@ public class BackgroundField  extends Actor {
                         cells[currIdx].invertY = even ? -1.0f : 1.0f;
                         _x = leftX + (float)j * cellWidth + cellWidth/2.0f +
                                 (even ? 0 : cellWidth/2) - cellWidth/2; //для четных рядов сдвигаем и просто сдвигаем влево, чтобы заполнить весь єкран
-                        //_y = leftY + heightY - (float)i * cellHeight/2.0f - cellHeight/2.0f + (even ? 0.0f : cellHeight/2.0f); //для четных рядов сдвигаем
-                        _y = leftY + heightY  - (float)(i/2) * cellHeight - (even ? cellHeight * (float)Math.sqrt(3) : 0f);
+                        _y = leftY + heightY - (float)Math.floor(even ? (float)Math.sqrt(3) * cellWidth / 6f : (float)Math.sqrt(3) * cellWidth / 3f) -
+                                (float)(i/2) * cellHeight;
                         /*if (!even && j==(countCol-1)) {
                             cells[currIdx].owner = WASTECELL; //метим лишние(выходят за пределы экрана) ячейки
                         }*/
