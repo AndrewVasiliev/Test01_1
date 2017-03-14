@@ -197,7 +197,10 @@ public class BaseCell  /*implements Disposable*/ {
         }
 
         coord = new float[vertexCount * 2 * phaseCount];
-        Vector3 RotateAxis = new Vector3(0f, 1f, 0f);
+        //для HEX и TRIANGLE наклонная ось
+        //Vector3 RotateAxis = new Vector3(1f, 1f / (float)Math.sqrt(3f), 0f);
+        //для TRIANGLE наклонная ось
+        Vector3 RotateAxis = new Vector3(1f, 1f / (float)Math.sqrt(3f), 0f);
         Quaternion q = new Quaternion();
         Quaternion p = new Quaternion();
         Quaternion q2 = new Quaternion();
