@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class BaseCell  /*implements Disposable*/ {
     private Const.CellShape cellShape;
     private float coord[];
-    private int vertexCount;
+    private int vertexCount, vertexCount2x;
     private float locWidth, locHeight;
     private int phaseCount;
 
@@ -38,9 +38,11 @@ public class BaseCell  /*implements Disposable*/ {
     //private float animationSpeed; //за сколько секунд должна закончиться анимация
     //private boolean animNonStop;
     private float maxScale, minScale;
+    private float sqrt3;
 
 
     public BaseCell(Const.CellShape inCellShape, float inWidth/*, float inHeight*/) {
+        sqrt3 = (float)Math.sqrt(3f);
         cellShape = inCellShape;
         locWidth = inWidth;
         locHeight = 1.0f;
@@ -88,8 +90,8 @@ public class BaseCell  /*implements Disposable*/ {
     }*/
 
     private float GetWidth () {
-        float minX = coord[0*2];
-        float maxX = coord[0*2];
+        float minX = coord[0];
+        float maxX = coord[0];
         for (int k=1; k<vertexCount; k++) {
             minX = minX > coord[k*2] ? coord[k*2] : minX;
             maxX = maxX < coord[k*2] ? coord[k*2] : maxX;
@@ -102,8 +104,8 @@ public class BaseCell  /*implements Disposable*/ {
     }
 
     private void CalcHeight() {
-        float minY = coord[0*2+1];
-        float maxY = coord[0*2+1];
+        float minY = coord[1];
+        float maxY = coord[1];
         for (int k=1; k<vertexCount; k++) {
             minY = minY > coord[k*2+1] ? coord[k*2+1] : minY;
             maxY = maxY < coord[k*2+1] ? coord[k*2+1] : maxY;
@@ -134,28 +136,6 @@ public class BaseCell  /*implements Disposable*/ {
     }*/
 
     private void InitCellCoord (Const.CellShape inCellShape) {
-/*
-        switch (inCellShape) {
-            case RECTANGLE:
-                vertexCount = Const.rectangleVertexCount;
-                coord = Arrays.copyOf(Const.rectangleCoord, Const.rectangleCoord.length);
-                break;
-            case TRIANGLE:
-                vertexCount = Const.triangleVertexCount;
-                coord = Arrays.copyOf(Const.triangleCoord, Const.triangleCoord.length);
-                break;
-            case RHOMBUS:
-                vertexCount = Const.rhombusVertexCount;
-                coord = Arrays.copyOf(Const.rhombusCoord, Const.rhombusCoord.length);
-                break;
-            case HEX:
-                vertexCount = Const.hexVertexCount;
-                coord = Arrays.copyOf(Const.hexCoord, Const.hexCoord.length);
-                break;
-        }
-        phaseCount = 16;
-        */
-
         Vector3[] baseC;
         float angle = 10.0f;
         phaseCount = Math.round(180f / angle);
@@ -174,9 +154,9 @@ public class BaseCell  /*implements Disposable*/ {
                 break;
             case TRIANGLE:
                 vertexCount = 3;
-                baseC[0].set(-50f, -(float)Math.sqrt(3) / 6.0f * 100.0f, 0);
-                baseC[1].set(  0f,  (float)Math.sqrt(3) / 3.0f * 100.0f, 0);
-                baseC[2].set( 50f, -(float)Math.sqrt(3) / 6.0f * 100.0f, 0);
+                baseC[0].set(-50f, -sqrt3 / 6.0f * 100.0f, 0);
+                baseC[1].set(  0f,  sqrt3 / 3.0f * 100.0f, 0);
+                baseC[2].set( 50f, -sqrt3 / 6.0f * 100.0f, 0);
                 break;
             case RHOMBUS:
                 vertexCount = 4;
@@ -187,24 +167,26 @@ public class BaseCell  /*implements Disposable*/ {
                 break;
             case HEX:
                 vertexCount = 6;
-                baseC[0].set(-50f / 2f, -(float)Math.sqrt(3) * 50f / 2f, 0);
+                baseC[0].set(-50f / 2f, -sqrt3 * 50f / 2f, 0);
                 baseC[1].set(-50f,       0f, 0);
-                baseC[2].set(-50f / 2f,  (float)Math.sqrt(3) * 50f / 2f, 0);
-                baseC[3].set( 50f / 2f,  (float)Math.sqrt(3) * 50f / 2f, 0);
+                baseC[2].set(-50f / 2f,  sqrt3 * 50f / 2f, 0);
+                baseC[3].set( 50f / 2f,  sqrt3 * 50f / 2f, 0);
                 baseC[4].set( 50f,       0f, 0);
-                baseC[5].set( 50f / 2f, -(float)Math.sqrt(3) * 50f / 2f, 0);
+                baseC[5].set( 50f / 2f, -sqrt3 * 50f / 2f, 0);
                 break;
         }
 
-        coord = new float[vertexCount * 2 * phaseCount];
+        vertexCount2x = vertexCount * 2;
+        coord = new float[vertexCount2x * phaseCount];
         //для HEX и TRIANGLE наклонная ось
-        //Vector3 RotateAxis = new Vector3(1f, 1f / (float)Math.sqrt(3f), 0f);
+        //Vector3 RotateAxis = new Vector3(1f, 1f / sqrt3, 0f);
         //для TRIANGLE наклонная ось
-        Vector3 RotateAxis = new Vector3(1f, 1f / (float)Math.sqrt(3f), 0f);
+        Vector3 RotateAxis = new Vector3(1f, 1f / sqrt3, 0f);
         Quaternion q = new Quaternion();
         Quaternion p = new Quaternion();
         Quaternion q2 = new Quaternion();
         Quaternion q3 = new Quaternion();
+        int coordIdx = 0;
 
         for (int i=0; i<phaseCount; i++) {
             float phi = (float)Math.PI / 180.0f * angle * i;
@@ -219,8 +201,10 @@ public class BaseCell  /*implements Disposable*/ {
                 q2.set(q);
                 q2.nor().conjugate();
                 p.set(q3.mul(p.mul(q2)));
-                coord[i * vertexCount * 2 + ncoor * 2    ] = d3tod2 (p.x, p.z);
-                coord[i * vertexCount * 2 + ncoor * 2 + 1] = d3tod2 (p.y, p.z);
+                //coord[i * vertexCount2x + ncoor * 2    ] = d3tod2 (p.x, p.z);
+                //coord[i * vertexCount2x + ncoor * 2 + 1] = d3tod2 (p.y, p.z);
+                coord[coordIdx++] = d3tod2 (p.x, p.z);
+                coord[coordIdx++] = d3tod2 (p.y, p.z);
             }
         }
     }
@@ -234,54 +218,33 @@ public class BaseCell  /*implements Disposable*/ {
     }
 
     private void DrawShape (float locX, float locY, float invertY, float scale, int idx, ShapeRenderer inSR) {
+        float scale_invertY = scale * invertY;
+        int k2;
         for (int k=2; k<vertexCount; k++) {
+            k2 = k * 2;
             inSR.triangle(
-                    locX + coord[idx] * scale * invertY, locY + coord[idx + 1] * scale * invertY,
-                    locX + coord[idx + k*2] * scale * invertY, locY + coord[idx + k*2+1] * scale * invertY,
-                    locX + coord[idx + (k-1)*2] * scale * invertY, locY + coord[idx + (k-1)*2+1] * scale * invertY);
+                    locX + coord[idx] * scale_invertY,          locY + coord[idx + 1] * scale_invertY,
+                    locX + coord[idx + k2] * scale_invertY,     locY + coord[idx + k2 + 1] * scale_invertY,
+                    locX + coord[idx + k2 - 2] * scale_invertY, locY + coord[idx + k2 - 1] * scale_invertY);
         }
     }
 
-    public void draw (float deltaTime, float x, float y, float invertY, int phaseIdx, int colorIdx, int colorIdxNext, ShapeRenderer inSR) {
-        float scale;
-/*
-        if (phaseIdx != -1) { //-1 состояние покоя и фаза 0
-            animDuration += deltaTime;
-            phaseIdx = (int)(animDuration/(animationSpeed/(float)Const.phaseCount));
-            if (phaseIdx >= Const.phaseCount-1) {
-                phaseIdx = -1;
-                animDuration = 0.0f;
-            }
-        }
-        if (animNonStop && (phaseIdx == -1)) {
-            phaseIdx = 0;
-            colorIdx = colorIdxNext;
-            colorIdxNext = GetNextIdxColor();
-        }
-*/
-        //sr.begin(ShapeRenderer.ShapeType.Filled);
-        int idx = (phaseIdx==-1 ? 0 : phaseIdx) * vertexCount*2; //номер фазы анимации * vetrexCount * 2 (это x и y)
-
-        //System.out.format("(%f,%f)-(%f,%f)-(%f,%f)%n", coord[idx],coord[idx+1], coord[idx+2],coord[idx+3], coord[idx+4],coord[idx+5]);
+    public void draw (float x, float y, float invertY, int phaseIdx, int colorIdx, int colorIdxNext, ShapeRenderer inSR) {
+        int idx = (phaseIdx==-1 ? 0 : phaseIdx) * vertexCount2x; //номер фазы анимации * vetrexCount * 2 (это x и y)
 
         //отрисуем фигуру заполненными треугольниками
         //сначала отрисуем полную фигуру
-        scale = maxScale;
         inSR.setColor(Const.borderColor);
-        DrawShape(x, y, invertY, scale, idx, inSR);
+        DrawShape(x, y, invertY, maxScale, idx, inSR);
 
         //теперь чуть меньшую, чтоб получился контур
-        scale = minScale;
-
         if (phaseIdx >= Const.phaseCount/2) {
             //цвет с другой стороны
             inSR.setColor(Const.colorArr[colorIdxNext]);
         } else {
             inSR.setColor(Const.colorArr[colorIdx]);
         }
-        DrawShape(x, y, invertY, scale, idx, inSR);
-        //sr.end();
-
+        DrawShape(x, y, invertY, minScale, idx, inSR);
     }
 
 //    @Override

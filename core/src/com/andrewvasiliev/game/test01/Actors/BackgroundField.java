@@ -291,7 +291,7 @@ public class BackgroundField  extends Actor {
                 }
             }
 
-            cell.draw(locDelta, cells[i].x, cells[i].y, cells[i].invertY, cells[i].phaseIdx, cells[i].colorIdx, cells[i].colorIdxNext, sr);
+            cell.draw(cells[i].x, cells[i].y, cells[i].invertY, cells[i].phaseIdx, cells[i].colorIdx, cells[i].colorIdxNext, sr);
         }
         sr.end();
         batch.begin();
