@@ -99,7 +99,7 @@ public class BackgroundField  extends Actor {
                 innerR = cellWidth * (float) Math.sqrt(3) / 2.0f; //внутренний радиус гекса
                 //попробуем вычислять кол-во рядов исходя из размеров фигуры
                 countRow = (int)(heightY / innerR) * 2 +2;
-                countCol += 1;
+                countCol += 1 + 1;
                 cellHeight = cellWidth;//heightY/countRow*2.0f;
                 //leftX += cellWidth / 4; //сдвинем на половину радиуса, т.к. справа получается пустота шириной в радиус
                 break;
