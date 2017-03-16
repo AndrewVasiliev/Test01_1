@@ -1,5 +1,6 @@
 package com.andrewvasiliev.game.test01.Actors;
 
+import com.andrewvasiliev.game.test01.Classes.BaseCell;
 import com.andrewvasiliev.game.test01.Classes.Const;
 import com.andrewvasiliev.game.test01.Classes.MyCell;
 import com.andrewvasiliev.game.test01.Screens.GameFieldScreen;
@@ -23,29 +24,14 @@ public class GameField extends Actor {
     private int countCol, countRow;
     private GameFieldScreen locScreen;
     public MyCell[] cells;
+    private BaseCell cell;
     private float innerR;
-    private ShapeRenderer shapeRenderer;
+    private ShapeRenderer sr;
     public int NOBODYCELL = -1; //ячейка никому не принадлежит
     private int WASTECELL = -2; //лишняя ячейка. не отображается. присутствуют в гексах
     private int maxNearby; //количество соседних ячеек. зависит от формы ячеек
 
     private Const.CellShape cellShape;
-
-    //квадрат
-//    private float rectangleCoord[] = {-50,-50 ,50,-50 ,50,50 ,-50,50 ,-55,-56 ,44,-45 ,44,45 ,-55,56 ,-57,-63 ,38,-42 ,38,42 ,-57,63 ,-57,-71 ,31,-39 ,31,39 ,-57,71 ,-53,-80 ,24,-36 ,24,36 ,-53,80 ,-44,-88 ,17,-35 ,17,35 ,-44,88 ,-29,-95 ,10,-34 ,10,34 ,-29,95 ,-10,-99 ,3,-33 ,3,33 ,-10,99 ,10,-99 ,-3,-33 ,-3,33 ,10,99 ,29,-95 ,-10,-34 ,-10,34 ,29,95 ,44,-88 ,-17,-35 ,-17,35 ,44,88 ,53,-80 ,-24,-36 ,-24,36 ,53,80 ,57,-71 ,-31,-39 ,-31,39 ,57,71 ,57,-63 ,-38,-42 ,-38,42 ,57,63 ,55,-56 ,-44,-45 ,-44,45 ,55,56 ,50,-50 ,-50,-50 ,-50,50 ,50,50};
-//    private int rectangleVertexCount = 4;
-
-    //треугольник
-//    private float triangleCoord[] = {-50,-50 ,0,50 ,50,-50 ,-55,-56 ,0,50 ,44,-45 ,-57,-63 ,0,50 ,38,-42 ,-57,-71 ,0,50 ,31,-39 ,-53,-80 ,0,50 ,24,-36 ,-44,-88 ,0,50 ,17,-35 ,-29,-95 ,0,50 ,10,-34 ,-10,-99 ,0,50 ,3,-33 ,10,-99 ,0,50 ,-3,-33 ,29,-95 ,0,50 ,-10,-34 ,44,-88 ,0,50 ,-17,-35 ,53,-80 ,0,50 ,-24,-36 ,57,-71 ,0,50 ,-31,-39 ,57,-63 ,0,50 ,-38,-42 ,55,-56 ,0,50 ,-44,-45 ,50,-50 ,0,50 ,-50,-50};
-//    private int triangleVertexCount = 3;
-
-    //ромб
-//    private float rhombusCoord[] = {-50,0 ,0,50 ,50,0 ,0,-50 ,-55,0 ,0,50 ,44,0 ,0,-50 ,-57,0 ,0,50 ,38,0 ,0,-50 ,-57,0 ,0,50 ,31,0 ,0,-50 ,-53,0 ,0,50 ,24,0 ,0,-50 ,-44,0 ,0,50 ,17,0 ,0,-50 ,-29,0 ,0,50 ,10,0 ,0,-50 ,-10,0 ,0,50 ,3,0 ,0,-50 ,10,0 ,0,50 ,-3,0 ,0,-50 ,29,0 ,0,50 ,-10,0 ,0,-50 ,44,0 ,0,50 ,-17,0 ,0,-50 ,53,0 ,0,50 ,-24,0 ,0,-50 ,57,0 ,0,50 ,-31,0 ,0,-50 ,57,0 ,0,50 ,-38,0 ,0,-50 ,55,0 ,0,50 ,-44,0 ,0,-50 ,50,0 ,0,50 ,-50,0 ,0,-50};
-//    private int rhombusVertexCount = 4;
-
-    //гексагон
-//    private float hexCoord[] = {50,0 ,25,43 ,-25,43 ,-50,0 ,-25,-43 ,25,-43 ,44,0 ,23,41 ,-26,46 ,-55,0 ,-26,-46 ,23,-41 ,38,0 ,21,39 ,-25,48 ,-57,0 ,-25,-48 ,21,-39 ,31,0 ,18,38 ,-24,51 ,-57,0 ,-24,-51 ,18,-38 ,24,0 ,14,37 ,-21,53 ,-53,0 ,-21,-53 ,14,-37 ,17,0 ,10,36 ,-16,55 ,-44,0 ,-16,-55 ,10,-36 ,10,0 ,6,35 ,-10,57 ,-29,0 ,-10,-57 ,6,-35 ,3,0 ,2,35 ,-3,58 ,-10,0 ,-3,-58 ,2,-35 ,-3,0 ,-2,35 ,3,58 ,10,0 ,3,-58 ,-2,-35 ,-10,0 ,-6,35 ,10,57 ,29,0 ,10,-57 ,-6,-35 ,-17,0 ,-10,36 ,16,55 ,44,0 ,16,-55 ,-10,-36 ,-24,0 ,-14,37 ,21,53 ,53,0 ,21,-53 ,-14,-37 ,-31,0 ,-18,38 ,24,51 ,57,0 ,24,-51 ,-18,-38 ,-38,0 ,-21,39 ,25,48 ,57,0 ,25,-48 ,-21,-39 ,-44,0 ,-23,41 ,26,46 ,55,0 ,26,-46 ,-23,-41 ,-50,0 ,-25,43 ,25,43 ,50,0 ,25,-43 ,-25,-43};
-//    private int hexVertexCount = 6;
 
     private float coord[];
     private int vertexCount;
@@ -63,11 +49,253 @@ public class GameField extends Actor {
         countCol = 0;
         countRow = 0;
         //shapeRenderer = new ShapeRenderer();
-        shapeRenderer = locScreen.shapeRenderer;
+        sr = locScreen.shapeRenderer;
         phaseCount = Const.phaseCount;
     }
 
     public void GenerateField (int countColIn, Const.CellShape cellType) {
+        countCol = countColIn;
+
+        cellWidth = widthX/countCol;
+        cellHeight = cellWidth;
+
+        cellShape = cellType;
+        if (cellShape == Const.CellShape.HEX) {
+            cellWidth = widthX/countCol/1.5f;
+        }
+
+        cell = new BaseCell(cellShape, cellWidth/*, cellHeight*/);
+        phaseCount = cell.GetPhaseCount();
+        cellHeight = (float)Math.floor(cell.GetHeight());
+
+        switch (cellShape) {
+            case RECTANGLE:
+                maxNearby = 4;
+                vertexCount = Const.rectangleVertexCount;
+                countRow = (int)(heightY / cellHeight);
+                break;
+            case TRIANGLE:
+                maxNearby = 4;
+                vertexCount = Const.triangleVertexCount;
+                countRow = (int)(heightY / cellHeight) * 2;
+                countCol += 1; //увеличим чтобы заполнить весь экран
+                break;
+            case RHOMBUS:
+                maxNearby = 4;
+                vertexCount = Const.rhombusVertexCount;
+                countRow = (int)(heightY / cellHeight) * 2 - 1;
+                break;
+            case HEX:
+                maxNearby = 6;
+                vertexCount = Const.hexVertexCount;
+                innerR = cellHeight / 2.0f; //внутренний радиус гекса
+                //попробуем вычислять кол-во рядов исходя из размеров фигуры
+                countRow = (int)(heightY / innerR) * 2;
+                //leftX += cellWidth / 4; //сдвинем на половину радиуса, т.к. справа получается пустота шириной в радиус
+                break;
+        }
+
+
+        Random random = new Random();
+
+//для теста
+        //countCol = 3;
+        //countRow = 1;
+//для теста
+
+        cells = new MyCell[countCol * countRow];
+        for (int i=0; i<cells.length; i++) {
+            cells[i] = new MyCell();
+        }
+
+        float _x = 0.0f;
+        float _y = 0.0f;
+        boolean even; //четный ряд
+        int currIdx;
+        int firstPlrIdx = 0, secondPlrIdx = 0;
+        int nx,ny;  //координаты возможных соседей для ячейки
+        for (int i=0; i<countRow; i++) {
+            for (int j=0; j<countCol; j++) {
+                even = (i & 1) == 0; // четный ряд?
+                currIdx = GetIndex(j, i);
+                cells[currIdx].owner = NOBODYCELL; // никому не принадлежит
+
+                cells[currIdx].nearby = new int[maxNearby]; //массив индексов соседних ячеек
+
+                switch (cellShape) {
+                    case RECTANGLE:
+                        cells[currIdx].invertY = 1.0f;
+                        _x = leftX + (float)j * cellWidth + cellWidth/2.0f;
+                        _y = leftY + heightY - (float)i * cellHeight - cellHeight/2.0f;
+                        //заполним индексы соседних ячеек
+                        for (int k=0; k<maxNearby; k++) {
+                            nx = j;
+                            ny = i;
+                            switch (k) {
+                                case 0: nx--; break;
+                                case 1: ny--; break;
+                                case 2: nx++; break;
+                                case 3: ny++; break;
+                            }
+                            cells[currIdx].nearby[k] = (nx>=0 && nx <countCol && ny>=0 && ny<countRow) ? GetIndex(nx, ny) : -1;
+                        }
+                        break;
+                    case TRIANGLE:
+                        cells[currIdx].invertY = even ? -1.0f : 1.0f;
+                        _x = leftX + (float)j * cellWidth + cellWidth/2.0f +
+                                (even ? 0 : cellWidth/2) - cellWidth/2; //для четных рядов сдвигаем и просто сдвигаем влево, чтобы заполнить весь єкран
+                        _y = leftY + heightY - (float)Math.floor(even ? (float)Math.sqrt(3) * cellWidth / 6f : (float)Math.sqrt(3) * cellWidth / 3f) -
+                                (float)(i/2) * cellHeight;
+                        if (!even && j==(countCol-1)) {
+                            cells[currIdx].owner = WASTECELL; //метим лишние(выходят за пределы экрана) ячейки
+                        }
+                        //заполним индексы соседних ячеек
+                        for (int k=0; k<maxNearby; k++) {
+                            nx = j;
+                            ny = i;
+                            if (even) { //четная строка. перевернутая ячейка
+                                switch (k) {
+                                    case 0: nx--; ny++; break;
+                                    case 1: ny++; break;
+                                    case 2: ny--; break;
+                                    case 3: ny--; nx--; break;
+                                }
+                            } else { //нечетная строка.
+                                switch (k) {
+                                    case 0: ny--; break;
+                                    case 1: nx++; ny--; break;
+                                    case 2: nx++; ny++; break;
+                                    case 3: ny++; break;
+                                }
+                            }
+                            cells[currIdx].nearby[k] = (nx>=0 && nx <countCol && ny>=0 && ny<countRow) ? GetIndex(nx, ny) : -1;
+                        }
+                        break;
+                    case RHOMBUS:
+                        cells[currIdx].invertY = 1.0f;
+                        _x = leftX + (float)j * cellWidth + cellWidth/2.0f +
+                                (even ? 0 : cellWidth/2) - cellWidth/2; //для нечетных рядов сдвигаем
+                        _y = leftY + heightY - (float)i * cellHeight/2.0f - cellHeight/2.0f + cellHeight/2.0f;
+                        if (!even && j==(countCol-1)) {
+                            cells[currIdx].owner = WASTECELL; //метим лишние(выходят за пределы экрана) ячейки
+                        }
+                        //заполним индексы соседних ячеек
+                        for (int k=0; k<maxNearby; k++) {
+                            nx = j;
+                            ny = i;
+                            if (even) { //четная строка.
+                                switch (k) {
+                                    case 0: nx--; ny++; break;
+                                    case 1: nx--; ny--; break;
+                                    case 2: ny--; break;
+                                    case 3: ny++; break;
+                                }
+                            } else { //нечетная строка.
+                                switch (k) {
+                                    case 0: ny++; break;
+                                    case 1: ny--; break;
+                                    case 2: nx++; ny--; break;
+                                    case 3: nx++; ny++; break;
+                                }
+                            }
+                            cells[currIdx].nearby[k] = (nx>=0 && nx <countCol && ny>=0 && ny<countRow) ? GetIndex(nx, ny) : -1;
+                        }
+                        break;
+                    case HEX:
+                        cells[currIdx].invertY = 1.0f;
+                        _x = leftX + (float)j * cellWidth/2.0f*3 +
+                                (even ? 0 : cellWidth/2.0f*1.5f); //для нечетных рядов сдвигаем
+                        //_y = leftY + heightY - (float)i * cellHeight/2.0f - cellHeight/2.0f;
+                        _y = leftY + heightY - (float)i * innerR/2.0f; //т.к. гекс по высоте меньше чем по ширине, то используем в расчетах внутренний радиус
+                        if (!even && j==(countCol-1)) {
+                            cells[currIdx].owner = WASTECELL; //метим лишние(выходят за пределы экрана) ячейки
+                        }
+                        //заполним индексы соседних ячеек
+                        for (int k=0; k<maxNearby; k++) {
+                            nx = j;
+                            ny = i;
+                            if (even) { //четная строка.
+                                switch (k) {
+                                    case 0: nx--; ny++; break;
+                                    case 1: nx--; ny--; break;
+                                    case 2: ny-=2; break;
+                                    case 3: ny--; break;
+                                    case 4: ny++; break;
+                                    case 5: ny+=2; break;
+                                }
+                            } else { //нечетная строка.
+                                switch (k) {
+                                    case 0: ny++; break;
+                                    case 1: ny--; break;
+                                    case 2: ny-=2; break;
+                                    case 3: nx++; ny--; break;
+                                    case 4: nx++; ny++; break;
+                                    case 5: ny+=2; break;
+                                }
+                            }
+                            cells[currIdx].nearby[k] = (nx>=0 && nx <countCol && ny>=0 && ny<countRow) ? GetIndex(nx, ny) : -1;
+                        }
+                        break;
+                }
+
+                cells[currIdx].colorIdx = random.nextInt(Const.ColorCount);
+                cells[currIdx].colorIdxNext = cells[currIdx].colorIdx;
+                cells[currIdx].phaseIdx = 0;
+                cells[currIdx].animDuration = 0f;
+                cells[currIdx].setPosition(_x,_y);
+
+                //установим угловые ячеки как стартовые позиции
+                if (i==(countRow-1) && j==0) { //левый нижний угол
+                    cells[currIdx].owner = 0;
+                    locScreen.locGame.plr[0].colorIdx = cells[currIdx].colorIdx;
+                    firstPlrIdx = currIdx;
+                }
+                if (i==0 && j==(countCol-1)) { //правый верхний угол
+                    cells[currIdx].owner = 1;
+                    locScreen.locGame.plr[1].colorIdx = cells[currIdx].colorIdx;
+                    secondPlrIdx = currIdx;
+                }
+            }
+        }
+        //скорректируем цвета игроков, чтобы они не совпадали друг с другом
+        if (cells[firstPlrIdx].colorIdx == cells[secondPlrIdx].colorIdx) {
+            cells[secondPlrIdx].colorIdx++;
+            if (cells[secondPlrIdx].colorIdx >= Const.ColorCount) {
+                cells[secondPlrIdx].colorIdx = 0;
+            }
+            cells[secondPlrIdx].colorIdxNext =  cells[secondPlrIdx].colorIdx;
+            locScreen.locGame.plr[1].colorIdx = cells[secondPlrIdx].colorIdx;
+        }
+        //скорректируем цвета соседних ячеек, чтобы они не совпадали со стартовыми цветами игроков
+        //для игрока 1
+        for (int k=0; k<maxNearby; k++) {
+            if (cells[firstPlrIdx].nearby[k] == -1) {continue;}
+            int nearbyIdx = cells[firstPlrIdx].nearby[k];
+            if (cells[nearbyIdx].colorIdx == cells[firstPlrIdx].colorIdx) {
+                cells[nearbyIdx].colorIdx++;
+                if (cells[nearbyIdx].colorIdx >= Const.ColorCount) {
+                    cells[nearbyIdx].colorIdx = 0;
+                }
+                cells[nearbyIdx].colorIdxNext =  cells[nearbyIdx].colorIdx;
+            }
+        }
+        //для игрока 2
+        for (int k=0; k<maxNearby; k++) {
+            if (cells[secondPlrIdx].nearby[k] == -1) {continue;}
+            int nearbyIdx = cells[secondPlrIdx].nearby[k];
+            if (cells[nearbyIdx].colorIdx == cells[secondPlrIdx].colorIdx) {
+                cells[nearbyIdx].colorIdx++;
+                if (cells[nearbyIdx].colorIdx >= Const.ColorCount) {
+                    cells[nearbyIdx].colorIdx = 0;
+                }
+                cells[nearbyIdx].colorIdxNext =  cells[nearbyIdx].colorIdx;
+            }
+        }
+    }
+
+
+    public void GenerateField_old (int countColIn, Const.CellShape cellType) {
+// СТАРАЯ ВЕРСИЯ !!!!!
         countCol = countColIn;
 
         cellWidth = widthX/countCol;
@@ -310,28 +538,27 @@ public class GameField extends Actor {
     private int GetIndex (int col, int row) {
         return row*countCol + col;
     }
-
+/*
     private void DrawShape (float locX, float locY, float invertY, float scale, int idx) {
         for (int k=2; k<vertexCount; k++) {
-            shapeRenderer.triangle(
+            sr.triangle(
                     locX + coord[idx] * scale * invertY, locY + coord[idx + 1] * scale * invertY,
                     locX + coord[idx + k*2] * scale * invertY, locY + coord[idx + k*2+1] * scale * invertY,
                     locX + coord[idx + (k-1)*2] * scale * invertY, locY + coord[idx + (k-1)*2+1] * scale * invertY);
         }
     }
-
+*/
     @Override
     public void draw(Batch batch, float alpha) {
         float locX, locY, invertY, deltaTime;
         int idx;
 
         batch.end();
-       // shapeRenderer.setProjectionMatrix(locScreen.locGame.camera.combined);
-
         deltaTime = Gdx.graphics.getDeltaTime();
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        sr.begin(ShapeRenderer.ShapeType.Filled);
 
+        Color borderColor;
         int currIdx;
         float scale;
         for (int i=0; i<countRow; i++) {
@@ -349,7 +576,7 @@ public class GameField extends Actor {
                         cells[currIdx].colorIdx = cells[currIdx].colorIdxNext;
                     }
                 }
-
+/*-- тсраый вариант
                 idx = (cells[currIdx].phaseIdx==-1 ? 0 : cells[currIdx].phaseIdx) * vertexCount*2; //номер фазы анимации * vetrexCount * 2 (это x и y)
                 locX = cells[currIdx].x;
                 locY = cells[currIdx].y;
@@ -359,9 +586,9 @@ public class GameField extends Actor {
                 //сначала отрисуем полную фигуру
                 scale = 1.01f;
                 if (locScreen.currentPlayer == cells[currIdx].owner) {
-                    shapeRenderer.setColor(Color.WHITE); // ячейка активного игрока
+                    sr.setColor(Color.WHITE); // ячейка активного игрока
                 } else {
-                    shapeRenderer.setColor(Const.borderColor);
+                    sr.setColor(Const.borderColor);
                 }
                 DrawShape(locX, locY, invertY, scale, idx);
 
@@ -374,14 +601,21 @@ public class GameField extends Actor {
 
                 if (cells[currIdx].phaseIdx >= phaseCount/2) {
                     //цвет с другой стороны
-                    shapeRenderer.setColor(Const.colorArr[cells[currIdx].colorIdxNext]);
+                    sr.setColor(Const.colorArr[cells[currIdx].colorIdxNext]);
                 } else {
-                    shapeRenderer.setColor(Const.colorArr[cells[currIdx].colorIdx]);
+                    sr.setColor(Const.colorArr[cells[currIdx].colorIdx]);
                 }
                 DrawShape(locX, locY, invertY, scale, idx);
+*/
+                if (locScreen.currentPlayer == cells[currIdx].owner) {
+                    borderColor = Color.WHITE; // ячейка активного игрока
+                } else {
+                    borderColor = Const.borderColor;
+                }
+                cell.draw(cells[currIdx].x, cells[currIdx].y, cells[currIdx].invertY, cells[currIdx].phaseIdx, cells[currIdx].colorIdx, cells[currIdx].colorIdxNext, sr, borderColor);
             }
         }
-        shapeRenderer.end();
+        sr.end();
 
         //нарисуем черные линии по периметру, чтобы поле не сливалось с панелью
 /*        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -394,7 +628,7 @@ public class GameField extends Actor {
     }
 
     public void dispose()   {
-        shapeRenderer.dispose();
+        //shapeRenderer.dispose();
     }
 
     public int CountScore(int playerIdx, MyCell[] locCells) {

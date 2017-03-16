@@ -107,7 +107,7 @@ public class BackgroundField  extends Actor {
 
         cell = new BaseCell(cellShape, cellWidth/*, cellHeight*/);
         phaseCount = cell.GetPhaseCount();
-        cellHeight = (float)Math.floor(cell.GetHeight()); //чуть позже надо сделать
+        cellHeight = (float)Math.floor(cell.GetHeight());
 
 
         Random random = new Random();
@@ -278,12 +278,12 @@ public class BackgroundField  extends Actor {
                 cells[i].phaseIdx = (int)(cells[i].animDuration/(animationSpeed/(float)phaseCount));
                 if (cells[i].phaseIdx >= phaseCount) {
 
-                    //cells[i].phaseIdx = -1;
-                    //cells[i].animDuration = 0.0f;
+                    cells[i].phaseIdx = -1;
+                    cells[i].animDuration = 0.0f;
 
                     //для теста бесконечного вращения (начало)
-                    cells[i].phaseIdx = 0;
-                    cells[i].animDuration -= animationSpeed;
+                    //cells[i].phaseIdx = 0;
+                    //cells[i].animDuration -= animationSpeed;
                     //для теста (конец)
 
 
@@ -291,7 +291,7 @@ public class BackgroundField  extends Actor {
                 }
             }
 
-            cell.draw(cells[i].x, cells[i].y, cells[i].invertY, cells[i].phaseIdx, cells[i].colorIdx, cells[i].colorIdxNext, sr);
+            cell.draw(cells[i].x, cells[i].y, cells[i].invertY, cells[i].phaseIdx, cells[i].colorIdx, cells[i].colorIdxNext, sr, Const.borderColor);
         }
         sr.end();
         batch.begin();

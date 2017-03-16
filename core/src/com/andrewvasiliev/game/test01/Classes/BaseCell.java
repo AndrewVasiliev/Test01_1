@@ -3,6 +3,7 @@ package com.andrewvasiliev.game.test01.Classes;
 //import com.badlogic.gdx.utils.Disposable;
 
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -137,7 +138,7 @@ public class BaseCell  /*implements Disposable*/ {
 
     private void InitCellCoord (Const.CellShape inCellShape) {
         Vector3[] baseC;
-        float angle = 10.0f;
+        float angle = 5.0f;
         phaseCount = Math.round(180f / angle);
         baseC = new Vector3[6];
         for (int i=0; i<baseC.length; i++) {
@@ -180,8 +181,8 @@ public class BaseCell  /*implements Disposable*/ {
         coord = new float[vertexCount2x * phaseCount];
         //для HEX и TRIANGLE наклонная ось
         //Vector3 RotateAxis = new Vector3(1f, 1f / sqrt3, 0f);
-        //для TRIANGLE наклонная ось
-        Vector3 RotateAxis = new Vector3(1f, 1f / sqrt3, 0f);
+        //наклонная ось по Y
+        Vector3 RotateAxis = new Vector3(0f, 1f, 0f);
         Quaternion q = new Quaternion();
         Quaternion p = new Quaternion();
         Quaternion q2 = new Quaternion();
@@ -229,12 +230,12 @@ public class BaseCell  /*implements Disposable*/ {
         }
     }
 
-    public void draw (float x, float y, float invertY, int phaseIdx, int colorIdx, int colorIdxNext, ShapeRenderer inSR) {
+    public void draw (float x, float y, float invertY, int phaseIdx, int colorIdx, int colorIdxNext, ShapeRenderer inSR, Color borderColor) {
         int idx = (phaseIdx==-1 ? 0 : phaseIdx) * vertexCount2x; //номер фазы анимации * vetrexCount * 2 (это x и y)
 
         //отрисуем фигуру заполненными треугольниками
         //сначала отрисуем полную фигуру
-        inSR.setColor(Const.borderColor);
+        inSR.setColor(borderColor);
         DrawShape(x, y, invertY, maxScale, idx, inSR);
 
         //теперь чуть меньшую, чтоб получился контур

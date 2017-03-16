@@ -29,7 +29,7 @@ public class MainMenu implements Screen {
     private TextButton startButton, quitButton;
     //public BackgroundActor backgroundActor;
     private BackgroundField bf;
-
+    private Label lblFps;
 
     public MainMenu(MyGdxGame myGdxGame) {
         locGame = myGdxGame;
@@ -78,6 +78,9 @@ public class MainMenu implements Screen {
             }
         );
 
+        lblFps = new Label("FPS", locGame.skin, "default-font", Color.YELLOW);
+        lblFps.setPosition(0, locGame.iHeightMeter - lblFps.getHeight());
+
         //backgroundActor = new BackgroundActor(locGame);
         //backgroundActor.setPosition(0, 0);
         bf = new BackgroundField(locGame.sr, 0, 0, locGame.view.getScreenWidth(), locGame.view.getScreenHeight());
@@ -85,7 +88,8 @@ public class MainMenu implements Screen {
 
         //stage.addActor(backgroundActor);
         stage.addActor(bf);
-        //stage.addActor(table); //кнопки меню
+        stage.addActor(table); //кнопки меню
+        stage.addActor(lblFps);
     }
 
     @Override
@@ -95,6 +99,9 @@ public class MainMenu implements Screen {
 
     @Override
     public void render(float delta) {
+
+        lblFps.setText("FPS:"+Integer.toString (Gdx.graphics.getFramesPerSecond()));
+
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();
