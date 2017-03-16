@@ -26,6 +26,7 @@ public class AniCell  /*implements Disposable*/ {
     private float animationSpeed; //за сколько секунд должна закончиться анимация
     private boolean animNonStop;
     private float maxScale, minScale;
+    private BaseCell cell;
 
 
     public AniCell(Const.CellShape inCellShape, ShapeRenderer inSR) {
@@ -74,44 +75,15 @@ public class AniCell  /*implements Disposable*/ {
     }
 
     public void CalcZoom (float inWidth, float inHeight, float inAniZoom) {
-        InitCellCoord(cellShape);
-        float zoom = inWidth < inHeight ? inWidth : inHeight;
-        zoom = zoom / 100 * inAniZoom; //100 это ширина и высота фигуры при прерасчете
+        ////InitCellCoord(cellShape);
+        //float zoom = inWidth < inHeight ? inWidth : inHeight;
+        //zoom = zoom / 100 ;//* inAniZoom; //100 это ширина и высота фигуры при прерасчете
 
-        for (int i = 0; i<Const.phaseCount*vertexCount; i++) {
-            coord[i*2] = coord[i*2]*zoom;
-            coord[i*2+1] = coord[i*2+1]*zoom;
-        }
+        //cell = new BaseCell(cellShape, zoom);
     }
 
     private void InitCellCoord (Const.CellShape inCellShape) {
-        switch (inCellShape) {
-            case RECTANGLE:
-                vertexCount = Const.rectangleVertexCount;
-                coord = Arrays.copyOf(Const.rectangleCoord, Const.rectangleCoord.length);
-                break;
-            case TRIANGLE:
-                vertexCount = Const.triangleVertexCount;
-                coord = Arrays.copyOf(Const.triangleCoord, Const.triangleCoord.length);
-                break;
-            case RHOMBUS:
-                vertexCount = Const.rhombusVertexCount;
-                coord = Arrays.copyOf(Const.rhombusCoord, Const.rhombusCoord.length);
-                break;
-            case HEX:
-                vertexCount = Const.hexVertexCount;
-                coord = Arrays.copyOf(Const.hexCoord, Const.hexCoord.length);
-                break;
-        }
-    }
-
-    private void DrawShape (float locX, float locY, float invertY, float scale, int idx) {
-        for (int k=2; k<vertexCount; k++) {
-            sr.triangle(
-                    locX + coord[idx] * scale * invertY, locY + coord[idx + 1] * scale * invertY,
-                    locX + coord[idx + k*2] * scale * invertY, locY + coord[idx + k*2+1] * scale * invertY,
-                    locX + coord[idx + (k-1)*2] * scale * invertY, locY + coord[idx + (k-1)*2+1] * scale * invertY);
-        }
+        cell = new BaseCell(inCellShape, 100);
     }
 
     public void draw (float deltaTime) {
@@ -119,20 +91,23 @@ public class AniCell  /*implements Disposable*/ {
 
         if (phaseIdx != -1) { //-1 состояние покоя и фаза 0
             animDuration += deltaTime;
-            phaseIdx = (int)(animDuration/(animationSpeed/(float)Const.phaseCount));
-            if (phaseIdx >= Const.phaseCount-1) {
+            phaseIdx = (int)(animDuration/(animationSpeed/(float)cell.GetPhaseCount()));
+            if (phaseIdx >= cell.GetPhaseCount()) {
                 phaseIdx = -1;
-                animDuration = 0.0f;
+                //animDuration = 0.0f;
+                colorIdx = colorIdxNext;
+                colorIdxNext = GetNextIdxColor();
+                if (animNonStop) {
+                    phaseIdx = 0;
+                    animDuration -= animationSpeed;
+                } else {
+                    animDuration = 0.0f;
+                }
             }
-        }
-        if (animNonStop && (phaseIdx == -1)) {
-            phaseIdx = 0;
-            colorIdx = colorIdxNext;
-            colorIdxNext = GetNextIdxColor();
         }
 
         sr.begin(ShapeRenderer.ShapeType.Filled);
-        int idx = (phaseIdx==-1 ? 0 : phaseIdx) * vertexCount*2; //номер фазы анимации * vetrexCount * 2 (это x и y)
+/*        int idx = (phaseIdx==-1 ? 0 : phaseIdx) * vertexCount*2; //номер фазы анимации * vetrexCount * 2 (это x и y)
 
         //System.out.format("(%f,%f)-(%f,%f)-(%f,%f)%n", coord[idx],coord[idx+1], coord[idx+2],coord[idx+3], coord[idx+4],coord[idx+5]);
 
@@ -151,7 +126,8 @@ public class AniCell  /*implements Disposable*/ {
         } else {
             sr.setColor(Const.colorArr[colorIdx]);
         }
-        DrawShape(x, y, invertY, scale, idx);
+        DrawShape(x, y, invertY, scale, idx);*/
+        cell.draw(x, y, invertY, phaseIdx, colorIdx, colorIdxNext, sr, Const.borderColor);
         sr.end();
 
     }

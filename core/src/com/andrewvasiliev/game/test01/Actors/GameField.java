@@ -78,7 +78,6 @@ public class GameField extends Actor {
                 maxNearby = 4;
                 vertexCount = Const.triangleVertexCount;
                 countRow = (int)(heightY / cellHeight) * 2;
-                countCol += 1; //увеличим чтобы заполнить весь экран
                 break;
             case RHOMBUS:
                 maxNearby = 4;
@@ -90,7 +89,7 @@ public class GameField extends Actor {
                 vertexCount = Const.hexVertexCount;
                 innerR = cellHeight / 2.0f; //внутренний радиус гекса
                 //попробуем вычислять кол-во рядов исходя из размеров фигуры
-                countRow = (int)(heightY / innerR) * 2;
+                countRow = (int)(heightY / cellHeight) * 2 - 1;
                 //leftX += cellWidth / 4; //сдвинем на половину радиуса, т.к. справа получается пустота шириной в радиус
                 break;
         }
@@ -143,7 +142,7 @@ public class GameField extends Actor {
                     case TRIANGLE:
                         cells[currIdx].invertY = even ? -1.0f : 1.0f;
                         _x = leftX + (float)j * cellWidth + cellWidth/2.0f +
-                                (even ? 0 : cellWidth/2) - cellWidth/2; //для четных рядов сдвигаем и просто сдвигаем влево, чтобы заполнить весь єкран
+                                (even ? 0 : cellWidth/2); //для четных рядов сдвигаем
                         _y = leftY + heightY - (float)Math.floor(even ? (float)Math.sqrt(3) * cellWidth / 6f : (float)Math.sqrt(3) * cellWidth / 3f) -
                                 (float)(i/2) * cellHeight;
                         if (!even && j==(countCol-1)) {
@@ -174,8 +173,8 @@ public class GameField extends Actor {
                     case RHOMBUS:
                         cells[currIdx].invertY = 1.0f;
                         _x = leftX + (float)j * cellWidth + cellWidth/2.0f +
-                                (even ? 0 : cellWidth/2) - cellWidth/2; //для нечетных рядов сдвигаем
-                        _y = leftY + heightY - (float)i * cellHeight/2.0f - cellHeight/2.0f + cellHeight/2.0f;
+                                (even ? 0 : cellWidth/2); //для нечетных рядов сдвигаем
+                        _y = leftY + heightY - (float)i * cellHeight/2.0f - cellHeight/2.0f;
                         if (!even && j==(countCol-1)) {
                             cells[currIdx].owner = WASTECELL; //метим лишние(выходят за пределы экрана) ячейки
                         }
@@ -203,10 +202,11 @@ public class GameField extends Actor {
                         break;
                     case HEX:
                         cells[currIdx].invertY = 1.0f;
-                        _x = leftX + (float)j * cellWidth/2.0f*3 +
-                                (even ? 0 : cellWidth/2.0f*1.5f); //для нечетных рядов сдвигаем
+                        _x = leftX + (float)j * cellWidth * 1.5f +
+                                (even ? 0 : cellWidth/2.0f*1.5f) + //для нечетных рядов сдвигаем
+                                cellWidth / 2.0f * 1.5f ;
                         //_y = leftY + heightY - (float)i * cellHeight/2.0f - cellHeight/2.0f;
-                        _y = leftY + heightY - (float)i * innerR/2.0f; //т.к. гекс по высоте меньше чем по ширине, то используем в расчетах внутренний радиус
+                        _y = leftY + heightY - (float)i * innerR - innerR; //т.к. гекс по высоте меньше чем по ширине, то используем в расчетах внутренний радиус
                         if (!even && j==(countCol-1)) {
                             cells[currIdx].owner = WASTECELL; //метим лишние(выходят за пределы экрана) ячейки
                         }
@@ -293,7 +293,7 @@ public class GameField extends Actor {
         }
     }
 
-
+/*
     public void GenerateField_old (int countColIn, Const.CellShape cellType) {
 // СТАРАЯ ВЕРСИЯ !!!!!
         countCol = countColIn;
@@ -534,7 +534,7 @@ public class GameField extends Actor {
             }
         }
     }
-
+*/
     private int GetIndex (int col, int row) {
         return row*countCol + col;
     }
