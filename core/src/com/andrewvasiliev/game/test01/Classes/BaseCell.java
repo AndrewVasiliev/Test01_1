@@ -239,7 +239,7 @@ public class BaseCell  /*implements Disposable*/ {
         DrawShape(x, y, invertY, maxScale, idx, inSR);
 
         //теперь чуть меньшую, чтоб получился контур
-        if (phaseIdx >= Const.phaseCount/2) {
+        if (phaseIdx >= phaseCount/2) {
             //цвет с другой стороны
             inSR.setColor(Const.colorArr[colorIdxNext]);
         } else {

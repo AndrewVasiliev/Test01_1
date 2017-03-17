@@ -16,7 +16,7 @@ public class AniButton extends Button implements Disposable {
     private Const.CellShape cellType = Const.CellShape.HEX;
     private ShapeRenderer sr;
     private AniCell aniCell;
-    private float aniZoom = 0.5f;
+    private float aniZoom = 0.7f;
 
     public AniButton(Skin skin, String styleName, Const.CellShape inCellType) {
         super(skin, styleName);

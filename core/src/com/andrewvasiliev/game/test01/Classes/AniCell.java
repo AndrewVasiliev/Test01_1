@@ -36,7 +36,8 @@ public class AniCell  /*implements Disposable*/ {
         phaseIdx = -1; //состояние покоя
         animDuration = 0.0f;
         animationSpeed = 0.5f;
-        colorIdx = 0;
+        //colorIdx = 0;
+        setColorIdx(0);
         animNonStop = false;
         maxScale = 1.0f;
         minScale = 0.8f;
@@ -76,10 +77,10 @@ public class AniCell  /*implements Disposable*/ {
 
     public void CalcZoom (float inWidth, float inHeight, float inAniZoom) {
         ////InitCellCoord(cellShape);
-        //float zoom = inWidth < inHeight ? inWidth : inHeight;
-        //zoom = zoom / 100 ;//* inAniZoom; //100 это ширина и высота фигуры при прерасчете
+        float zoom = inWidth < inHeight ? inWidth : inHeight;
+        zoom = zoom * inAniZoom; //100 это ширина и высота фигуры при прерасчете
 
-        //cell = new BaseCell(cellShape, zoom);
+        cell = new BaseCell(cellShape, zoom);
     }
 
     private void InitCellCoord (Const.CellShape inCellShape) {
@@ -89,7 +90,7 @@ public class AniCell  /*implements Disposable*/ {
     public void draw (float deltaTime) {
         float scale;
 
-        if (phaseIdx != -1) { //-1 состояние покоя и фаза 0
+        if ((phaseIdx != -1) || (animNonStop)) { //-1 состояние покоя и фаза 0
             animDuration += deltaTime;
             phaseIdx = (int)(animDuration/(animationSpeed/(float)cell.GetPhaseCount()));
             if (phaseIdx >= cell.GetPhaseCount()) {
