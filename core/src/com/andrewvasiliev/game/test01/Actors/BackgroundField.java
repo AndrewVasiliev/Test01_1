@@ -25,7 +25,7 @@ public class BackgroundField  extends Actor {
     private float animationSpeed = 2.0f; //0.5f; //за сколько секунд должна закончиться анимация
     private Const.CellShape cellShape;
     private BaseCell cell;
-    public int NOBODYCELL = -1; //ячейка никому не принадлежит
+    private int NOBODYCELL = -1; //ячейка никому не принадлежит
     private int WASTECELL = -2; //лишняя ячейка. не отображается. присутствуют в гексах
     private int maxNearby; //количество соседних ячеек. зависит от формы ячеек
     private int vertexCount;
@@ -48,6 +48,7 @@ public class BackgroundField  extends Actor {
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchDown(event, x, y, pointer, button);
                 System.out.println("touchDown " + x + ", " + y);
+                TouchDown(x, y);
 
             }
 
@@ -100,7 +101,7 @@ public class BackgroundField  extends Actor {
                 //попробуем вычислять кол-во рядов исходя из размеров фигуры
                 countRow = (int)(heightY / innerR) * 2 + 3;
                 countCol += 1;
-                cellHeight = cellWidth;//heightY/countRow*2.0f;
+                //cellHeight = cellWidth;//heightY/countRow*2.0f;
                 //leftX += cellWidth / 4; //сдвинем на половину радиуса, т.к. справа получается пустота шириной в радиус
                 break;
         }
@@ -262,6 +263,24 @@ public class BackgroundField  extends Actor {
 
     private int GetIndex (int col, int row) {
         return row*countCol + col;
+    }
+
+    private void TouchDown(float _x, float _y) {
+        //найдем, примерно, в какую ячейку кликнули
+        float cellHalfWidth = cellWidth / 2;
+        float cellHalfHeight = cellHeight / 2;
+        int idx = -1;
+        for (int i=0; i<cells.length; i++) {
+            if ((cells[i].x - cellHalfWidth <= _x) && (cells[i].x + cellHalfWidth >= _x)
+                    && (cells[i].y - cellHalfHeight <= _y) && (cells[i].y + cellHalfHeight >= _y)) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx == -1) {
+            return;
+        }
+        cells[idx].phaseIdx = 0;
     }
 
     @Override
