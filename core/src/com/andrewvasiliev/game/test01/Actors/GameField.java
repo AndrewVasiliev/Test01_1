@@ -50,7 +50,7 @@ public class GameField extends Actor {
         countRow = 0;
         //shapeRenderer = new ShapeRenderer();
         sr = locScreen.shapeRenderer;
-        phaseCount = Const.phaseCount;
+        phaseCount = 0;
     }
 
     public void GenerateField (int countColIn, Const.CellShape cellType) {
@@ -71,22 +71,22 @@ public class GameField extends Actor {
         switch (cellShape) {
             case RECTANGLE:
                 maxNearby = 4;
-                vertexCount = Const.rectangleVertexCount;
+                vertexCount = 4;
                 countRow = (int)(heightY / cellHeight);
                 break;
             case TRIANGLE:
                 maxNearby = 4;
-                vertexCount = Const.triangleVertexCount;
+                vertexCount = 3;
                 countRow = (int)(heightY / cellHeight) * 2;
                 break;
             case RHOMBUS:
                 maxNearby = 4;
-                vertexCount = Const.rhombusVertexCount;
+                vertexCount = 4;
                 countRow = (int)(heightY / cellHeight) * 2 - 1;
                 break;
             case HEX:
                 maxNearby = 6;
-                vertexCount = Const.hexVertexCount;
+                vertexCount = 6;
                 innerR = cellHeight / 2.0f; //внутренний радиус гекса
                 //попробуем вычислять кол-во рядов исходя из размеров фигуры
                 countRow = (int)(heightY / cellHeight) * 2 - 1;
@@ -550,17 +550,18 @@ public class GameField extends Actor {
 */
     @Override
     public void draw(Batch batch, float alpha) {
-        float locX, locY, invertY, deltaTime;
-        int idx;
+        //float locX, locY, invertY;
+        //int idx;
+        //float scale;
 
         batch.end();
-        deltaTime = Gdx.graphics.getDeltaTime();
+        float deltaTime = Gdx.graphics.getDeltaTime();
 
         sr.begin(ShapeRenderer.ShapeType.Filled);
 
         Color borderColor;
         int currIdx;
-        float scale;
+
         for (int i=0; i<countRow; i++) {
             for (int j=0; j<countCol; j++) {
                 currIdx = GetIndex(j, i);

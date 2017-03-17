@@ -78,24 +78,24 @@ public class BackgroundField  extends Actor {
         switch (cellShape) {
             case RECTANGLE:
                 maxNearby = 4;
-                vertexCount = Const.rectangleVertexCount;
+                vertexCount = 4;
                 countRow = (int)(heightY / cellWidth);
                 break;
             case TRIANGLE:
                 maxNearby = 4;
-                vertexCount = Const.triangleVertexCount;
+                vertexCount = 3;
                 countRow = (int)(heightY / cellWidth) * 2;
                 countCol += 1; //увеличим чтобы заполнить весь экран
                 break;
             case RHOMBUS:
                 maxNearby = 4;
-                vertexCount = Const.rhombusVertexCount;
+                vertexCount = 4;
                 countRow = (int)(heightY / cellWidth) * 2 +1;
                 countCol += 1;
                 break;
             case HEX:
                 maxNearby = 6;
-                vertexCount = Const.hexVertexCount;
+                vertexCount = 6;
                 cellWidth = widthX/countCol/1.5f;
                 innerR = cellWidth * (float) Math.sqrt(3) / 2.0f; //внутренний радиус гекса
                 //попробуем вычислять кол-во рядов исходя из размеров фигуры

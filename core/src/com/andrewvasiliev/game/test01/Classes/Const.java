@@ -37,9 +37,10 @@ public class Const {
        new Color(0xfcf104ff), new Color(0xf79420ff), new Color(0xec1b3bff), new Color(0x5c2f91ff), new Color(0x0673baff), new Color(0x2bb34bff), new Color(0x999999ff)
        ///*MAGENTA*/ Color.PURPLE, /*BLUE*/ Color.ROYAL, Color.CYAN, /*GREEN*/ Color.CHARTREUSE, Color.ORANGE, /*WHITE*/ Color.GRAY, Color.RED
     };
+
     public static int ColorCount = 7;
     public static Color borderColor = Color.BLACK;
-
+/*
     //квадрат
     public static float rectangleCoord[] = {-50,-50 ,50,-50 ,50,50 ,-50,50 ,-55,-56 ,44,-45 ,44,45 ,-55,56 ,-57,-63 ,38,-42 ,38,42 ,-57,63 ,-57,-71 ,31,-39 ,31,39 ,-57,71 ,-53,-80 ,24,-36 ,24,36 ,-53,80 ,-44,-88 ,17,-35 ,17,35 ,-44,88 ,-29,-95 ,10,-34 ,10,34 ,-29,95 ,-10,-99 ,3,-33 ,3,33 ,-10,99 ,10,-99 ,-3,-33 ,-3,33 ,10,99 ,29,-95 ,-10,-34 ,-10,34 ,29,95 ,44,-88 ,-17,-35 ,-17,35 ,44,88 ,53,-80 ,-24,-36 ,-24,36 ,53,80 ,57,-71 ,-31,-39 ,-31,39 ,57,71 ,57,-63 ,-38,-42 ,-38,42 ,57,63 ,55,-56 ,-44,-45 ,-44,45 ,55,56 ,50,-50 ,-50,-50 ,-50,50 ,50,50};
     public static int rectangleVertexCount = 4;
@@ -57,6 +58,6 @@ public class Const {
     public static int hexVertexCount = 6;
 
     public static int phaseCount = 16;
-
+*/
 
 }
