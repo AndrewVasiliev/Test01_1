@@ -15,8 +15,6 @@ import java.util.Arrays;
 public class AniCell  /*implements Disposable*/ {
     private Const.CellShape cellShape;
     private ShapeRenderer sr;
-    private float coord[];
-    private int vertexCount;
 
     private float x,y;           //координаты центра ячейки
     private float invertY;
@@ -88,8 +86,6 @@ public class AniCell  /*implements Disposable*/ {
     }
 
     public void draw (float deltaTime) {
-        float scale;
-
         if ((phaseIdx != -1) || (animNonStop)) { //-1 состояние покоя и фаза 0
             animDuration += deltaTime;
             phaseIdx = (int)(animDuration/(animationSpeed/(float)cell.GetPhaseCount()));
@@ -108,26 +104,6 @@ public class AniCell  /*implements Disposable*/ {
         }
 
         sr.begin(ShapeRenderer.ShapeType.Filled);
-/*        int idx = (phaseIdx==-1 ? 0 : phaseIdx) * vertexCount*2; //номер фазы анимации * vetrexCount * 2 (это x и y)
-
-        //System.out.format("(%f,%f)-(%f,%f)-(%f,%f)%n", coord[idx],coord[idx+1], coord[idx+2],coord[idx+3], coord[idx+4],coord[idx+5]);
-
-        //отрисуем фигуру заполненными треугольниками
-        //сначала отрисуем полную фигуру
-        scale = maxScale;
-        sr.setColor(Const.borderColor);
-        DrawShape(x, y, invertY, scale, idx);
-
-        //теперь чуть меньшую, чтоб получился контур
-        scale = minScale;
-
-        if (phaseIdx >= Const.phaseCount/2) {
-                //цвет с другой стороны
-            sr.setColor(Const.colorArr[colorIdxNext]);
-        } else {
-            sr.setColor(Const.colorArr[colorIdx]);
-        }
-        DrawShape(x, y, invertY, scale, idx);*/
         cell.draw(x, y, invertY, phaseIdx, colorIdx, colorIdxNext, sr, Const.borderColor);
         sr.end();
 

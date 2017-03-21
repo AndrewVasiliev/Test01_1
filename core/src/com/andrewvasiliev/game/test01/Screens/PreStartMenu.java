@@ -10,6 +10,7 @@ import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
@@ -262,6 +263,20 @@ public class PreStartMenu implements Screen {
 
         stage.addActor(backgroundActor);
         stage.addActor(table);
+
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                //return super.keyDown(event, keycode);
+                System.out.format("key down%n");
+                if ((keycode == Input.Keys.BACK) || (keycode == Input.Keys.ESCAPE)) {
+                    System.out.format("set mainscreen%n");
+                    locGame.setScreen(locGame.mainMenu);
+                }
+                return false;
+            }
+        });
+
     }
 
     @Override

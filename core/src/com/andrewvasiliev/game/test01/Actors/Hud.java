@@ -20,7 +20,7 @@ public class Hud extends Actor {
     public float diametrV, diametrH;
     public Vector2[] colorButton;
     private GameFieldScreen locScreen;
-    private ShapeRenderer shapeRenderer;
+    private ShapeRenderer sr;
     public int colorIdx; // номер нажатой кнопки/цвета
 
 
@@ -46,11 +46,10 @@ public class Hud extends Actor {
         setBounds(leftX, leftY, hudWidth, hudHeight);
 
         this.addListener(new InputListener() {
-            // a - 29, w - 51, d - 32, s - 47
-
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 //проверим нажали ли мы на цветную кнопку (проверим по простому - квадратную область)
+                System.out.println("Hud touchDown " + x + ", " + y);
                 if (locScreen.hudEnabled) { //если нажатие ожидается, то....
                     for (int i = 0; i < Const.ColorCount; i++) {
                         //нельзя нажать цвета, которые сейчас заняты игроками
@@ -65,51 +64,40 @@ public class Hud extends Actor {
                 }
                 return true;
             }
-
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                //return super.keyDown(event, keycode);
-                System.out.format("key down%n");
-                if(keycode == Input.Keys.BACK){
-                    System.out.format("set mainscreen%n");
-                    locScreen.locGame.setScreen(locScreen.locGame.mainMenu);
-                }
-                return false;
-            }
         });
-        shapeRenderer = locScreen.shapeRenderer;
+        sr = locScreen.shapeRenderer;
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.end();
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        sr.begin(ShapeRenderer.ShapeType.Filled);
         //рисуем полосы заработанных очков
         float _scoreX = hudWidth * locScreen.locGame.plr[0].score /(float)(locScreen.locGame.plr[0].score + locScreen.locGame.plr[1].score);
-        shapeRenderer.setColor(Const.colorArr[locScreen.locGame.plr[0].colorIdx]);
-        shapeRenderer.rect(leftX, hudHeight/2f, _scoreX, hudHeight/2f);
-        shapeRenderer.setColor(Const.colorArr[locScreen.locGame.plr[1].colorIdx]);
-        shapeRenderer.rect(leftX+_scoreX, hudHeight/2f, hudWidth-_scoreX, hudHeight/2f);
+        sr.setColor(Const.colorArr[locScreen.locGame.plr[0].colorIdx]);
+        sr.rect(leftX, hudHeight/2f, _scoreX, hudHeight/2f);
+        sr.setColor(Const.colorArr[locScreen.locGame.plr[1].colorIdx]);
+        sr.rect(leftX+_scoreX, hudHeight/2f, hudWidth-_scoreX, hudHeight/2f);
         //рисуем отметки посередине полос очков
         _scoreX = hudWidth/2f+leftX;
-        shapeRenderer.setColor(Color.BLACK);
-        shapeRenderer.triangle(_scoreX, hudHeight/2f+10f,  _scoreX-10f, hudHeight/2f, _scoreX+10f, hudHeight/2f);
-        shapeRenderer.triangle(_scoreX, hudHeight-10f,  _scoreX-10f, hudHeight, _scoreX+10f, hudHeight);
+        sr.setColor(Color.BLACK);
+        sr.triangle(_scoreX, hudHeight/2f+10f,  _scoreX-10f, hudHeight/2f, _scoreX+10f, hudHeight/2f);
+        sr.triangle(_scoreX, hudHeight-10f,  _scoreX-10f, hudHeight, _scoreX+10f, hudHeight);
 
         //рисуем цветные кнопки
         for (int i=0; i< Const.ColorCount; i++) {
             //не рисуем цвета, которые сейчас заняты игроками
             if ((locScreen.locGame.plr[0].colorIdx == i)||((locScreen.locGame.plr[1].colorIdx == i))) { continue;}
 
-            shapeRenderer.setColor(Const.colorArr[i]);
-            shapeRenderer.ellipse(colorButton[i].x, colorButton[i].y, diametrH, diametrV*0.9f);
+            sr.setColor(Const.colorArr[i]);
+            sr.ellipse(colorButton[i].x, colorButton[i].y, diametrH, diametrV*0.9f);
         }
-        shapeRenderer.end();
+        sr.end();
         batch.begin();
         super.draw(batch, parentAlpha);
     }
 
     public void dispose()   {
-        shapeRenderer.dispose();
+        //shapeRenderer.dispose();
     }
 }

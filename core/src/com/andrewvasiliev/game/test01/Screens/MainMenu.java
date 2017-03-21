@@ -5,10 +5,13 @@ import com.andrewvasiliev.game.test01.Actors.BackgroundField;
 import com.andrewvasiliev.game.test01.Classes.Const;
 import com.andrewvasiliev.game.test01.MyGdxGame;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -26,7 +29,7 @@ public class MainMenu implements Screen {
     private MyGdxGame locGame;
     private Stage stage;
     private Table table;
-    private TextButton startButton, quitButton;
+    private TextButton startButton, quitButton, resumeGame;
     //public BackgroundActor backgroundActor;
     private BackgroundField bf;
     private Label lblFps;
@@ -43,23 +46,30 @@ public class MainMenu implements Screen {
         //table.align(Align.center|Align.top);
         //table.setPosition(0, stage.getHeight());
 
+        resumeGame = new TextButton("Продолжить игру", locGame.skin, "menuStyle");
         startButton = new TextButton("Начать игру", locGame.skin, "menuStyle");
         quitButton = new TextButton("Выйти из игры", locGame.skin, "menuStyle");
 
         table.padTop(30);
+        table.add(resumeGame).padBottom(30);
+        table.row();
         table.add(startButton).padBottom(30);
         table.row();
         table.add(quitButton);
 
         final Dialog dialog = new Dialog("Click message", locGame.skin);
 
+        resumeGame.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    locGame.gameScreen.ResumeGame();
+                    locGame.setScreen(locGame.gameScreen);
+                }
+            }
+        );
         startButton.addListener(new ClickListener() {
                @Override
                public void clicked(InputEvent event, float x, float y) {
-                   //locGame.plr[0].SetPlayer("Влад", 1, false, 0,);
-                   //locGame.plr[1].SetPlayer("Android", 1, true, 1,);
-
-                   //locGame.gameScreen.StartGame();
                    locGame.setScreen(locGame.preStartMenu);
                }
            }
@@ -67,13 +77,7 @@ public class MainMenu implements Screen {
         quitButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    dialog.show(stage);
-                    Timer.schedule(new Timer.Task() {
-                       @Override
-                       public void run() {
-                           dialog.hide();
-                       }
-                    }, 0.5f);
+                    Gdx.app.exit();
                 }
             }
         );
@@ -90,11 +94,33 @@ public class MainMenu implements Screen {
         stage.addActor(bf);
         stage.addActor(table); //кнопки меню
         stage.addActor(lblFps);
+
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                //return super.keyDown(event, keycode);
+                System.out.format("key down%n");
+                if ((keycode == Input.Keys.BACK) || (keycode == Input.Keys.ESCAPE)) {
+                    System.out.format("exit app%n");
+                    Gdx.app.exit();
+                }
+                return false;
+            }
+        });
+    }
+
+    private boolean isGameSaved () {
+        Preferences prefs = Gdx.app.getPreferences(Const.PreferencesName);
+        //--признак 1-сохраненная игра 0-пусто (после восстановления игры ставить 0)
+        return prefs.getBoolean("isGameSaved", false);
     }
 
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+
+        resumeGame.setVisible(isGameSaved());
+        //table.setPosition(table.getX(), table.getY());
     }
 
     @Override

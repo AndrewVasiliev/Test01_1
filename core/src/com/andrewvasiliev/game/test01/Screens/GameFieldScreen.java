@@ -7,6 +7,8 @@ import com.andrewvasiliev.game.test01.Classes.Const;
 import com.andrewvasiliev.game.test01.Classes.MyCell;
 import com.andrewvasiliev.game.test01.MyGdxGame;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -17,6 +19,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
@@ -29,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -49,25 +54,19 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 public class GameFieldScreen implements Screen {
     public MyGdxGame locGame;
-    //Texture img;
-    //SpriteBatch batch;
-//    OrthographicCamera camera;
-//    Viewport view;
     private float locWidthMeter, locHeightMeter;
-    //Sprite sprite;
     public ShapeRenderer shapeRenderer;
     Stage mainFieldStage;
     private BackgroundActor background;
     private GameField gamefield;
     private Hud hud;
     private Table infoTable;
-    //private Label plr1LabelName, plr2LabelName, plr1Score, plr2Score;
     private Label plrLabelName[], plrScore[];
     public int currentPlayer; //индекс в массиве locGame.plr[] текущего игрока
     public boolean hudEnabled = false; //если истина, то от интерфейса ожидается нажатие (на цвет, например)
     private Dialog NextPlayerMoveDialog, WinningDialog;
     private Label lblWinningDialog, lblWinningName;
-    private TextButton RetryButton, ToMenuButton;
+    //private TextButton RetryButton, ToMenuButton;
     private Label lblNextPlayerDialog;
     private Random random;
     private float nextPlayerDelay = 1.0f;
@@ -76,7 +75,7 @@ public class GameFieldScreen implements Screen {
 
     private boolean isGameEnded;
     //private Label popUpScores;
-    Pool<Label> poolPopUpLabel;
+    private Pool<Label> poolPopUpLabel;
 
 
     private Label lblFps;
@@ -85,18 +84,6 @@ public class GameFieldScreen implements Screen {
         locGame = myGdxGame;
         locWidthMeter = locGame.iWidthMeter;
         locHeightMeter = locGame.iHeightMeter;
-
-        //img = new Texture(Gdx.files.internal("badlogic.jpg"), true);
-        //img.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-
-        //batch = new SpriteBatch();
-
-//        camera = new OrthographicCamera(locWidthMeter, locHeightMeter);
-//        view = new FitViewport(locWidthMeter, locHeightMeter, camera);
-
-
-        //sprite = new Sprite(new Texture(Gdx.files.internal("quad.png")));
-        //sprite.setBounds(0, 0, 4, 4);
 
         NextPlayerMoveDialog = new Dialog("", locGame.skin);
         lblNextPlayerDialog = new Label("", locGame.skin, "popupMessage");
@@ -122,7 +109,8 @@ public class GameFieldScreen implements Screen {
         WinningDialog.button("Сыграть еще", true).row();
         WinningDialog.button("Вернуться в меню", false).row();
 
-        shapeRenderer = new ShapeRenderer();
+        //shapeRenderer = new ShapeRenderer();
+        shapeRenderer = locGame.sr;
 
         mainFieldStage = new Stage(locGame.view);
 
@@ -186,16 +174,94 @@ public class GameFieldScreen implements Screen {
 
         System.out.println("started");
         random = new Random();
+
+        mainFieldStage.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                System.out.println("Gamefield touchDown " + x + ", " + y);
+                return super.touchDown(event, x, y, pointer, button);
+                //return false;
+            }
+
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                //return super.keyDown(event, keycode);
+                System.out.format("key down%n");
+                if ((keycode == Input.Keys.BACK) || (keycode == Input.Keys.ESCAPE)) {
+                    System.out.format("set mainscreen%n");
+                    //сохраняем текущее состояние
+                    SaveGameState();
+
+                    //вызодим в главное меню
+                    locGame.setScreen(locGame.mainMenu);
+                }
+                return false;
+            }
+        });
     }
 /*
     public void GenerateField (int countColIn, Const.CellShape cellType) {
         gamefield.GenerateField(countColIn,cellType); //лучше чтобы кол-во столбцов было кратно 8
     }
 */
+    private void SaveGameState () {
+        Json json = new Json();
+        Preferences prefs = Gdx.app.getPreferences(Const.PreferencesName);
+        //--признак 1-сохраненная игра 0-пусто (после восстановления игры ставить 0)
+        prefs.putBoolean("isGameSaved", true);
+        //--информация о игроках
+        for (int i=0; i<locGame.maxPlr; i++) {
+            prefs.putString("PlayerName"+Integer.toString(i), locGame.plr[i].name);
+            prefs.putInteger("PlayerScore"+Integer.toString(i), locGame.plr[i].score);
+            prefs.putInteger("PlayerColorIdx"+Integer.toString(i), locGame.plr[i].colorIdx);
+            prefs.putBoolean("isAndroid"+Integer.toString(i), locGame.plr[i].isAndroid);
+            prefs.putInteger("deepLevel"+Integer.toString(i), locGame.plr[i].deepLevel);
+        }
+        //prefs.putString("PlayersInfo", json.toJson(locGame.plr));
+        //--чей сейчас ход
+        prefs.putInteger("CurrentPlayer", currentPlayer);
+        //--тип ячеек
+        prefs.putString("CellShape", prevCellShape.toString());
+        //-- количество столбцов
+        prefs.putInteger("ColumnCount", prevFieldSize);
+        //--игровое поле
+        prefs.putString("GameField", json.toJson(gamefield.cells));
+        //System.out.println(json.toJson(gamefield.cells));
+        //сохраним
+        prefs.flush();
+    }
+
+    public void ResumeGame () {
+        Json json = new Json();
+        Preferences prefs = Gdx.app.getPreferences(Const.PreferencesName);
+
+        prevFieldSize = prefs.getInteger("ColumnCount");
+        prevCellShape = Const.CellShape.valueOf(prefs.getString("CellShape"));
+        //--информация о игроках
+        for (int i=0; i<locGame.maxPlr; i++) {
+            locGame.plr[i].name = prefs.getString("PlayerName"+Integer.toString(i));
+            plrLabelName[i].setText(locGame.plr[i].name);
+            locGame.plr[i].score = prefs.getInteger("PlayerScore"+Integer.toString(i));
+            locGame.plr[i].colorIdx = prefs.getInteger("PlayerColorIdx"+Integer.toString(i));
+            locGame.plr[i].isAndroid = prefs.getBoolean("isAndroid"+Integer.toString(i));
+            locGame.plr[i].deepLevel = prefs.getInteger("deepLevel"+Integer.toString(i));
+        }
+        //--чей сейчас ход
+        currentPlayer = prefs.getInteger("CurrentPlayer");
+        //--игровое поле
+        gamefield.cells = json.fromJson(MyCell[].class, prefs.getString("GameField"));
+        //отметим, что игра загружена (чтоб 2 раза не продолжать одну и ту же игру)
+        //prefs.putBoolean("isGameSaved", false);
+        //prefs.flush();
+
+        gamefield.GenerateField(prevFieldSize, prevCellShape, true);
+        StartGameFinalStep();
+    }
+
     public void StartGame(int fieldSize, Const.CellShape inCellShape) {
         prevFieldSize = fieldSize;
         prevCellShape = inCellShape;
-        gamefield.GenerateField(fieldSize, inCellShape); //лучше чтобы кол-во столбцов было кратно 8
+        gamefield.GenerateField(fieldSize, inCellShape, false); //лучше чтобы кол-во столбцов было кратно 8
         //GenerateField(16*2+8*1, Const.CellShape.TRIANGLE);
 
         for (int i=0; i<locGame.maxPlr; i++) {
@@ -206,6 +272,11 @@ public class GameFieldScreen implements Screen {
 
         //решаем какой игрок ходит первым
         currentPlayer = new Random().nextInt(locGame.maxPlr);
+
+        StartGameFinalStep();
+    }
+
+    private void StartGameFinalStep () {
         ColoringPlayers ();
         //разрешаем нажимать кнопки
         hud.colorIdx = -1;
@@ -220,6 +291,7 @@ public class GameFieldScreen implements Screen {
             RunAiThread();
         }
     }
+
 
     @Override
     public void dispose() {
@@ -331,7 +403,7 @@ public class GameFieldScreen implements Screen {
         int maxIndex = 0;
         for (i = 0; i < scores.length; i++) {
             if (deepLevel == (locGame.plr[plrIdx].deepLevel-1)) {
-                System.out.format("scores[%d]=%d%n", i, scores[i]);
+                //System.out.format("scores[%d]=%d%n", i, scores[i]);
             }
             if (scores[maxIndex] < scores[i]) {
                 maxIndex = i;
@@ -341,7 +413,7 @@ public class GameFieldScreen implements Screen {
             }
         }
         if (deepLevel == (locGame.plr[plrIdx].deepLevel-1)) {
-            System.out.format("maxindex=%d%n", maxIndex);
+            //System.out.format("maxindex=%d%n", maxIndex);
             return maxIndex;
         } else {
             return scores[maxIndex];
@@ -351,8 +423,7 @@ public class GameFieldScreen implements Screen {
     private void PopUpScores(int idx, int deltaScore) {
         float x, y;
 
-        //Label popUpScores = new Label("xxx", locGame.skin, "menu-font", Color.YELLOW);
-        System.out.format("poolPopUpLabel.getFree()=%d%n", poolPopUpLabel.getFree());
+        //System.out.format("poolPopUpLabel.getFree()=%d%n", poolPopUpLabel.getFree());
         final Label popUpScores = poolPopUpLabel.obtain();
 
         popUpScores.setVisible(false);
@@ -370,10 +441,10 @@ public class GameFieldScreen implements Screen {
         showAction.setVisible(true);
         VisibleAction hideAction = new VisibleAction();
         hideAction.setVisible(false);
-        RemoveActorAction removeActor = new RemoveActorAction();
+        //RemoveActorAction removeActor = new RemoveActorAction();
         SequenceAction mySequence = new SequenceAction(showAction, moveAction, hideAction, /*removeActor,*/ run(new Runnable() {
             public void run () {
-                System.out.println("Action complete!");
+                //System.out.println("Action complete!");
                 poolPopUpLabel.free(popUpScores);
             }
             }));

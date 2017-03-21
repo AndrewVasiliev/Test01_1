@@ -59,5 +59,5 @@ public class Const {
 
     public static int phaseCount = 16;
 */
-
+    public static String PreferencesName = "SavedGame";
 }

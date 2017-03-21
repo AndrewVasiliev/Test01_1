@@ -220,9 +220,9 @@ public class BaseCell  /*implements Disposable*/ {
 
     private void DrawShape (float locX, float locY, float invertY, float scale, int idx, ShapeRenderer inSR) {
         float scale_invertY = scale * invertY;
-        int k2;
-        for (int k=2; k<vertexCount; k++) {
-            k2 = k * 2;
+        int k2, k;
+        for (k = 2; k<vertexCount; k++) {
+            k2 = k + k;
             inSR.triangle(
                     locX + coord[idx] * scale_invertY,          locY + coord[idx + 1] * scale_invertY,
                     locX + coord[idx + k2] * scale_invertY,     locY + coord[idx + k2 + 1] * scale_invertY,
@@ -235,8 +235,9 @@ public class BaseCell  /*implements Disposable*/ {
 
         //отрисуем фигуру заполненными треугольниками
         //сначала отрисуем полную фигуру
-        inSR.setColor(borderColor);
-        DrawShape(x, y, invertY, maxScale, idx, inSR);
+//для теста попробуем не рисовать контур
+        //inSR.setColor(borderColor);
+        //DrawShape(x, y, invertY, maxScale, idx, inSR);
 
         //теперь чуть меньшую, чтоб получился контур
         if (phaseIdx >= phaseCount/2) {

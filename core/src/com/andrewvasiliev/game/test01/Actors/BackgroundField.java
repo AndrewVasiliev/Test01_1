@@ -22,13 +22,12 @@ public class BackgroundField  extends Actor {
     private float leftX, leftY, widthX, heightY, cellWidth, cellHeight;
     private int countCol, countRow;
     private int phaseCount;
-    private float animationSpeed = 2.0f; //0.5f; //за сколько секунд должна закончиться анимация
+    private float animationSpeed = 1.0f; //0.5f; //за сколько секунд должна закончиться анимация
     private Const.CellShape cellShape;
     private BaseCell cell;
     private int NOBODYCELL = -1; //ячейка никому не принадлежит
     private int WASTECELL = -2; //лишняя ячейка. не отображается. присутствуют в гексах
     private int maxNearby; //количество соседних ячеек. зависит от формы ячеек
-    private int vertexCount;
     private MyCell[] cells;
     private float innerR;
 
@@ -78,24 +77,20 @@ public class BackgroundField  extends Actor {
         switch (cellShape) {
             case RECTANGLE:
                 maxNearby = 4;
-                vertexCount = 4;
                 countRow = (int)(heightY / cellWidth);
                 break;
             case TRIANGLE:
                 maxNearby = 4;
-                vertexCount = 3;
                 countRow = (int)(heightY / cellWidth) * 2;
                 countCol += 1; //увеличим чтобы заполнить весь экран
                 break;
             case RHOMBUS:
                 maxNearby = 4;
-                vertexCount = 4;
                 countRow = (int)(heightY / cellWidth) * 2 +1;
                 countCol += 1;
                 break;
             case HEX:
                 maxNearby = 6;
-                vertexCount = 6;
                 cellWidth = widthX/countCol/1.5f;
                 innerR = cellWidth * (float) Math.sqrt(3) / 2.0f; //внутренний радиус гекса
                 //попробуем вычислять кол-во рядов исходя из размеров фигуры
