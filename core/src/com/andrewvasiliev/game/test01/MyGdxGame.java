@@ -17,6 +17,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+
+//Todo: анимация в главном меню
+//Todo: анимация на игровом поле
+//Todo: локализация
+//Todo: меню настроек (язык, звук)
+//Todo: звуки/музыка
+//Todo: проверить работу на разных экранах/устройствах
+//Todo: устаканить размеры полей (s,m,l,xl)
+//Todo: AI
+
 public class MyGdxGame extends Game {
     public int iWidthMeter, iHeightMeter;
 	public GameFieldScreen gameScreen;
