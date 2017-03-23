@@ -1,32 +1,13 @@
 package com.andrewvasiliev.game.test01.Classes;
 
 import com.badlogic.gdx.graphics.Color;
-import static com.badlogic.gdx.graphics.Color.BLACK;
-import static com.badlogic.gdx.graphics.Color.BLUE;
-import static com.badlogic.gdx.graphics.Color.BROWN;
-import static com.badlogic.gdx.graphics.Color.CHARTREUSE;
-import static com.badlogic.gdx.graphics.Color.CYAN;
-import static com.badlogic.gdx.graphics.Color.FIREBRICK;
-import static com.badlogic.gdx.graphics.Color.FOREST;
-import static com.badlogic.gdx.graphics.Color.GRAY;
-import static com.badlogic.gdx.graphics.Color.GREEN;
-import static com.badlogic.gdx.graphics.Color.MAGENTA;
-import static com.badlogic.gdx.graphics.Color.MAROON;
-import static com.badlogic.gdx.graphics.Color.OLIVE;
-import static com.badlogic.gdx.graphics.Color.ORANGE;
-import static com.badlogic.gdx.graphics.Color.PINK;
-import static com.badlogic.gdx.graphics.Color.PURPLE;
-import static com.badlogic.gdx.graphics.Color.RED;
-import static com.badlogic.gdx.graphics.Color.ROYAL;
-import static com.badlogic.gdx.graphics.Color.TAN;
-import static com.badlogic.gdx.graphics.Color.VIOLET;
-import static com.badlogic.gdx.graphics.Color.WHITE;
+
 /**
  * Created by Andrew on 07.01.2017.
  */
 
 public class Const {
-    public enum CellShape { RECTANGLE, TRIANGLE, RHOMBUS, HEX };
+    public enum CellShape { RECTANGLE, TRIANGLE, RHOMBUS, HEX }
     public static Color[] colorArr = {
        //new Color(0xffE800ff), new Color(0x14A2D4ff), new Color(0xAF5E9Cff), new Color(0x00B16Aff), new Color(0xF7941Eff), new Color(0x00529Cff), Color.LIGHT_GRAY
        //new Color(0x999999ff), new Color(0x33FF00ff), new Color(0x00CC99ff), new Color(0x0099FFff), new Color(0x6633FFff), new Color(0xFF66FFff), new Color(0xFF6666ff)

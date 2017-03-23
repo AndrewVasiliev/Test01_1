@@ -4,11 +4,9 @@ import com.andrewvasiliev.game.test01.MyGdxGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 
 import java.util.Random;
 
@@ -19,11 +17,10 @@ public class BackgroundActor extends Actor {
     private final  TextureRegion starTexture;
     private static int MAXSTARSINLAYER = 30;
     private static int MAXLAYERS = 5;
-    private MyGdxGame locGame;
     private float locHeight, locWight;
 
     private Vector2[] stars;
-    float deltaX, deltaY;
+    private float deltaX, deltaY;
 
 
     private int GetIndex (int layer, int idx) {
@@ -31,9 +28,8 @@ public class BackgroundActor extends Actor {
     }
 
     public BackgroundActor(MyGdxGame myGdxGame) {
-        locGame = myGdxGame;
-        locHeight = locGame.iHeightMeter;
-        locWight = locGame.iWidthMeter;
+        locHeight = myGdxGame.iHeightMeter;
+        locWight = myGdxGame.iWidthMeter;
         starTexture = new TextureRegion(new Texture("star5x5.png"));
         Random random = new Random();
 

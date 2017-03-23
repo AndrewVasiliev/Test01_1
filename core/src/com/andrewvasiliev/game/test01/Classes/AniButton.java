@@ -1,7 +1,6 @@
 package com.andrewvasiliev.game.test01.Classes;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.utils.Disposable;
  */
 
 public class AniButton extends Button implements Disposable {
-    private Const.CellShape cellType = Const.CellShape.HEX;
     private ShapeRenderer sr;
     private AniCell aniCell;
     private float aniZoom = 0.7f;
@@ -21,8 +19,7 @@ public class AniButton extends Button implements Disposable {
     public AniButton(Skin skin, String styleName, Const.CellShape inCellType) {
         super(skin, styleName);
         sr = new ShapeRenderer();
-        cellType = inCellType;
-        aniCell = new AniCell (cellType, sr);
+        aniCell = new AniCell (inCellType, sr);
         CorrectAniPosition();
         CorrectAniZoom(aniZoom);
         aniCell.setAnimationSpeed(0.8f);

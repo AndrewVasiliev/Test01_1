@@ -12,41 +12,26 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.badlogic.gdx.scenes.scene2d.actions.RemoveActorAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.actions.VisibleAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
-import java.util.Arrays;
 import java.util.Random;
 
-import static com.badlogic.gdx.graphics.Color.RED;
-import static com.badlogic.gdx.graphics.Color.abgr8888ToColor;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 /**
  * Created by ava on 23.12.16.
@@ -54,13 +39,13 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 public class GameFieldScreen implements Screen {
     public MyGdxGame locGame;
-    private float locWidthMeter, locHeightMeter;
+    //private float locWidthMeter, locHeightMeter;
     public ShapeRenderer shapeRenderer;
-    Stage mainFieldStage;
-    private BackgroundActor background;
+    private Stage mainFieldStage;
+    //private BackgroundActor background;
     private GameField gamefield;
     private Hud hud;
-    private Table infoTable;
+    //private Table infoTable;
     private Label plrLabelName[], plrScore[];
     public int currentPlayer; //индекс в массиве locGame.plr[] текущего игрока
     public boolean hudEnabled = false; //если истина, то от интерфейса ожидается нажатие (на цвет, например)
@@ -69,7 +54,7 @@ public class GameFieldScreen implements Screen {
     //private TextButton RetryButton, ToMenuButton;
     private Label lblNextPlayerDialog;
     private Random random;
-    private float nextPlayerDelay = 1.0f;
+    //private float nextPlayerDelay = 1.0f;
     private int prevFieldSize;
     private Const.CellShape prevCellShape;
 
@@ -82,8 +67,8 @@ public class GameFieldScreen implements Screen {
 
     public GameFieldScreen(MyGdxGame myGdxGame) {
         locGame = myGdxGame;
-        locWidthMeter = locGame.iWidthMeter;
-        locHeightMeter = locGame.iHeightMeter;
+        float locWidthMeter = locGame.iWidthMeter;
+        float locHeightMeter = locGame.iHeightMeter;
 
         NextPlayerMoveDialog = new Dialog("", locGame.skin);
         lblNextPlayerDialog = new Label("", locGame.skin, "popupMessage");
@@ -114,7 +99,7 @@ public class GameFieldScreen implements Screen {
 
         mainFieldStage = new Stage(locGame.view);
 
-        background = new BackgroundActor(myGdxGame);
+        BackgroundActor background = new BackgroundActor(myGdxGame);
         background.setPosition(0, 0);
 
         float hudHeight = locHeightMeter/9f;
@@ -124,7 +109,7 @@ public class GameFieldScreen implements Screen {
         gamefield = new GameField(this, 0, hudHeight, locWidthMeter, locHeightMeter - hudHeight);
         //gamefield.GenerateField(16*2+8*1, Const.CellShape.RECTANGLE); //лучше чтобы кол-во столбцов было кратно 8
 
-        infoTable = new Table();
+        Table infoTable = new Table();
         infoTable.align(Align.bottom);
         infoTable.setWidth(locWidthMeter);
 
@@ -330,7 +315,7 @@ public class GameFieldScreen implements Screen {
                 NextPlayerMoveDialog.hide();
                 Timer.instance().clear();
             }
-        }, nextPlayerDelay);
+        }, /*nextPlayerDelay*/ 1.0f);
     }
 
     private void RunAiThread() {
@@ -402,9 +387,6 @@ public class GameFieldScreen implements Screen {
 
         int maxIndex = 0;
         for (i = 0; i < scores.length; i++) {
-            if (deepLevel == (locGame.plr[plrIdx].deepLevel-1)) {
-                //System.out.format("scores[%d]=%d%n", i, scores[i]);
-            }
             if (scores[maxIndex] < scores[i]) {
                 maxIndex = i;
             } else if (scores[maxIndex] == scores[i]) {

@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Queue;
 
-import java.util.Arrays;
 import java.util.Random;
 
 
@@ -20,7 +19,7 @@ import java.util.Random;
  */
 
 public class GameField extends Actor {
-    private float leftX, leftY, widthX, heightY, cellWidth, cellHeight;
+    private float leftX, leftY, widthX, heightY;
     private int countCol, countRow;
     private GameFieldScreen locScreen;
     public MyCell[] cells;
@@ -31,7 +30,7 @@ public class GameField extends Actor {
     private int WASTECELL = -2; //лишняя ячейка. не отображается. присутствуют в гексах
     private int maxNearby; //количество соседних ячеек. зависит от формы ячеек
 
-    private Const.CellShape cellShape;
+    //private Const.CellShape cellShape;
 
     private int phaseCount;
     private float animationSpeed = 0.5f; //за сколько секунд должна закончиться анимация
@@ -49,13 +48,12 @@ public class GameField extends Actor {
         phaseCount = 0;
     }
 
-    public void GenerateField (int countColIn, Const.CellShape cellType, boolean isResumed) {
+    public void GenerateField (int countColIn, Const.CellShape cellShape, boolean isResumed) {
         countCol = countColIn;
 
-        cellWidth = widthX/countCol;
-        cellHeight = cellWidth;
+        float cellWidth = widthX/countCol;
+        float cellHeight;
 
-        cellShape = cellType;
         if (cellShape == Const.CellShape.HEX) {
             cellWidth = widthX/countCol/1.5f;
         }

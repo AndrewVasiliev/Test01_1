@@ -1,6 +1,5 @@
 package com.andrewvasiliev.game.test01.Screens;
 
-import com.andrewvasiliev.game.test01.Actors.BackgroundActor;
 import com.andrewvasiliev.game.test01.Actors.BackgroundField;
 import com.andrewvasiliev.game.test01.Classes.Const;
 import com.andrewvasiliev.game.test01.MyGdxGame;
@@ -18,8 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Timer;
 
 /**
  * Created by ava on 06.01.17.
@@ -28,10 +25,10 @@ import com.badlogic.gdx.utils.Timer;
 public class MainMenu implements Screen {
     private MyGdxGame locGame;
     private Stage stage;
-    private Table table;
-    private TextButton startButton, quitButton, resumeGame;
+    //private Table table;
+    private TextButton /*startButton, quitButton,*/ resumeGame;
     //public BackgroundActor backgroundActor;
-    private BackgroundField bf;
+    //private BackgroundField bf;
     private Label lblFps;
 
     public MainMenu(MyGdxGame myGdxGame) {
@@ -39,7 +36,7 @@ public class MainMenu implements Screen {
 
         stage = new Stage (locGame.view);
 
-        table = new Table ();
+        Table table = new Table ();
         table.setFillParent(true);
         //table.setDebug(true);
         //table.setWidth(stage.getWidth());
@@ -47,8 +44,8 @@ public class MainMenu implements Screen {
         //table.setPosition(0, stage.getHeight());
 
         resumeGame = new TextButton("Продолжить игру", locGame.skin, "menuStyle");
-        startButton = new TextButton("Начать игру", locGame.skin, "menuStyle");
-        quitButton = new TextButton("Выйти из игры", locGame.skin, "menuStyle");
+        TextButton startButton = new TextButton("Начать игру", locGame.skin, "menuStyle");
+        TextButton quitButton = new TextButton("Выйти из игры", locGame.skin, "menuStyle");
 
         table.padTop(30);
         table.add(resumeGame).padBottom(30);
@@ -57,7 +54,7 @@ public class MainMenu implements Screen {
         table.row();
         table.add(quitButton);
 
-        final Dialog dialog = new Dialog("Click message", locGame.skin);
+        //final Dialog dialog = new Dialog("Click message", locGame.skin);
 
         resumeGame.addListener(new ClickListener() {
                 @Override
@@ -87,7 +84,7 @@ public class MainMenu implements Screen {
 
         //backgroundActor = new BackgroundActor(locGame);
         //backgroundActor.setPosition(0, 0);
-        bf = new BackgroundField(locGame.sr, 0, 0, locGame.view.getScreenWidth(), locGame.view.getScreenHeight());
+        BackgroundField bf = new BackgroundField(locGame.sr, 0, 0, locGame.view.getScreenWidth(), locGame.view.getScreenHeight());
         bf.GenerateField(16, Const.CellShape.HEX);
 
         //stage.addActor(backgroundActor);

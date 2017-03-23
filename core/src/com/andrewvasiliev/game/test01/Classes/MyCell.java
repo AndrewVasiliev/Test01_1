@@ -1,8 +1,5 @@
 package com.andrewvasiliev.game.test01.Classes;
 
-import com.badlogic.gdx.graphics.Color;
-
-
 
 /**
  * Created by ava on 23.12.16.

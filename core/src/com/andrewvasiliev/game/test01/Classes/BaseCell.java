@@ -8,18 +8,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
-
-import java.util.Arrays;
-
 /**
  * Created by AvA on 18.02.2017.
  */
 
 public class BaseCell  /*implements Disposable*/ {
-    private Const.CellShape cellShape;
+    //private Const.CellShape cellShape;
     private float coord[];
     private int vertexCount, vertexCount2x;
-    private float locWidth, locHeight;
+    private float locHeight;
     private int phaseCount;
 
 
@@ -44,8 +41,7 @@ public class BaseCell  /*implements Disposable*/ {
 
     public BaseCell(Const.CellShape inCellShape, float inWidth/*, float inHeight*/) {
         sqrt3 = (float)Math.sqrt(3f);
-        cellShape = inCellShape;
-        locWidth = inWidth;
+        //cellShape = inCellShape;
         locHeight = 1.0f;
         //invertY = 1.0f; //не перевернуто по вертикали
         //phaseIdx = -1; //состояние покоя
@@ -55,7 +51,7 @@ public class BaseCell  /*implements Disposable*/ {
         //animNonStop = false;
         maxScale = 1.0f;
         minScale = 0.9f;
-        InitCellCoord(cellShape);
+        InitCellCoord(inCellShape);
         CorrectSize(inWidth/*, inHeight*/); //в зависимости от фигуры, высота будет отличаться
     }
 

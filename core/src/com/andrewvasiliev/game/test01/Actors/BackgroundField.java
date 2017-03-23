@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -23,7 +22,7 @@ public class BackgroundField  extends Actor {
     private int countCol, countRow;
     private int phaseCount;
     private float animationSpeed = 1.0f; //0.5f; //за сколько секунд должна закончиться анимация
-    private Const.CellShape cellShape;
+    //private Const.CellShape cellShape;
     private BaseCell cell;
     private int NOBODYCELL = -1; //ячейка никому не принадлежит
     private int WASTECELL = -2; //лишняя ячейка. не отображается. присутствуют в гексах
@@ -66,13 +65,13 @@ public class BackgroundField  extends Actor {
         });
     }
 
-    public void GenerateField (int countColIn, Const.CellShape cellType) {
+    public void GenerateField (int countColIn, Const.CellShape cellShape) {
         countCol = countColIn;
 
         cellWidth = widthX/countCol;
-        cellHeight = cellWidth;
+        //cellHeight = cellWidth;
 
-        cellShape = cellType;
+        //cellShape = cellType;
 
         switch (cellShape) {
             case RECTANGLE:

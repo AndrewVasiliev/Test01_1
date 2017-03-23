@@ -2,7 +2,6 @@ package com.andrewvasiliev.game.test01.Actors;
 
 import com.andrewvasiliev.game.test01.Classes.Const;
 import com.andrewvasiliev.game.test01.Screens.GameFieldScreen;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -16,8 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
  */
 
 public class Hud extends Actor {
-    private float hudWidth, hudHeight, leftX, leftY;
-    public float diametrV, diametrH;
+    private float hudWidth, hudHeight, leftX/*, leftY*/;
+    private float diametrV;
+    public float diametrH;
     public Vector2[] colorButton;
     private GameFieldScreen locScreen;
     private ShapeRenderer sr;
@@ -25,11 +25,11 @@ public class Hud extends Actor {
 
 
 
-    public Hud(GameFieldScreen gameFieldScreen, float x, float y, float hudWidthIn, final float hudHeightIn) {
+    public Hud(GameFieldScreen gameFieldScreen, float x, float leftY, float hudWidthIn, final float hudHeightIn) {
         hudHeight = hudHeightIn;
         hudWidth = hudWidthIn;
         leftX = x;
-        leftY = y;
+        //float leftY = y;
         locScreen = gameFieldScreen;
 
         diametrV = hudHeight; //размер цветных кнопок

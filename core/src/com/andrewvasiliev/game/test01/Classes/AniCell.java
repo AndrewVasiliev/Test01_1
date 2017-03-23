@@ -2,11 +2,7 @@ package com.andrewvasiliev.game.test01.Classes;
 
 //import com.badlogic.gdx.utils.Disposable;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-
-import java.awt.Shape;
-import java.util.Arrays;
 
 /**
  * Created by AvA on 18.02.2017.

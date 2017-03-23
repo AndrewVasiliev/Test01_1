@@ -6,7 +6,6 @@ import com.andrewvasiliev.game.test01.Classes.Const;
 import com.andrewvasiliev.game.test01.MyGdxGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -14,8 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -30,41 +27,40 @@ import com.badlogic.gdx.utils.Align;
 public class PreStartMenu implements Screen {
     private MyGdxGame locGame;
     private Stage stage;
-    private Table table, tblGameType, tblDifficulty, tblFieldType, tblFieldSize;
-    public BackgroundActor backgroundActor;
-    private ButtonGroup btnGroupGameType;
+    //private Table table, tblGameType, tblDifficulty, tblFieldType, tblFieldSize;
+    private BackgroundActor backgroundActor;
+    //private ButtonGroup btnGroupGameType;
     private TextField edPlayer1, edPlayer2;
     private Label lblPlayer1, lblPlayer2;
-    private Label lblDifficulty, lblFieldType, lblFieldSize;
+    //private Label lblDifficulty, lblFieldType, lblFieldSize;
     private ButtonGroup btnGroupDifficulty, btnGroupFielType, btnGroupFielSize;
-    private Button btnEasy, btnMid, btnHard;
-    private Label lblGameType;
-    //private TextButton btnPvP, btnPvAI;
-    private Button btnPvP, btnPvAI, btnSmall, btnMiddle, btnLarge, btnXLarge;
-    private TextButton btnStartGame, btnCancel;
-    private AniButton btnRectangle, btnTriangle, btnRhombus, btnHex;
+    //private Button btnEasy, btnMid, btnHard;
+    //private Label lblGameType;
+    private Button btnPvP/*, btnPvAI, btnSmall, btnMiddle, btnLarge, btnXLarge*/;
+    //private TextButton btnStartGame, btnCancel;
+    //private AniButton btnRectangle, btnTriangle, btnRhombus, btnHex;
 
 
     public PreStartMenu(MyGdxGame myGdxGame) {
         locGame = myGdxGame;
         stage = new Stage (locGame.view);
 
-        table = new Table ();
+        Table table = new Table ();
         table.setFillParent(true);
         //table.pad(30);
         //table.debugAll();
         float cnPad = 5;
 
-        lblGameType = new Label("Игра против", locGame.skin, "default");
+        Label lblGameType = new Label("Игра против", locGame.skin, "default");
         btnPvP = new Button(locGame.skin, "toggleButton");
         btnPvP.add(new Label("Игрока", locGame.skin, "default"));
-        btnPvAI = new Button(locGame.skin, "toggleButton");
+        Button btnPvAI = new Button(locGame.skin, "toggleButton");
         btnPvAI.add(new Label("Андроида", locGame.skin, "default"));
-        tblGameType = new Table();
+        Table tblGameType = new Table();
         tblGameType.add(btnPvP).pad(cnPad);
         tblGameType.add(btnPvAI).pad(cnPad);
 
-        btnGroupGameType = new ButtonGroup(btnPvP, btnPvAI);
+        ButtonGroup btnGroupGameType = new ButtonGroup(btnPvP, btnPvAI);
         btnGroupGameType.setMaxCheckCount(1);
         btnGroupGameType.setMinCheckCount(1);
         btnGroupGameType.setUncheckLast(true);
@@ -111,52 +107,52 @@ public class PreStartMenu implements Screen {
             }
         });
 
-        lblDifficulty = new Label("Сложность Андроида", locGame.skin, "default");
-        btnEasy = new Button(locGame.skin, "toggleButton");
+        Label lblDifficulty = new Label("Сложность Андроида", locGame.skin, "default");
+        Button btnEasy = new Button(locGame.skin, "toggleButton");
         btnEasy.add(new Label("Легкий", locGame.skin, "default"));
-        btnMid = new Button(locGame.skin, "toggleButton");
+        Button btnMid = new Button(locGame.skin, "toggleButton");
         btnMid.add(new Label("Средний", locGame.skin, "default"));
-        btnHard= new Button(locGame.skin, "toggleButton");
+        Button btnHard= new Button(locGame.skin, "toggleButton");
         btnHard.add(new Label("Тяжелый", locGame.skin, "default"));
         btnGroupDifficulty = new ButtonGroup(btnEasy, btnMid, btnHard);
         btnGroupDifficulty.setMaxCheckCount(1);
         btnGroupDifficulty.setMinCheckCount(1);
         btnGroupDifficulty.setUncheckLast(true);
-        tblDifficulty = new Table();
+        Table tblDifficulty = new Table();
         tblDifficulty.add(btnEasy).align(Align.left).pad(cnPad);
         tblDifficulty.add(btnMid).align(Align.left).pad(cnPad);
         tblDifficulty.add(btnHard).align(Align.left).pad(cnPad);
 
         //-- тип ячеек
-        lblFieldType = new Label("Тип ячеек", locGame.skin, "default");
-        btnRectangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RECTANGLE);
+        Label lblFieldType = new Label("Тип ячеек", locGame.skin, "default");
+        AniButton btnRectangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RECTANGLE);
         btnRectangle.add(new Label(" ", locGame.skin, "default"));
-        btnTriangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.TRIANGLE);
+        AniButton btnTriangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.TRIANGLE);
         btnTriangle.add(new Label(" ", locGame.skin, "default"));
-        btnRhombus = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RHOMBUS);
+        AniButton btnRhombus = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RHOMBUS);
         btnRhombus.add(new Label(" ", locGame.skin, "default"));
-        btnHex = new AniButton(locGame.skin, "toggleButton", Const.CellShape.HEX);
+        AniButton btnHex = new AniButton(locGame.skin, "toggleButton", Const.CellShape.HEX);
         btnHex.add(new Label(" ", locGame.skin, "default"));
         btnGroupFielType = new ButtonGroup(btnRectangle, btnTriangle, btnRhombus, btnHex);
         btnGroupFielType.setMaxCheckCount(1);
         btnGroupFielType.setMinCheckCount(1);
         btnGroupFielType.setUncheckLast(true);
 
-        tblFieldType = new Table();
+        Table tblFieldType = new Table();
         tblFieldType.add(btnRectangle).align(Align.left).pad(cnPad);
         tblFieldType.add(btnTriangle).align(Align.left).pad(cnPad);
         tblFieldType.add(btnRhombus).align(Align.left).pad(cnPad);
         tblFieldType.add(btnHex).align(Align.left).pad(cnPad);
 
         //-- размер поля
-        lblFieldSize = new Label("Размер поля", locGame.skin, "default");
-        btnSmall = new Button(locGame.skin, "toggleButton");
+        Label lblFieldSize = new Label("Размер поля", locGame.skin, "default");
+        Button btnSmall = new Button(locGame.skin, "toggleButton");
         btnSmall.add(new Label("S", locGame.skin, "default"));
-        btnMiddle = new Button(locGame.skin, "toggleButton");
+        Button btnMiddle = new Button(locGame.skin, "toggleButton");
         btnMiddle.add(new Label("M", locGame.skin, "default"));
-        btnLarge = new Button(locGame.skin, "toggleButton");
+        Button btnLarge = new Button(locGame.skin, "toggleButton");
         btnLarge.add(new Label("L", locGame.skin, "default"));
-        btnXLarge = new Button(locGame.skin, "toggleButton");
+        Button btnXLarge = new Button(locGame.skin, "toggleButton");
         btnXLarge.add(new Label("XL", locGame.skin, "default"));
 
         btnGroupFielSize = new ButtonGroup(btnSmall, btnMiddle, btnLarge, btnXLarge);
@@ -164,14 +160,14 @@ public class PreStartMenu implements Screen {
         btnGroupFielSize.setMinCheckCount(1);
         btnGroupFielSize.setUncheckLast(true);
 
-        tblFieldSize = new Table();
+        Table tblFieldSize = new Table();
         tblFieldSize.add(btnSmall).align(Align.left).pad(cnPad);
         tblFieldSize.add(btnMiddle).align(Align.left).pad(cnPad);
         tblFieldSize.add(btnLarge).align(Align.left).pad(cnPad);
         tblFieldSize.add(btnXLarge).align(Align.left).pad(cnPad);
 
-        btnStartGame = new TextButton("Начать игру", locGame.skin, "default");
-        btnCancel = new TextButton("Назад", locGame.skin, "default");
+        TextButton btnStartGame = new TextButton("Начать игру", locGame.skin, "default");
+        TextButton btnCancel = new TextButton("Назад", locGame.skin, "default");
 
         btnCancel.addListener(new ClickListener() {
                 @Override
