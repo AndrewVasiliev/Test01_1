@@ -113,7 +113,7 @@ public class GameFieldScreen implements Screen {
         infoTable.align(Align.bottom);
         infoTable.setWidth(locWidthMeter);
 
-        infoTable.background(new Image(new Texture(Gdx.files.internal("quad.png"))).getDrawable());
+        //infoTable.background(new Image(new Texture(Gdx.files.internal("quad.png"))).getDrawable());
 
         infoTable.setPosition(0, hudHeight/2);
         //infoTable.setDebug(true);

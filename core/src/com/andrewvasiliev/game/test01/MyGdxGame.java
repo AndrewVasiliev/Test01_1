@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 //Todo: проверить работу на разных экранах/устройствах
 //Todo: устаканить размеры полей (s,m,l,xl)
 //Todo: AI
+//Todo: возможно стартовые позиции лучше поставить не в углах, а по середине вверху и внизу
 
 public class MyGdxGame extends Game {
     public int iWidthMeter, iHeightMeter;
