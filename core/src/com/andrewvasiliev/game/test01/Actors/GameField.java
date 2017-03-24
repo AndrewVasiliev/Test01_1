@@ -59,6 +59,7 @@ public class GameField extends Actor {
         }
 
         cell = new BaseCell(cellShape, cellWidth/*, cellHeight*/);
+        cell.setScale(1.0f, 0.9f);
         phaseCount = cell.GetPhaseCount();
         cellHeight = (float)Math.floor(cell.GetHeight());
 
