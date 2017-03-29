@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 
+//Todo: сделать слияние областей одного цвета
 //Todo: анимация в главном меню
 //Todo: анимация на игровом поле
 //Todo: локализация
@@ -27,6 +28,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 //Todo: устаканить размеры полей (s,m,l,xl)
 //Todo: AI
 //Todo: возможно стартовые позиции лучше поставить не в углах, а по середине вверху и внизу
+
 
 public class MyGdxGame extends Game {
     public int iWidthMeter, iHeightMeter;
