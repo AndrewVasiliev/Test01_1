@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector3;
  */
 
 public class BaseCell  /*implements Disposable*/ {
-    //private Const.CellShape cellShape;
+    private Const.CellShape cellShape;
     private float coord[];
     private int vertexCount, vertexCount2x;
     private float locHeight;
@@ -41,7 +41,7 @@ public class BaseCell  /*implements Disposable*/ {
 
     public BaseCell(Const.CellShape inCellShape, float inWidth/*, float inHeight*/) {
         sqrt3 = (float)Math.sqrt(3f);
-        //cellShape = inCellShape;
+        cellShape = inCellShape;
         locHeight = 1.0f;
         //invertY = 1.0f; //не перевернуто по вертикали
         //phaseIdx = -1; //состояние покоя
@@ -220,9 +220,9 @@ public class BaseCell  /*implements Disposable*/ {
         for (k = 2; k<vertexCount; k++) {
             k2 = k + k;
             inSR.triangle(
-                    locX + coord[idx] * scale_invertY,          locY + coord[idx + 1] * scale_invertY,
-                    locX + coord[idx + k2] * scale_invertY,     locY + coord[idx + k2 + 1] * scale_invertY,
-                    locX + coord[idx + k2 - 2] * scale_invertY, locY + coord[idx + k2 - 1] * scale_invertY);
+                    locX + coord[idx] * /*scale_invertY*/ scale,          locY + coord[idx + 1] * scale_invertY,
+                    locX + coord[idx + k2] * /*scale_invertY*/ scale,     locY + coord[idx + k2 + 1] * scale_invertY,
+                    locX + coord[idx + k2 - 2] * /*scale_invertY*/ scale, locY + coord[idx + k2 - 1] * scale_invertY);
         }
     }
 
@@ -244,6 +244,46 @@ public class BaseCell  /*implements Disposable*/ {
         }
         DrawShape(x, y, invertY, minScale, idx, inSR);
     }
+
+    public void drawbridge(ShapeRenderer inSR, float bx, float by, float biy, int bcidx, int n, boolean even, float nx, float ny, float niy) {
+        int bidx = 0; //первая вершина стороны базовой фигуры для рисования перемычки
+        int nidx = 0; //первая вершина стороны соседней фигуры для рисования перемычки
+        float scale_biy = minScale * biy;
+        float scale_niy = minScale * niy;
+        switch (cellShape) {
+            case RECTANGLE:
+                bidx = n;
+                nidx = n - 2;
+                break;
+            case TRIANGLE:
+                break;
+            case RHOMBUS:
+                bidx = n;
+                nidx = (n - 2) < 0 ? n + 2 : n - 2;
+                break;
+            case HEX:
+                bidx = n;
+                nidx = (n - 3) < 0 ? n + 3 : n - 3;
+                break;
+        }
+        //bidx += bidx;
+        //nidx += nidx;
+        //цвет возможно и не нужен, т.к. он установлен еще во время рисования фигуры
+        //inSR.setColor(Const.colorArr[bcidx]);
+        inSR.triangle(
+                bx + coord[bidx * 2    ] * minScale, by + coord[bidx * 2 + 1] * scale_biy,
+                bx + coord[((bidx+1) == vertexCount ? 0 : (bidx + 1)) * 2] * minScale, by + coord[((bidx+1) == vertexCount ? 0 : (bidx + 1)) * 2 + 1] * scale_biy,
+                nx + coord[nidx * 2] * minScale, ny + coord[nidx * 2 + 1] * scale_niy
+        );
+        inSR.triangle(
+                bx + coord[bidx * 2    ] * minScale, by + coord[bidx * 2 + 1] * scale_biy,
+                nx + coord[nidx * 2] * minScale, ny + coord[nidx * 2 + 1] * scale_niy,
+                nx + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2] * minScale, ny + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2 + 1] * scale_niy
+                //nx + coord[((nidx + 1) % vertexCount) * 2] * minScale, ny + coord[((nidx + 1) % vertexCount) * 2 + 1] * scale_niy
+        );
+
+    }
+
 
 //    @Override
 //    public void dispose() {

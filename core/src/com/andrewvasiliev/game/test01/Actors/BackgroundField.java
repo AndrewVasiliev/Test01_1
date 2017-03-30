@@ -29,6 +29,7 @@ public class BackgroundField  extends Actor {
     private int maxNearby; //количество соседних ячеек. зависит от формы ячеек
     private MyCell[] cells;
     private float innerR;
+    private boolean solidField; // если true, то оласти с одним цветом сливаются
 
     public BackgroundField(ShapeRenderer inSR, float x, float y, float width, float height) {
         leftX = x;
@@ -38,6 +39,7 @@ public class BackgroundField  extends Actor {
         countCol = 0;
         countRow = 0;
         sr = inSR;
+        solidField = true;
         //phaseCount = 16;
         setBounds(x, y, width, height);
 
@@ -72,39 +74,36 @@ public class BackgroundField  extends Actor {
         //cellHeight = cellWidth;
 
         //cellShape = cellType;
-
-        switch (cellShape) {
-            case RECTANGLE:
-                maxNearby = 4;
-                countRow = (int)(heightY / cellWidth);
-                break;
-            case TRIANGLE:
-                maxNearby = 4;
-                countRow = (int)(heightY / cellWidth) * 2;
-                countCol += 1; //увеличим чтобы заполнить весь экран
-                break;
-            case RHOMBUS:
-                maxNearby = 4;
-                countRow = (int)(heightY / cellWidth) * 2 +1;
-                countCol += 1;
-                break;
-            case HEX:
-                maxNearby = 6;
-                cellWidth = widthX/countCol/1.5f;
-                innerR = cellWidth * (float) Math.sqrt(3) / 2.0f; //внутренний радиус гекса
-                //попробуем вычислять кол-во рядов исходя из размеров фигуры
-                countRow = (int)(heightY / innerR) * 2 + 3;
-                countCol += 1;
-                //cellHeight = cellWidth;//heightY/countRow*2.0f;
-                //leftX += cellWidth / 4; //сдвинем на половину радиуса, т.к. справа получается пустота шириной в радиус
-                break;
-        }
-
         cell = new BaseCell(cellShape, cellWidth/*, cellHeight*/);
         cell.setScale(1.0f, 0.9f);
         phaseCount = cell.GetPhaseCount();
         cellHeight = (float)Math.floor(cell.GetHeight());
 
+        switch (cellShape) {
+            case RECTANGLE:
+                maxNearby = 4;
+                countRow = (int)(heightY / cellHeight);
+                break;
+            case TRIANGLE:
+                maxNearby = 4;
+                countRow = (int)(heightY / cellHeight) * 2 + 2;
+                countCol += 1; //увеличим чтобы заполнить весь экран
+                break;
+            case RHOMBUS:
+                maxNearby = 4;
+                countRow = (int)(heightY / cellHeight) * 2 +1;
+                countCol += 1;
+                break;
+            case HEX:
+                maxNearby = 6;
+                innerR = cellHeight / 2.0f; //внутренний радиус гекса
+                //попробуем вычислять кол-во рядов исходя из размеров фигуры
+                countRow = (int)(heightY / cellHeight) * 2 + 4;
+                countCol += 1;
+                //cellHeight = cellWidth;//heightY/countRow*2.0f;
+                //leftX += cellWidth / 4; //сдвинем на половину радиуса, т.к. справа получается пустота шириной в радиус
+                break;
+        }
 
         Random random = new Random();
 
@@ -215,7 +214,7 @@ public class BackgroundField  extends Actor {
                         _x = leftX + (float)j * cellWidth/2.0f*3 +
                                 (even ? 0 : cellWidth/2.0f*1.5f); //для нечетных рядов сдвигаем
                         //_y = leftY + heightY - (float)i * cellHeight/2.0f - cellHeight/2.0f;
-                        _y = leftY + heightY - (float)i * innerR/2.0f; //т.к. гекс по высоте меньше чем по ширине, то используем в расчетах внутренний радиус
+                        _y = leftY + heightY - (float)i * innerR + innerR; //т.к. гекс по высоте меньше чем по ширине, то используем в расчетах внутренний радиус
                         /*if (!even && j==(countCol-1)) {
                             cells[currIdx].owner = WASTECELL; //метим лишние(выходят за пределы экрана) ячейки
                         }*/
@@ -282,30 +281,59 @@ public class BackgroundField  extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
         float locDelta = Gdx.graphics.getDeltaTime();
+        int ni;
+        int i;
+        boolean even;
         batch.end();
         sr.begin(ShapeRenderer.ShapeType.Filled);
-        for (int i=0; i<cells.length; i++) {
-            if (cells[i].owner == WASTECELL) {continue;} //неотображаемые ячейки (лишние)
+        for (int m=0; m<countRow; m++) {
+            for (int j=0; j<countCol; j++) {
+                even = (m & 1) == 0; // четный ряд?
+                i = GetIndex(j, m);
+                //for (int i=0; i<cells.length; i++) {
+                if (cells[i].owner == WASTECELL) {
+                    continue;
+                } //неотображаемые ячейки (лишние)
 
-            if (cells[i].phaseIdx != -1) { //-1 состояние покоя и фаза 0
-                cells[i].animDuration += locDelta;
-                cells[i].phaseIdx = (int)(cells[i].animDuration/(animationSpeed/(float)phaseCount));
-                if (cells[i].phaseIdx >= phaseCount) {
+                if (cells[i].phaseIdx != -1) { //-1 состояние покоя и фаза 0
+                    cells[i].animDuration += locDelta;
+                    cells[i].phaseIdx = (int) (cells[i].animDuration / (animationSpeed / (float) phaseCount));
+                    if (cells[i].phaseIdx >= phaseCount) {
 
-                    cells[i].phaseIdx = -1;
-                    cells[i].animDuration = 0.0f;
+                        cells[i].phaseIdx = -1;
+                        cells[i].animDuration = 0.0f;
 
-                    //для теста бесконечного вращения (начало)
-                    //cells[i].phaseIdx = 0;
-                    //cells[i].animDuration -= animationSpeed;
-                    //для теста (конец)
+                        //для теста бесконечного вращения (начало)
+                        //cells[i].phaseIdx = 0;
+                        //cells[i].animDuration -= animationSpeed;
+                        //для теста (конец)
 
 
-                    cells[i].colorIdx = cells[i].colorIdxNext;
+                        cells[i].colorIdx = cells[i].colorIdxNext;
+                    }
+                }
+
+                cell.draw(cells[i].x, cells[i].y, cells[i].invertY, cells[i].phaseIdx, cells[i].colorIdx, cells[i].colorIdxNext, sr, Const.borderColor);
+
+                //отрисовка перемычек для слияния одинаковых цветов в единое целое
+                if (solidField && (cells[i].phaseIdx == -1)) {
+                    //если ячейка в состоянии покоя и опция solidField включена, то рисуем перемычки для одинаковых соседей
+                    for (int k = 0; k < maxNearby; k++) {
+                        ni = cells[i].nearby[k];
+                        if (ni == -1) {
+                            continue;
+                        }
+                        if ((ni <= i) || (cells[i].colorIdx != cells[ni].colorIdx)) {
+                            //перемычки рисуем только для индексов больших чем текущий, ну и для одинаковых цветов
+                            continue;
+                        }
+                        cell.drawbridge(
+                                sr,
+                                cells[i].x, cells[i].y, cells[i].invertY, cells[i].colorIdx, k, even,
+                                cells[ni].x, cells[ni].y, cells[i].invertY );
+                    }
                 }
             }
-
-            cell.draw(cells[i].x, cells[i].y, cells[i].invertY, cells[i].phaseIdx, cells[i].colorIdx, cells[i].colorIdxNext, sr, Const.borderColor);
         }
         sr.end();
         batch.begin();
