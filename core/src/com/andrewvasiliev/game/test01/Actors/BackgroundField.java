@@ -287,6 +287,7 @@ public class BackgroundField  extends Actor {
         boolean even;
         batch.end();
         sr.begin(ShapeRenderer.ShapeType.Filled);
+        //sr.begin(ShapeRenderer.ShapeType.Line);
         for (int m=0; m<countRow; m++) {
             for (int j=0; j<countCol; j++) {
                 even = (m & 1) == 0; // четный ряд?
@@ -324,20 +325,30 @@ public class BackgroundField  extends Actor {
                         if (ni == -1) {
                             continue;
                         }
-                        if ((ni <= i) || (cells[i].colorIdx != cells[ni].colorIdx)) {
+                        //если оставить этот кусочек условия, то рисовать по два раза одно и то же будет, но зато все выглядит красиво
+                        //если убрать (как сейчас), то рисовать будет меньше, но появятся огрехи у "ушек перемычек"
+                        if (/*(ni <= i) ||*/ (cells[i].colorIdx != cells[ni].colorIdx)) {
                             //перемычки рисуем только для индексов больших чем текущий, ну и для одинаковых цветов
                             continue;
                         }
                         cell.drawbridge(
                                 sr,
                                 cells[i].x, cells[i].y, cells[i].invertY, cells[i].colorIdx, k, even,
-                                cells[ni].x, cells[ni].y, cells[i].invertY );
+                                cells[ni].x, cells[ni].y, cells[i].invertY,
+                                isColorMatch(ni, cells[i].nearby[(k-1)<0?(maxNearby-1):(k-1)]), isColorMatch(ni, cells[i].nearby[(k+1)==maxNearby?0:(k+1)]) );
                     }
                 }
             }
         }
         sr.end();
         batch.begin();
+    }
+
+    private boolean isColorMatch (int idx, int idxNearby) {
+        if (idxNearby == -1) {
+            return false;
+        }
+        return cells[idx].colorIdx == cells [idxNearby].colorIdx;
     }
 
     @Override

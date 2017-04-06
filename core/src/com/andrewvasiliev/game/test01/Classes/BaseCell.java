@@ -245,7 +245,8 @@ public class BaseCell  /*implements Disposable*/ {
         DrawShape(x, y, invertY, minScale, idx, inSR);
     }
 
-    public void drawbridge(ShapeRenderer inSR, float bx, float by, float biy, int bcidx, int n, boolean even, float nx, float ny, float niy) {
+    public void drawbridge(ShapeRenderer inSR, float bx, float by, float biy, int bcidx, int n, boolean even, float nx, float ny, float niy,
+                           boolean prevNearby, boolean nextNearby) {
         int bidx = 0; //первая вершина стороны базовой фигуры для рисования перемычки
         int nidx = 0; //первая вершина стороны соседней фигуры для рисования перемычки
         float scale_biy = minScale * biy;
@@ -253,7 +254,7 @@ public class BaseCell  /*implements Disposable*/ {
         switch (cellShape) {
             case RECTANGLE:
                 bidx = n;
-                nidx = n - 2;
+                nidx = (n - 2) < 0 ? n + 2 : n - 2;
                 break;
             case TRIANGLE:
                 break;
@@ -281,17 +282,21 @@ public class BaseCell  /*implements Disposable*/ {
                 nx + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2] * minScale, ny + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2 + 1] * scale_niy
                 //nx + coord[((nidx + 1) % vertexCount) * 2] * minScale, ny + coord[((nidx + 1) % vertexCount) * 2 + 1] * scale_niy
         );
-//перемычки
-        inSR.triangle(
-                bx + coord[((bidx+1) == vertexCount ? 0 : (bidx + 1)) * 2] * minScale, by + coord[((bidx+1) == vertexCount ? 0 : (bidx + 1)) * 2 + 1] * scale_biy,
-                bx + coord[((bidx+1) == vertexCount ? 0 : (bidx + 1)) * 2]           , by + coord[((bidx+1) == vertexCount ? 0 : (bidx + 1)) * 2 + 1] * biy,
-                nx + coord[nidx * 2] * minScale, ny + coord[nidx * 2 + 1] * scale_niy
-        );
-        inSR.triangle(
-                bx + coord[bidx * 2    ] * minScale, by + coord[bidx * 2 + 1] * scale_biy,
-                nx + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2]           , ny + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2 + 1] * niy,
-                nx + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2] * minScale, ny + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2 + 1] * scale_niy
-        );
+//ушки у перемычек
+        if (nextNearby) {
+            inSR.triangle(
+                    bx + coord[((bidx + 1) == vertexCount ? 0 : (bidx + 1)) * 2] * minScale, by + coord[((bidx + 1) == vertexCount ? 0 : (bidx + 1)) * 2 + 1] * scale_biy,
+                    bx + coord[((bidx + 1) == vertexCount ? 0 : (bidx + 1)) * 2], by + coord[((bidx + 1) == vertexCount ? 0 : (bidx + 1)) * 2 + 1] * biy,
+                    nx + coord[nidx * 2] * minScale, ny + coord[nidx * 2 + 1] * scale_niy
+            );
+        }
+        if (prevNearby) {
+            inSR.triangle(
+                    bx + coord[bidx * 2] * minScale, by + coord[bidx * 2 + 1] * scale_biy,
+                    nx + coord[((nidx + 1) == vertexCount ? 0 : (nidx + 1)) * 2], ny + coord[((nidx + 1) == vertexCount ? 0 : (nidx + 1)) * 2 + 1] * niy,
+                    nx + coord[((nidx + 1) == vertexCount ? 0 : (nidx + 1)) * 2] * minScale, ny + coord[((nidx + 1) == vertexCount ? 0 : (nidx + 1)) * 2 + 1] * scale_niy
+            );
+        }
 
     }
 
