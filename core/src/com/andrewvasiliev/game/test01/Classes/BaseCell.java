@@ -281,6 +281,17 @@ public class BaseCell  /*implements Disposable*/ {
                 nx + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2] * minScale, ny + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2 + 1] * scale_niy
                 //nx + coord[((nidx + 1) % vertexCount) * 2] * minScale, ny + coord[((nidx + 1) % vertexCount) * 2 + 1] * scale_niy
         );
+//перемычки
+        inSR.triangle(
+                bx + coord[((bidx+1) == vertexCount ? 0 : (bidx + 1)) * 2] * minScale, by + coord[((bidx+1) == vertexCount ? 0 : (bidx + 1)) * 2 + 1] * scale_biy,
+                bx + coord[((bidx+1) == vertexCount ? 0 : (bidx + 1)) * 2]           , by + coord[((bidx+1) == vertexCount ? 0 : (bidx + 1)) * 2 + 1] * biy,
+                nx + coord[nidx * 2] * minScale, ny + coord[nidx * 2 + 1] * scale_niy
+        );
+        inSR.triangle(
+                bx + coord[bidx * 2    ] * minScale, by + coord[bidx * 2 + 1] * scale_biy,
+                nx + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2]           , ny + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2 + 1] * niy,
+                nx + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2] * minScale, ny + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2 + 1] * scale_niy
+        );
 
     }
 

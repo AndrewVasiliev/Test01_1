@@ -245,8 +245,9 @@ public class BackgroundField  extends Actor {
                         }
                         break;
                 }
-
+//для теста перемычек
                 cells[currIdx].colorIdx = random.nextInt(Const.ColorCount);
+                //cells[currIdx].colorIdx = 4;//random.nextInt(Const.ColorCount);
                 cells[currIdx].colorIdxNext = cells[currIdx].colorIdx;
                 cells[currIdx].phaseIdx = 0;
                 cells[currIdx].animDuration = 0f;
