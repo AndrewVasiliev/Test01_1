@@ -257,7 +257,8 @@ public class BaseCell  /*implements Disposable*/ {
                 nidx = (n - 2) < 0 ? n + 2 : n - 2;
                 break;
             case TRIANGLE:
-                break;
+                return;
+                //break;
             case RHOMBUS:
                 bidx = n;
                 nidx = (n - 2) < 0 ? n + 2 : n - 2;

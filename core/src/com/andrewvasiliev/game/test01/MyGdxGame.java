@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-
+//Todo: изменить расположение для треугольных ячеек (сделать в виде цветка)
 //Todo: сделать слияние областей одного цвета
 //Todo: анимация в главном меню
 //Todo: анимация на игровом поле
