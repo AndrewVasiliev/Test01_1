@@ -85,9 +85,17 @@ public class BackgroundField  extends Actor {
                 countRow = (int)(heightY / cellHeight);
                 break;
             case TRIANGLE:
+                //новый вариант расположения
+                maxNearby = 3;
+                countRow = (int)(heightY / cellHeight) + 2;
+                countCol += countCol - 1 + 2;
+
+                //старый вариант расположения
+/*
                 maxNearby = 4;
                 countRow = (int)(heightY / cellHeight) * 2 + 2;
                 countCol += 1; //увеличим чтобы заполнить весь экран
+*/
                 break;
             case RHOMBUS:
                 maxNearby = 4;
@@ -149,14 +157,38 @@ public class BackgroundField  extends Actor {
                         }
                         break;
                     case TRIANGLE:
+                        //новый вариант расположения
+                        cells[currIdx].invertY = (((j&1)^(i&1))==0) ? 1.0f : -1.0f;
+                        _x = leftX + cellWidth/2.0f * (float)(j+1) - cellWidth/2.0f ;
+                        _y = leftY + heightY - (float)i * cellHeight -
+                                (float)Math.floor(cells[currIdx].invertY == -1.0f ? (float)Math.sqrt(3) * cellWidth / 6f : (float)Math.sqrt(3) * cellWidth / 3f);
+                        //заполним индексы соседних ячеек
+                        for (int k=0; k<maxNearby; k++) {
+                            nx = j;
+                            ny = i;
+                            if (cells[currIdx].invertY == 1.0f) {
+                                switch (k) {
+                                    case 0: nx--; break;
+                                    case 1: nx++; break;
+                                    case 2: ny++; break;
+                                }
+                            } else {
+                                switch (k) {
+                                    case 0: nx--; break;
+                                    case 1: nx++; break;
+                                    case 2: ny--; break;
+                                }
+                            }
+                            cells[currIdx].nearby[k] = (nx >= 0 && nx < countCol && ny >= 0 && ny < countRow) ? GetIndex(nx, ny) : -1;
+                        }
+
+                        //старый вариант расположения
+/*
                         cells[currIdx].invertY = even ? -1.0f : 1.0f;
                         _x = leftX + (float)j * cellWidth + cellWidth/2.0f +
                                 (even ? 0 : cellWidth/2) - cellWidth/2; //для четных рядов сдвигаем и просто сдвигаем влево, чтобы заполнить весь єкран
                         _y = leftY + heightY - (float)Math.floor(even ? (float)Math.sqrt(3) * cellWidth / 6f : (float)Math.sqrt(3) * cellWidth / 3f) -
                                 (float)(i/2) * cellHeight;
-                        /*if (!even && j==(countCol-1)) {
-                            cells[currIdx].owner = WASTECELL; //метим лишние(выходят за пределы экрана) ячейки
-                        }*/
                         //заполним индексы соседних ячеек
                         for (int k=0; k<maxNearby; k++) {
                             nx = j;
@@ -178,6 +210,7 @@ public class BackgroundField  extends Actor {
                             }
                             cells[currIdx].nearby[k] = (nx>=0 && nx <countCol && ny>=0 && ny<countRow) ? GetIndex(nx, ny) : -1;
                         }
+*/
                         break;
                     case RHOMBUS:
                         cells[currIdx].invertY = 1.0f;
