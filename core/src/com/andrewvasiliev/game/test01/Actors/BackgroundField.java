@@ -367,7 +367,7 @@ public class BackgroundField  extends Actor {
                         cell.drawbridge(
                                 sr,
                                 cells[i].x, cells[i].y, cells[i].invertY, cells[i].colorIdx, k, even,
-                                cells[ni].x, cells[ni].y, cells[i].invertY,
+                                cells[ni].x, cells[ni].y, cells[ni].invertY,
                                 isColorMatch(ni, cells[i].nearby[(k-1)<0?(maxNearby-1):(k-1)]), isColorMatch(ni, cells[i].nearby[(k+1)==maxNearby?0:(k+1)]) );
                     }
                 }

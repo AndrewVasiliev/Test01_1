@@ -257,8 +257,14 @@ public class BaseCell  /*implements Disposable*/ {
                 nidx = (n - 2) < 0 ? n + 2 : n - 2;
                 break;
             case TRIANGLE:
-                return;
-                //break;
+                //return;
+                bidx = n;
+                if (biy == 1.0f) {
+                    nidx = (n == 2) ? n : n ^ 1;
+                } else {
+                    return;
+                }
+                break;
             case RHOMBUS:
                 bidx = n;
                 nidx = (n - 2) < 0 ? n + 2 : n - 2;
@@ -273,32 +279,37 @@ public class BaseCell  /*implements Disposable*/ {
         //цвет возможно и не нужен, т.к. он установлен еще во время рисования фигуры
         //inSR.setColor(Const.colorArr[bcidx]);
         inSR.triangle(
-                bx + coord[bidx * 2    ] * minScale, by + coord[bidx * 2 + 1] * scale_biy,
-                bx + coord[((bidx+1) == vertexCount ? 0 : (bidx + 1)) * 2] * minScale, by + coord[((bidx+1) == vertexCount ? 0 : (bidx + 1)) * 2 + 1] * scale_biy,
-                nx + coord[nidx * 2] * minScale, ny + coord[nidx * 2 + 1] * scale_niy
+                bx + coord[bidx * 2    ] * minScale        , by + coord[bidx * 2 + 1] * scale_biy,
+                bx + coord[FixIdx(bidx + 1) * 2] * minScale, by + coord[FixIdx(bidx + 1) * 2 + 1] * scale_biy,
+                nx + coord[nidx * 2] * minScale            , ny + coord[nidx * 2 + 1] * scale_niy
         );
         inSR.triangle(
-                bx + coord[bidx * 2    ] * minScale, by + coord[bidx * 2 + 1] * scale_biy,
-                nx + coord[nidx * 2] * minScale, ny + coord[nidx * 2 + 1] * scale_niy,
-                nx + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2] * minScale, ny + coord[((nidx+1) == vertexCount ? 0 : (nidx + 1)) * 2 + 1] * scale_niy
+                bx + coord[bidx * 2    ] * minScale        , by + coord[bidx * 2 + 1] * scale_biy,
+                nx + coord[nidx * 2] * minScale            , ny + coord[nidx * 2 + 1] * scale_niy,
+                nx + coord[FixIdx(nidx + 1) * 2] * minScale, ny + coord[FixIdx(nidx + 1) * 2 + 1] * scale_niy
                 //nx + coord[((nidx + 1) % vertexCount) * 2] * minScale, ny + coord[((nidx + 1) % vertexCount) * 2 + 1] * scale_niy
         );
 //ушки у перемычек
+
         if (nextNearby) {
             inSR.triangle(
-                    bx + coord[((bidx + 1) == vertexCount ? 0 : (bidx + 1)) * 2] * minScale, by + coord[((bidx + 1) == vertexCount ? 0 : (bidx + 1)) * 2 + 1] * scale_biy,
-                    bx + coord[((bidx + 1) == vertexCount ? 0 : (bidx + 1)) * 2], by + coord[((bidx + 1) == vertexCount ? 0 : (bidx + 1)) * 2 + 1] * biy,
-                    nx + coord[nidx * 2] * minScale, ny + coord[nidx * 2 + 1] * scale_niy
+                    bx + coord[FixIdx(bidx + 1) * 2] * minScale, by + coord[FixIdx(bidx + 1) * 2 + 1] * scale_biy,
+                    bx + coord[FixIdx(bidx + 1) * 2]           , by + coord[FixIdx(bidx + 1) * 2 + 1] * biy,
+                    nx + coord[nidx * 2] * minScale            , ny + coord[nidx * 2 + 1] * scale_niy
             );
         }
         if (prevNearby) {
             inSR.triangle(
-                    bx + coord[bidx * 2] * minScale, by + coord[bidx * 2 + 1] * scale_biy,
-                    nx + coord[((nidx + 1) == vertexCount ? 0 : (nidx + 1)) * 2], ny + coord[((nidx + 1) == vertexCount ? 0 : (nidx + 1)) * 2 + 1] * niy,
-                    nx + coord[((nidx + 1) == vertexCount ? 0 : (nidx + 1)) * 2] * minScale, ny + coord[((nidx + 1) == vertexCount ? 0 : (nidx + 1)) * 2 + 1] * scale_niy
+                    bx + coord[bidx * 2] * minScale            , by + coord[bidx * 2 + 1] * scale_biy,
+                    nx + coord[FixIdx(nidx + 1) * 2]           , ny + coord[FixIdx(nidx + 1) * 2 + 1] * niy,
+                    nx + coord[FixIdx(nidx + 1) * 2] * minScale, ny + coord[FixIdx(nidx + 1) * 2 + 1] * scale_niy
             );
         }
 
+    }
+
+    private int FixIdx (int idx) {
+        return (idx == vertexCount) ? 0 : idx ;
     }
 
 
