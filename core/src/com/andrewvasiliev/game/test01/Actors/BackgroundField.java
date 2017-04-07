@@ -360,8 +360,7 @@ public class BackgroundField  extends Actor {
                         }
                         //если оставить этот кусочек условия, то рисовать по два раза одно и то же будет, но зато все выглядит красиво
                         //если убрать (как сейчас), то рисовать будет меньше, но появятся огрехи у "ушек перемычек"
-                        if (/*(ni <= i) ||*/ (cells[i].colorIdx != cells[ni].colorIdx)) {
-                            //перемычки рисуем только для индексов больших чем текущий, ну и для одинаковых цветов
+                        if (/*(ni <= i) ||*/ (cells[i].colorIdx != cells[ni].colorIdx) || (cells[ni].phaseIdx != -1)) {
                             continue;
                         }
                         cell.drawbridge(
