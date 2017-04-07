@@ -85,7 +85,7 @@ public class MainMenu implements Screen {
         //backgroundActor = new BackgroundActor(locGame);
         //backgroundActor.setPosition(0, 0);
         BackgroundField bf = new BackgroundField(locGame.sr, 0, 0, locGame.view.getScreenWidth(), locGame.view.getScreenHeight());
-        bf.GenerateField(18, Const.CellShape.TRIANGLE);
+        bf.GenerateField(12, Const.CellShape.HEX);
 
         //stage.addActor(backgroundActor);
         stage.addActor(bf);

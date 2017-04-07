@@ -82,7 +82,7 @@ public class BackgroundField  extends Actor {
         switch (cellShape) {
             case RECTANGLE:
                 maxNearby = 4;
-                countRow = (int)(heightY / cellHeight);
+                countRow = (int)(heightY / cellHeight) + 1;
                 break;
             case TRIANGLE:
                 //новый вариант расположения
@@ -99,7 +99,7 @@ public class BackgroundField  extends Actor {
                 break;
             case RHOMBUS:
                 maxNearby = 4;
-                countRow = (int)(heightY / cellHeight) * 2 +1;
+                countRow = (int)(heightY / cellHeight) * 2 +3;
                 countCol += 1;
                 break;
             case HEX:
@@ -216,7 +216,7 @@ public class BackgroundField  extends Actor {
                         cells[currIdx].invertY = 1.0f;
                         _x = leftX + (float)j * cellWidth + cellWidth/2.0f +
                                 (even ? 0 : cellWidth/2) - cellWidth/2; //для нечетных рядов сдвигаем
-                        _y = leftY + heightY - (float)i * cellHeight/2.0f - cellHeight/2.0f + cellHeight/2.0f;
+                        _y = leftY + heightY - (float)i * cellHeight/2.0f;
                         if (!even && j==(countCol-1)) {
                             cells[currIdx].owner = WASTECELL; //метим лишние(выходят за пределы экрана) ячейки
                         }
@@ -365,7 +365,7 @@ public class BackgroundField  extends Actor {
                         }
                         cell.drawbridge(
                                 sr,
-                                cells[i].x, cells[i].y, cells[i].invertY, cells[i].colorIdx, k, even,
+                                cells[i].x, cells[i].y, cells[i].invertY, k,
                                 cells[ni].x, cells[ni].y, cells[ni].invertY,
                                 isColorMatch(ni, cells[i].nearby[(k-1)<0?(maxNearby-1):(k-1)]), isColorMatch(ni, cells[i].nearby[(k+1)==maxNearby?0:(k+1)]) );
                     }

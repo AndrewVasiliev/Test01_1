@@ -245,7 +245,7 @@ public class BaseCell  /*implements Disposable*/ {
         DrawShape(x, y, invertY, minScale, idx, inSR);
     }
 
-    public void drawbridge(ShapeRenderer inSR, float bx, float by, float biy, int bcidx, int n, boolean even, float nx, float ny, float niy,
+    public void drawbridge(ShapeRenderer inSR, float bx, float by, float biy, int n, float nx, float ny, float niy,
                            boolean prevNearby, boolean nextNearby) {
         int bidx = 0; //первая вершина стороны базовой фигуры для рисования перемычки
         int nidx = 0; //первая вершина стороны соседней фигуры для рисования перемычки
@@ -257,14 +257,7 @@ public class BaseCell  /*implements Disposable*/ {
                 nidx = (n - 2) < 0 ? n + 2 : n - 2;
                 break;
             case TRIANGLE:
-                //return;
                 bidx = n;
-                /*
-                if (biy == 1.0f) {
-                    nidx = (n == 2) ? n : n ^ 1;
-                } else {
-                    return;
-                }*/
                 nidx = (n == 2) ? n : n ^ 1;
                 break;
             case RHOMBUS:
@@ -277,7 +270,6 @@ public class BaseCell  /*implements Disposable*/ {
                 break;
         }
         if (cellShape == Const.CellShape.TRIANGLE) {
-
             inSR.triangle(
                     bx + coord[bidx * 2] * minScale            , by + coord[bidx * 2 + 1] * scale_biy,
                     bx + coord[FixIdx(bidx + 1) * 2] * minScale, by + coord[FixIdx(bidx + 1) * 2 + 1] * scale_biy,
@@ -290,7 +282,6 @@ public class BaseCell  /*implements Disposable*/ {
             );
 
             //ушки у перемычек
-
             if (nextNearby) {
                 inSR.triangle(
                         bx + coord[FixIdx(bidx + 1) * 2] * minScale, by + coord[FixIdx(bidx + 1) * 2 + 1] * scale_biy,
@@ -325,14 +316,14 @@ public class BaseCell  /*implements Disposable*/ {
             if (nextNearby) {
                 inSR.triangle(
                         bx + coord[FixIdx(bidx + 1) * 2] * minScale, by + coord[FixIdx(bidx + 1) * 2 + 1] * scale_biy,
-                        bx + coord[FixIdx(bidx + 1) * 2], by + coord[FixIdx(bidx + 1) * 2 + 1] * biy,
-                        nx + coord[nidx * 2] * minScale, ny + coord[nidx * 2 + 1] * scale_niy
+                        bx + coord[FixIdx(bidx + 1) * 2]           , by + coord[FixIdx(bidx + 1) * 2 + 1] * biy,
+                        nx + coord[nidx * 2] * minScale            , ny + coord[nidx * 2 + 1] * scale_niy
                 );
             }
             if (prevNearby) {
                 inSR.triangle(
-                        bx + coord[bidx * 2] * minScale, by + coord[bidx * 2 + 1] * scale_biy,
-                        nx + coord[FixIdx(nidx + 1) * 2], ny + coord[FixIdx(nidx + 1) * 2 + 1] * niy,
+                        bx + coord[bidx * 2] * minScale            , by + coord[bidx * 2 + 1] * scale_biy,
+                        nx + coord[FixIdx(nidx + 1) * 2]           , ny + coord[FixIdx(nidx + 1) * 2 + 1] * niy,
                         nx + coord[FixIdx(nidx + 1) * 2] * minScale, ny + coord[FixIdx(nidx + 1) * 2 + 1] * scale_niy
                 );
             }
