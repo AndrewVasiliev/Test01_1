@@ -79,9 +79,7 @@ public class GameField extends Actor {
             case HEX:
                 maxNearby = 6;
                 innerR = cellHeight / 2.0f; //внутренний радиус гекса
-                //попробуем вычислять кол-во рядов исходя из размеров фигуры
                 countRow = (int)(heightY / cellHeight) * 2 - 1;
-                //leftX += cellWidth / 4; //сдвинем на половину радиуса, т.к. справа получается пустота шириной в радиус
                 break;
         }
 
@@ -242,7 +240,7 @@ public class GameField extends Actor {
         SetPlayerInfo(countCol, countRow);
     }
 
-    private void SetPlayerInfo (int numCol, int numRow) {
+    private void SetPlayerInfo (int numCol, int numRow) { //!!!
         //установим стартовые позиции
         int firstPlrIdx;
         int secondPlrIdx;
@@ -268,7 +266,7 @@ public class GameField extends Actor {
         FixNearbyCellsAroundPlayer(secondPlrIdx);
     }
 
-    private void FixNearbyCellsAroundPlayer (int plrIdx) {
+    private void FixNearbyCellsAroundPlayer (int plrIdx) { //!!!
         for (int k=0; k<maxNearby; k++) {
             if (cells[plrIdx].nearby[k] == -1) {continue;}
             int nearbyIdx = cells[plrIdx].nearby[k];
@@ -279,7 +277,7 @@ public class GameField extends Actor {
         }
     }
 
-    private int GetNextColor (int inColor) {
+    private int GetNextColor (int inColor) { //!!!
         inColor++;
         if (inColor >= Const.ColorCount) {
             inColor = 0;
@@ -341,14 +339,14 @@ public class GameField extends Actor {
         //shapeRenderer.dispose();
     }
 
-    public int CountScore(int playerIdx, MyCell[] locCells) {
+    public int CountScore(int playerIdx, MyCell[] locCells) { //!!!
         int score = 0;
         for (int i=0; i<countCol*countRow; i++)
             if (locCells[i].owner == playerIdx) {score++;}
         return score;
     }
 
-    public void FillColor (int colorIn, int locPlayerIdx, MyCell[] locCells) {
+    public void FillColor (int colorIn, int locPlayerIdx, MyCell[] locCells) { //!!!
         MyCell ce;
         Queue<MyCell> qe = new Queue();
         for (int i=0; i<countCol*countRow; i++)
@@ -371,7 +369,7 @@ public class GameField extends Actor {
         }
     }
 
-    public void PlayerMove(int colorIdx) {
+    public void PlayerMove(int colorIdx) { //!!!
         //ход очередного игрока цветом colorIn
         int playerIdx = locScreen.currentPlayer;
 
@@ -382,7 +380,7 @@ public class GameField extends Actor {
 
     }
 
-    public boolean isPossibleMoves (int playerIdx) {
+    public boolean isPossibleMoves (int playerIdx) { //!!!
         for (int i=0; i<countCol*countRow; i++)
             if (cells[i].owner == playerIdx) {
                 for (int k=0; k<maxNearby; k++) {
