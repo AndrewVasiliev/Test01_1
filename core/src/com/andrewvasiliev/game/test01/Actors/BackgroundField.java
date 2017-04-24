@@ -317,13 +317,13 @@ public class BackgroundField  extends Actor {
         float locDelta = Gdx.graphics.getDeltaTime();
         int ni;
         int i;
-        boolean even;
+        //boolean even;
         batch.end();
         sr.begin(ShapeRenderer.ShapeType.Filled);
         //sr.begin(ShapeRenderer.ShapeType.Line);
         for (int m=0; m<countRow; m++) {
             for (int j=0; j<countCol; j++) {
-                even = (m & 1) == 0; // четный ряд?
+                //even = (m & 1) == 0; // четный ряд?
                 i = GetIndex(j, m);
                 //for (int i=0; i<cells.length; i++) {
                 if (cells[i].owner == WASTECELL) {
@@ -377,10 +377,12 @@ public class BackgroundField  extends Actor {
     }
 
     private boolean isColorMatch (int idx, int idxNearby) {
-        if (idxNearby == -1) {
+        /*if (idxNearby == -1) {
             return false;
         }
-        return cells[idx].colorIdx == cells [idxNearby].colorIdx;
+        return cells[idx].colorIdx == cells [idxNearby].colorIdx;*/
+
+        return (idxNearby != -1) && (cells[idx].colorIdx == cells [idxNearby].colorIdx);
     }
 
     @Override

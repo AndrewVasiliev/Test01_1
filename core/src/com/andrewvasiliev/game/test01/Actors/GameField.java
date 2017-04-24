@@ -105,7 +105,6 @@ public class GameField extends Actor {
         float _y = 0.0f;
         boolean even; //четный ряд
         int currIdx;
-        int firstPlrIdx = 0, secondPlrIdx = 0;
         int nx,ny;  //координаты возможных соседей для ячейки
         for (int i=0; i<countRow; i++) {
             for (int j=0; j<countCol; j++) {
@@ -237,54 +236,55 @@ public class GameField extends Actor {
                 cells[currIdx].phaseIdx = 0;
                 cells[currIdx].animDuration = 0f;
                 cells[currIdx].setPosition(_x,_y);
-
-                //установим угловые ячеки как стартовые позиции
-                if (i==(countRow-1) && j==0) { //левый нижний угол
-                    cells[currIdx].owner = 0;
-                    locScreen.locGame.plr[0].colorIdx = cells[currIdx].colorIdx;
-                    firstPlrIdx = currIdx;
-                }
-                if (i==0 && j==(countCol-1)) { //правый верхний угол
-                    cells[currIdx].owner = 1;
-                    locScreen.locGame.plr[1].colorIdx = cells[currIdx].colorIdx;
-                    secondPlrIdx = currIdx;
-                }
             }
         }
+
+        SetPlayerInfo(countCol, countRow);
+    }
+
+    private void SetPlayerInfo (int numCol, int numRow) {
+        //установим стартовые позиции
+        int firstPlrIdx;
+        int secondPlrIdx;
+
+        firstPlrIdx = GetIndex(0, numRow-1); //левый нижний угол
+        cells[firstPlrIdx].owner = 0;
+        locScreen.locGame.plr[0].colorIdx = cells[firstPlrIdx].colorIdx;
+
+        secondPlrIdx = GetIndex(numCol-1, 0); //правый верхний угол
+        cells[secondPlrIdx].owner = 1;
+        locScreen.locGame.plr[1].colorIdx = cells[secondPlrIdx].colorIdx;
+
         //скорректируем цвета игроков, чтобы они не совпадали друг с другом
         if (cells[firstPlrIdx].colorIdx == cells[secondPlrIdx].colorIdx) {
-            cells[secondPlrIdx].colorIdx++;
-            if (cells[secondPlrIdx].colorIdx >= Const.ColorCount) {
-                cells[secondPlrIdx].colorIdx = 0;
-            }
+            cells[secondPlrIdx].colorIdx = GetNextColor(cells[secondPlrIdx].colorIdx);
             cells[secondPlrIdx].colorIdxNext =  cells[secondPlrIdx].colorIdx;
             locScreen.locGame.plr[1].colorIdx = cells[secondPlrIdx].colorIdx;
         }
         //скорректируем цвета соседних ячеек, чтобы они не совпадали со стартовыми цветами игроков
         //для игрока 1
-        for (int k=0; k<maxNearby; k++) {
-            if (cells[firstPlrIdx].nearby[k] == -1) {continue;}
-            int nearbyIdx = cells[firstPlrIdx].nearby[k];
-            if (cells[nearbyIdx].colorIdx == cells[firstPlrIdx].colorIdx) {
-                cells[nearbyIdx].colorIdx++;
-                if (cells[nearbyIdx].colorIdx >= Const.ColorCount) {
-                    cells[nearbyIdx].colorIdx = 0;
-                }
-                cells[nearbyIdx].colorIdxNext =  cells[nearbyIdx].colorIdx;
-            }
-        }
+        FixNearbyCellsAroundPlayer(firstPlrIdx);
         //для игрока 2
+        FixNearbyCellsAroundPlayer(secondPlrIdx);
+    }
+
+    private void FixNearbyCellsAroundPlayer (int plrIdx) {
         for (int k=0; k<maxNearby; k++) {
-            if (cells[secondPlrIdx].nearby[k] == -1) {continue;}
-            int nearbyIdx = cells[secondPlrIdx].nearby[k];
-            if (cells[nearbyIdx].colorIdx == cells[secondPlrIdx].colorIdx) {
-                cells[nearbyIdx].colorIdx++;
-                if (cells[nearbyIdx].colorIdx >= Const.ColorCount) {
-                    cells[nearbyIdx].colorIdx = 0;
-                }
+            if (cells[plrIdx].nearby[k] == -1) {continue;}
+            int nearbyIdx = cells[plrIdx].nearby[k];
+            if (cells[nearbyIdx].colorIdx == cells[plrIdx].colorIdx) {
+                cells[nearbyIdx].colorIdx = GetNextColor(cells[nearbyIdx].colorIdx);
                 cells[nearbyIdx].colorIdxNext =  cells[nearbyIdx].colorIdx;
             }
         }
+    }
+
+    private int GetNextColor (int inColor) {
+        inColor++;
+        if (inColor >= Const.ColorCount) {
+            inColor = 0;
+        }
+        return inColor;
     }
 
     private int GetIndex (int col, int row) {
