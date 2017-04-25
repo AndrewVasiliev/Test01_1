@@ -107,6 +107,7 @@ public class GameFieldScreen implements Screen {
         hud.setPosition(0, 0);
 
         gamefield = new GameField(this, 0, hudHeight, locWidthMeter, locHeightMeter - hudHeight);
+        gamefield.SetSolidMode(true);
         //gamefield.GenerateField(16*2+8*1, Const.CellShape.RECTANGLE); //лучше чтобы кол-во столбцов было кратно 8
 
         Table infoTable = new Table();
