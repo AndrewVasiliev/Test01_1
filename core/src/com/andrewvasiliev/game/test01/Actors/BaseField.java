@@ -18,18 +18,20 @@ import java.util.Random;
  */
 
 public class BaseField  extends Actor {
+    protected float cellWidth, cellHeight;
+    protected int countCol, countRow;
+    protected int WASTECELL = -2; //лишняя ячейка. не отображается. присутствуют в гексах
+    protected int maxNearby; //количество соседних ячеек. зависит от формы ячеек
+
+    public  MyCell[] cells;
+    public int NOBODYCELL = -1; //ячейка никому не принадлежит
+
     private ShapeRenderer sr;
     private float leftX, leftY, widthX, heightY;
-    protected float cellWidth, cellHeight;
-    private int countCol, countRow;
     private int phaseCount;
     private float animationSpeed = 1.0f; //0.5f; //за сколько секунд должна закончиться анимация
     //private Const.CellShape cellShape;
     private BaseCell cell;
-    private int NOBODYCELL = -1; //ячейка никому не принадлежит
-    private int WASTECELL = -2; //лишняя ячейка. не отображается. присутствуют в гексах
-    private int maxNearby; //количество соседних ячеек. зависит от формы ячеек
-    protected MyCell[] cells;
     private float innerR;
     private boolean isSolidField = false; // если true, то области с одним цветом сливаются
     private boolean isGameField = false; //если true, то поле для игрового экрана
@@ -58,6 +60,10 @@ public class BaseField  extends Actor {
         countCol = countColIn;
 
         cellWidth = widthX/countCol;
+        if (cellShape == Const.CellShape.HEX) {
+            cellWidth = widthX/countCol/1.5f;
+        }
+
         cell = new BaseCell(cellShape, cellWidth);
         cell.setScale(1.0f, 0.9f);
         phaseCount = cell.GetPhaseCount();
@@ -149,6 +155,9 @@ public class BaseField  extends Actor {
                         _x = leftX + cellWidth/2.0f * (float)(j+1) - cellWidth/2.0f ;
                         _y = leftY + heightY - (float)i * cellHeight -
                                 (float)Math.floor(cells[currIdx].invertY == -1.0f ? (float)Math.sqrt(3) * cellWidth / 6f : (float)Math.sqrt(3) * cellWidth / 3f);
+                        if (isGameField) {
+                            _x += cellWidth/2.0f;
+                        }
                         //заполним индексы соседних ячеек
                         for (int k=0; k<maxNearby; k++) {
                             nx = j;
@@ -210,7 +219,7 @@ public class BaseField  extends Actor {
                                 (even ? 0 : cellWidth/2.0f*1.5f); //для нечетных рядов сдвигаем
                         _y = leftY + heightY - (float)i * innerR + innerR; //т.к. гекс по высоте меньше чем по ширине, то используем в расчетах внутренний радиус
                         if (isGameField) {
-                            _x += cellWidth / 2.0f * 1.5f;
+                            _x += cellWidth / 2.0f  * 1.5f;
                             _y -= innerR * 2.0f;
                         }
                         if (!even && j==(countCol-1)) {
@@ -254,7 +263,7 @@ public class BaseField  extends Actor {
         }
     }
 
-    private int GetIndex (int col, int row) {
+    protected int GetIndex (int col, int row) {
         return row*countCol + col;
     }
 
