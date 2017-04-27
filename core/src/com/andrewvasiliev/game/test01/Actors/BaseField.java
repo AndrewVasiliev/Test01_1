@@ -306,32 +306,66 @@ public class BaseField  extends Actor {
                     borderColor = Const.borderColor;
                 }
   */
-                cell.draw(cells[i].x, cells[i].y, cells[i].invertY, cells[i].phaseIdx, cells[i].colorIdx, cells[i].colorIdxNext, sr, Const.borderColor);
 
-                //отрисовка перемычек для слияния одинаковых цветов в единое целое
-                if (isSolidField && (cells[i].phaseIdx == -1)) {
-                    //если ячейка в состоянии покоя и опция solidField включена, то рисуем перемычки для одинаковых соседей
-                    for (int k = 0; k < maxNearby; k++) {
-                        ni = cells[i].nearby[k];
-                        if (ni == -1) {
-                            continue;
+                //для уменьшения количества треугольников, попробуем отрисовывать для ячеек, у которых все соседи того же цвета
+                //и состояние покоя, просто квадрат, занимающий все место
+                if (isInnerCell(i) && (cells[i].phaseIdx == -1)) {
+                    //рисуем квадрат размером в ячейку
+                    sr.setColor(Const.colorArr[cells[i].colorIdx]);
+                    float dx = cellWidth /2.0f;
+                    float dy = cellHeight / 2.0f;
+                    float x1 = cells[i].x - dx;
+                    float y1 = cells[i].y + dy;
+                    float x3 = cells[i].x + dx;
+                    float y3 = cells[i].y - dy;
+                    sr.triangle(x1, y1,  x1, y3,  x3, y3);
+                    sr.triangle(x1, y1,  x3, y1,  x3, y3);
+
+                } else {
+                    cell.draw(cells[i].x, cells[i].y, cells[i].invertY, cells[i].phaseIdx, cells[i].colorIdx, cells[i].colorIdxNext, sr, Const.borderColor);
+
+                    //отрисовка перемычек для слияния одинаковых цветов в единое целое
+                    if (isSolidField && (cells[i].phaseIdx == -1)) {
+                        //если ячейка в состоянии покоя и опция solidField включена, то рисуем перемычки для одинаковых соседей
+                        for (int k = 0; k < maxNearby; k++) {
+                            ni = cells[i].nearby[k];
+                            if (ni == -1) {
+                                continue;
+                            }
+                            //если оставить этот кусочек условия, то рисовать по два раза одно и то же будет, но зато все выглядит красиво
+                            //если убрать (как сейчас), то рисовать будет меньше, но появятся огрехи у "ушек перемычек"
+                            if (/*(ni <= i) ||*/ (cells[i].colorIdx != cells[ni].colorIdx) || (cells[ni].phaseIdx != -1)) {
+                                continue;
+                            }
+                            cell.drawbridge(
+                                    sr,
+                                    cells[i].x, cells[i].y, cells[i].invertY, k,
+                                    cells[ni].x, cells[ni].y, cells[ni].invertY,
+                                    isColorMatch(ni, cells[i].nearby[(k - 1) < 0 ? (maxNearby - 1) : (k - 1)]), isColorMatch(ni, cells[i].nearby[(k + 1) == maxNearby ? 0 : (k + 1)]));
                         }
-                        //если оставить этот кусочек условия, то рисовать по два раза одно и то же будет, но зато все выглядит красиво
-                        //если убрать (как сейчас), то рисовать будет меньше, но появятся огрехи у "ушек перемычек"
-                        if (/*(ni <= i) ||*/ (cells[i].colorIdx != cells[ni].colorIdx) || (cells[ni].phaseIdx != -1)) {
-                            continue;
-                        }
-                        cell.drawbridge(
-                                sr,
-                                cells[i].x, cells[i].y, cells[i].invertY, k,
-                                cells[ni].x, cells[ni].y, cells[ni].invertY,
-                                isColorMatch(ni, cells[i].nearby[(k-1)<0?(maxNearby-1):(k-1)]), isColorMatch(ni, cells[i].nearby[(k+1)==maxNearby?0:(k+1)]) );
                     }
                 }
             }
         }
         sr.end();
         batch.begin();
+    }
+
+    private boolean isInnerCell (int idx) {
+        //возвращает true если все соседи того же цвета
+        int ni;
+        boolean result = true;
+        for (int k = 0; k < maxNearby; k++) {
+            ni = cells[idx].nearby[k];
+            if (ni == -1) {
+                result = false;
+            }
+            result = result && (cells[idx].colorIdx == cells[ni].colorIdx) && (cells[ni].phaseIdx == -1);
+            if (!result) {
+                break;
+            }
+        }
+        return result;
     }
 
     private boolean isColorMatch (int idx, int idxNearby) {

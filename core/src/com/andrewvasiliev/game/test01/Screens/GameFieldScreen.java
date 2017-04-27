@@ -138,7 +138,7 @@ public class GameFieldScreen implements Screen {
         infoTable.add(plrScore[1]).width(_scoreWidth);
         infoTable.add(plrLabelName[1]).width(locWidthMeter/2f-_scoreWidth);
 
-        lblFps = new Label("FPS", locGame.skin, "default-font", Color.YELLOW);
+        lblFps = new Label("FPS", locGame.skin, "default-font", Color.WHITE);
         lblFps.setPosition(0, locHeightMeter - lblFps.getHeight());
 
         //mainFieldStage.addActor(background);
@@ -522,8 +522,9 @@ public class GameFieldScreen implements Screen {
 
         mainFieldStage.draw();
 
-        glProfileInfo = "calls: " + Integer.toString(GLProfiler.calls)
-                + " drawCalls: " + Integer.toString(GLProfiler.drawCalls)
+        glProfileInfo = "FPS:"+Integer.toString (Gdx.graphics.getFramesPerSecond())
+                //+ "calls: " + Integer.toString(GLProfiler.calls)
+                //+ " drawCalls: " + Integer.toString(GLProfiler.drawCalls)
                 + " vertexcount:" + Integer.toString(GLProfiler.vertexCount.count)
                 + " vertextotal:" + Float.toString(GLProfiler.vertexCount.total);
     }
