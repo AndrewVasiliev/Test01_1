@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -64,6 +65,7 @@ public class GameFieldScreen implements Screen {
 
 
     private Label lblFps;
+    private String glProfileInfo;
 
     public GameFieldScreen(MyGdxGame myGdxGame) {
         locGame = myGdxGame;
@@ -505,7 +507,8 @@ public class GameFieldScreen implements Screen {
             }
         }
 
-        lblFps.setText("FPS:"+Integer.toString (Gdx.graphics.getFramesPerSecond()));
+        //lblFps.setText("FPS:"+Integer.toString (Gdx.graphics.getFramesPerSecond()));
+        lblFps.setText(glProfileInfo);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -513,7 +516,16 @@ public class GameFieldScreen implements Screen {
         shapeRenderer.setProjectionMatrix(locGame.camera.combined);
 
         mainFieldStage.act(delta);
+
+        GLProfiler.enable();
+        GLProfiler.reset();
+
         mainFieldStage.draw();
+
+        glProfileInfo = "calls: " + Integer.toString(GLProfiler.calls)
+                + " drawCalls: " + Integer.toString(GLProfiler.drawCalls)
+                + " vertexcount:" + Integer.toString(GLProfiler.vertexCount.count)
+                + " vertextotal:" + Float.toString(GLProfiler.vertexCount.total);
     }
 
     @Override
