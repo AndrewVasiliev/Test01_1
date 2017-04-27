@@ -1,16 +1,10 @@
 package com.andrewvasiliev.game.test01.Actors;
 
-import com.andrewvasiliev.game.test01.Classes.BaseCell;
-import com.andrewvasiliev.game.test01.Classes.Const;
-import com.andrewvasiliev.game.test01.Classes.MyCell;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
-import java.util.Random;
 
 /**
  * Created by Andrew on 12.03.2017.
