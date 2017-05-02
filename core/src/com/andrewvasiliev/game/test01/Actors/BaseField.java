@@ -312,15 +312,7 @@ public class BaseField  extends Actor {
                 if (isInnerCell(i) && (cells[i].phaseIdx == -1)) {
                     //рисуем квадрат размером в ячейку
                     sr.setColor(Const.colorArr[cells[i].colorIdx]);
-                    float dx = cellWidth /2.0f;
-                    float dy = cellHeight / 2.0f;
-                    float x1 = cells[i].x - dx;
-                    float y1 = cells[i].y + dy;
-                    float x3 = cells[i].x + dx;
-                    float y3 = cells[i].y - dy;
-                    sr.triangle(x1, y1,  x1, y3,  x3, y3);
-                    sr.triangle(x1, y1,  x3, y1,  x3, y3);
-
+                    FillFullCell(i);
                 } else {
                     cell.draw(cells[i].x, cells[i].y, cells[i].invertY, cells[i].phaseIdx, cells[i].colorIdx, cells[i].colorIdxNext, sr, Const.borderColor);
 
@@ -351,7 +343,18 @@ public class BaseField  extends Actor {
         batch.begin();
     }
 
-    private boolean isInnerCell (int idx) {
+    protected void FillFullCell (int idx) {
+        float dx = cellWidth /2.0f +1.0f;
+        float dy = cellHeight / 2.0f + 1.0f;
+        float x1 = cells[idx].x - dx;
+        float y1 = cells[idx].y + dy;
+        float x3 = cells[idx].x + dx;
+        float y3 = cells[idx].y - dy;
+        sr.triangle(x1, y1,  x1, y3,  x3, y3);
+        sr.triangle(x1, y1,  x3, y1,  x3, y3);
+    }
+
+    protected boolean isInnerCell (int idx) {
         //возвращает true если все соседи того же цвета
         int ni;
         boolean result = true;

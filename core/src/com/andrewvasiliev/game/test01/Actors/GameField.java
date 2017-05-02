@@ -78,42 +78,18 @@ public class GameField extends BaseField {
         return inColor;
     }
 
-/*
+
     @Override
     public void draw(Batch batch, float alpha) {
-        batch.end();
-        float deltaTime = Gdx.graphics.getDeltaTime();
-
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-
-        Color borderColor;
-        int currIdx;
-
-        for (int i=0; i<countRow; i++) {
-            for (int j=0; j<countCol; j++) {
-                currIdx = GetIndex(j, i);
-                if (cells[currIdx].owner == WASTECELL) {continue;} //неотображаемые ячейки (лишние)
-
-
-                if (cells[currIdx].phaseIdx != -1) { //-1 состояние покоя и фаза 0
-                    cells[currIdx].animDuration += deltaTime;
-                    cells[currIdx].phaseIdx = (int)(cells[currIdx].animDuration/(animationSpeed/(float)phaseCount));
-                    if (cells[currIdx].phaseIdx >= phaseCount) {
-                        cells[currIdx].phaseIdx = -1;
-                        cells[currIdx].animDuration = 0.0f;
-                        cells[currIdx].colorIdx = cells[currIdx].colorIdxNext;
-                    }
-                }
-
-                if (locScreen.currentPlayer == cells[currIdx].owner) {
-                    borderColor = Color.WHITE; // ячейка активного игрока
-                } else {
-                    borderColor = Const.borderColor;
-                }
-                cell.draw(cells[currIdx].x, cells[currIdx].y, cells[currIdx].invertY, cells[currIdx].phaseIdx, cells[currIdx].colorIdx, cells[currIdx].colorIdxNext, sr, borderColor);
+        /*batch.end();
+        locScreen.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        //нарисуем белый контур для области текущего игрока
+        for (int i=0; i<countCol*countRow; i++)
+            if ((cells[i].owner == locScreen.currentPlayer) && (!isInnerCell(i))) {
+                locScreen.shapeRenderer.setColor(Color.WHITE);
+                FillFullCell (i);
             }
-        }
-        sr.end();
+        locScreen.shapeRenderer.end();
 
         //нарисуем черные линии по периметру, чтобы поле не сливалось с панелью
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -121,10 +97,10 @@ public class GameField extends BaseField {
  //       shapeRenderer.rect(leftX+1, leftY+1, widthX-1, heightY-1);
  //       shapeRenderer.end();
 
-        batch.begin();
+        batch.begin();*/
         super.draw(batch, alpha);
     }
-*/
+
     public void dispose()   {
         //shapeRenderer.dispose();
     }
