@@ -100,7 +100,7 @@ public class AniCell  /*implements Disposable*/ {
         }
 
         sr.begin(ShapeRenderer.ShapeType.Filled);
-        cell.draw(x, y, invertY, phaseIdx, colorIdx, colorIdxNext, sr, Const.borderColor);
+        cell.draw(x, y, invertY, phaseIdx, colorIdx, colorIdxNext, sr, Const.borderColor, true);
         sr.end();
 
     }

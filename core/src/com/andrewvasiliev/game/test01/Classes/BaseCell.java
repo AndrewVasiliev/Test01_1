@@ -226,14 +226,15 @@ public class BaseCell  /*implements Disposable*/ {
         }
     }
 
-    public void draw (float x, float y, float invertY, int phaseIdx, int colorIdx, int colorIdxNext, ShapeRenderer inSR, Color borderColor) {
+    public void draw (float x, float y, float invertY, int phaseIdx, int colorIdx, int colorIdxNext, ShapeRenderer inSR, Color borderColor, boolean useBorderColor) {
         int idx = (phaseIdx==-1 ? 0 : phaseIdx) * vertexCount2x; //номер фазы анимации * vetrexCount * 2 (это x и y)
 
         //отрисуем фигуру заполненными треугольниками
         //сначала отрисуем полную фигуру
-//для теста попробуем не рисовать контур
-        //inSR.setColor(borderColor);
-        //DrawShape(x, y, invertY, maxScale, idx, inSR);
+        if (useBorderColor) {
+            inSR.setColor(borderColor);
+            DrawShape(x, y, invertY, maxScale, idx, inSR);
+        }
 
         //теперь чуть меньшую, чтоб получился контур
         if (phaseIdx >= phaseCount/2) {

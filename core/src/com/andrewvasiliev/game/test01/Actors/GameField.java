@@ -20,6 +20,7 @@ import java.util.Random;
 
 public class GameField extends BaseField {
     private GameFieldScreen locScreen;
+    private int ColorCarouselIdx;
 
     public GameField(GameFieldScreen gameFieldScreen, float x, float y, float width, float height) {
         super (gameFieldScreen.shapeRenderer, x, y, width, height, true);
@@ -31,6 +32,7 @@ public class GameField extends BaseField {
     public void GenerateField (int countColIn, Const.CellShape cellShape, boolean isResumed) {
         super.GenerateField (countColIn, cellShape, isResumed);
         SetPlayerInfo(countCol, countRow);
+        ColorCarouselIdx = 0;
     }
 
     private void SetPlayerInfo (int numCol, int numRow) { //!!!
@@ -81,6 +83,18 @@ public class GameField extends BaseField {
 
     @Override
     public void draw(Batch batch, float alpha) {
+
+        //v.1
+        borderColor = Color.WHITE;
+
+        //v.2
+        //ColorCarouselIdx = GetNextColor(ColorCarouselIdx);
+        //borderColor = Const.colorArr[ColorCarouselIdx];
+
+        //v.3
+        //borderColor =  Const.colorArr[locScreen.locGame.plr[locScreen.currentPlayer].colorIdx].cpy().lerp(Color.BLACK, 0.5f);
+
+        currPlayer = locScreen.currentPlayer;
         /*batch.end();
         locScreen.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         //нарисуем белый контур для области текущего игрока

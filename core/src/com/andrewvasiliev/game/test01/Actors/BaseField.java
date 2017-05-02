@@ -19,6 +19,9 @@ public class BaseField  extends Actor {
     protected int countCol, countRow;
     protected int WASTECELL = -2; //лишняя ячейка. не отображается. присутствуют в гексах
     protected int maxNearby; //количество соседних ячеек. зависит от формы ячеек
+    protected Color borderColor;
+    protected int currPlayer;
+
 
     public  MyCell[] cells;
     public int NOBODYCELL = -1; //ячейка никому не принадлежит
@@ -40,6 +43,7 @@ public class BaseField  extends Actor {
         heightY = height;
         countCol = 0;
         countRow = 0;
+        borderColor = Color.WHITE;
         isGameField = inGameField;
         sr = inSR;
         setBounds(x, y, width, height);
@@ -270,7 +274,6 @@ public class BaseField  extends Actor {
         float locDelta = Gdx.graphics.getDeltaTime();
         int ni;
         int i;
-        Color borderColor;
         //boolean even;
         batch.end();
         sr.begin(ShapeRenderer.ShapeType.Filled);
@@ -314,7 +317,7 @@ public class BaseField  extends Actor {
                     sr.setColor(Const.colorArr[cells[i].colorIdx]);
                     FillFullCell(i);
                 } else {
-                    cell.draw(cells[i].x, cells[i].y, cells[i].invertY, cells[i].phaseIdx, cells[i].colorIdx, cells[i].colorIdxNext, sr, Const.borderColor);
+                    cell.draw(cells[i].x, cells[i].y, cells[i].invertY, cells[i].phaseIdx, cells[i].colorIdx, cells[i].colorIdxNext, sr, borderColor, currPlayer == cells[i].owner);
 
                     //отрисовка перемычек для слияния одинаковых цветов в единое целое
                     if (isSolidField && (cells[i].phaseIdx == -1)) {
@@ -344,8 +347,8 @@ public class BaseField  extends Actor {
     }
 
     protected void FillFullCell (int idx) {
-        float dx = cellWidth /2.0f +1.0f;
-        float dy = cellHeight / 2.0f + 1.0f;
+        float dx = cellWidth / 2.0f;
+        float dy = cellHeight / 2.0f;
         float x1 = cells[idx].x - dx;
         float y1 = cells[idx].y + dy;
         float x3 = cells[idx].x + dx;
