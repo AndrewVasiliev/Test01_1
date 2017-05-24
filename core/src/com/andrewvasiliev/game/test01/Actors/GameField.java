@@ -40,11 +40,13 @@ public class GameField extends BaseField {
         int firstPlrIdx;
         int secondPlrIdx;
 
-        firstPlrIdx = GetIndex(0, numRow-1); //левый нижний угол
+        //firstPlrIdx = GetIndex(0, numRow-1); //левый нижний угол
+        firstPlrIdx = GetIndex(numCol / 2 - 1, numRow-1); //середина нижнего ряда
         cells[firstPlrIdx].owner = 0;
         locScreen.locGame.plr[0].colorIdx = cells[firstPlrIdx].colorIdx;
 
-        secondPlrIdx = GetIndex(numCol-1, 0); //правый верхний угол
+        //secondPlrIdx = GetIndex(numCol-1, 0); //правый верхний угол
+        secondPlrIdx = GetIndex(numCol - numCol / 2, 0); //середина верхнего ряда
         cells[secondPlrIdx].owner = 1;
         locScreen.locGame.plr[1].colorIdx = cells[secondPlrIdx].colorIdx;
 
