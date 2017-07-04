@@ -60,20 +60,20 @@ public class BaseField  extends Actor {
     public void GenerateField (int countColIn, Const.CellShape cellShape, boolean isResumed) {
         countCol = countColIn;
 
-        cellWidth = widthX/countCol;
+        cellWidth = widthX / countCol;
         if (cellShape == Const.CellShape.HEX) {
-            cellWidth = widthX/countCol/1.5f;
+            cellWidth = widthX / countCol / 1.5f;
         }
 
         cell = new BaseCell(cellShape, cellWidth);
         cell.setScale(1.0f, 0.9f);
         phaseCount = cell.GetPhaseCount();
-        cellHeight = (float)Math.floor(cell.GetHeight());
+        cellHeight = (float) Math.floor(cell.GetHeight());
 
         switch (cellShape) {
             case RECTANGLE:
                 maxNearby = 4;
-                countRow = (int)(heightY / cellHeight);
+                countRow = (int) (heightY / cellHeight);
                 if (!isGameField) {
                     countRow += 1;
                 }
@@ -81,7 +81,7 @@ public class BaseField  extends Actor {
             case TRIANGLE:
                 //новый вариант расположения
                 maxNearby = 3;
-                countRow = (int)(heightY / cellHeight);
+                countRow = (int) (heightY / cellHeight);
                 countCol += countCol - 1;
                 if (!isGameField) {
                     countRow += 2;
@@ -90,7 +90,7 @@ public class BaseField  extends Actor {
                 break;
             case RHOMBUS:
                 maxNearby = 4;
-                countRow = (int)(heightY / cellHeight) * 2 - 1;
+                countRow = (int) (heightY / cellHeight) * 2 - 1;
                 if (!isGameField) {
                     countRow += 4;
                     countCol += 1;
@@ -99,7 +99,7 @@ public class BaseField  extends Actor {
             case HEX:
                 maxNearby = 6;
                 innerR = cellHeight / 2.0f; //внутренний радиус гекса
-                countRow = (int)(heightY / cellHeight) * 2 - 1;
+                countRow = (int) (heightY / cellHeight) * 2 - 1;
                 if (!isGameField) {
                     countRow += 5;
                     countCol += 1;
@@ -107,12 +107,13 @@ public class BaseField  extends Actor {
                 break;
         }
 
-        Random random = new Random();
-
         //если игра загружена из сохранения, то генерировать поле не надо. выходим
-        if (isGameField && isResumed) {
-            return;
+        if (!(isGameField && isResumed)) {
+            InnerGenerateField(cellShape);
         }
+    }
+    private void InnerGenerateField(Const.CellShape cellShape){
+        Random random = new Random();
 
         cells = new MyCell[countCol * countRow];
         for (int i=0; i<cells.length; i++) {
@@ -147,7 +148,7 @@ public class BaseField  extends Actor {
                                 case 2: nx++; break;
                                 case 3: ny++; break;
                             }
-                            cells[currIdx].nearby[k] = (nx>=0 && nx <countCol && ny>=0 && ny<countRow) ? GetIndex(nx, ny) : -1;
+                            cells[currIdx].nearby[k] = (nx >= 0 && nx < countCol && ny >= 0 && ny < countRow) ? GetIndex(nx, ny) : -1;
                         }
                         break;
                     case TRIANGLE:
@@ -211,7 +212,7 @@ public class BaseField  extends Actor {
                                     case 3: nx++; ny++; break;
                                 }
                             }
-                            cells[currIdx].nearby[k] = (nx>=0 && nx <countCol && ny>=0 && ny<countRow) ? GetIndex(nx, ny) : -1;
+                            cells[currIdx].nearby[k] = (nx >=0 && nx < countCol && ny >= 0 && ny < countRow) ? GetIndex(nx, ny) : -1;
                         }
                         break;
                     case HEX:
@@ -249,7 +250,7 @@ public class BaseField  extends Actor {
                                     case 5: ny+=2; break;
                                 }
                             }
-                            cells[currIdx].nearby[k] = (nx>=0 && nx <countCol && ny>=0 && ny<countRow) ? GetIndex(nx, ny) : -1;
+                            cells[currIdx].nearby[k] = (nx >= 0 && nx < countCol && ny >= 0 && ny < countRow) ? GetIndex(nx, ny) : -1;
                         }
                         break;
                 }
@@ -264,7 +265,7 @@ public class BaseField  extends Actor {
         }
     }
 
-    protected int GetIndex (int col, int row) {
+    public int GetIndex (int col, int row) {
         return row*countCol + col;
     }
 
@@ -346,7 +347,7 @@ public class BaseField  extends Actor {
         batch.begin();
     }
 
-    protected void FillFullCell (int idx) {
+    private void FillFullCell (int idx) {
         float dx = cellWidth / 2.0f;
         float dy = cellHeight / 2.0f;
         float x1 = cells[idx].x - dx;
@@ -357,7 +358,7 @@ public class BaseField  extends Actor {
         sr.triangle(x1, y1,  x3, y1,  x3, y3);
     }
 
-    protected boolean isInnerCell (int idx) {
+    private boolean isInnerCell (int idx) {
         //возвращает true если все соседи того же цвета
         int ni;
         boolean result = true;

@@ -195,7 +195,7 @@ public class GameFieldScreen implements Screen {
     private void SaveGameState () {
         Json json = new Json();
         Preferences prefs = Gdx.app.getPreferences(Const.PreferencesName);
-        //--признак 1-сохраненная игра 0-пусто (после восстановления игры ставить 0)
+        //--признак 1-сохраненная игра 0-пусто
         prefs.putBoolean("isGameSaved", true);
         //--информация о игроках
         for (int i=0; i<locGame.maxPlr; i++) {
@@ -216,6 +216,13 @@ public class GameFieldScreen implements Screen {
         prefs.putString("GameField", json.toJson(gamefield.cells));
         //System.out.println(json.toJson(gamefield.cells));
         //сохраним
+        prefs.flush();
+    }
+
+    public void DeleteGameState () {
+        Preferences prefs = Gdx.app.getPreferences(Const.PreferencesName);
+        //--признак 1-сохраненная игра 0-пусто
+        prefs.putBoolean("isGameSaved", false);
         prefs.flush();
     }
 
@@ -489,6 +496,7 @@ public class GameFieldScreen implements Screen {
                                 lblWinningName.setText(locGame.plr[1].name);
                             }
                         }
+                        DeleteGameState(); //т.к. партия закончилась, то очистим сохраненное состоние, если оно было
                         WinningDialog.show(mainFieldStage);
                     } else {
                         //выводим на экран сообщение о том кто следующий ходит
