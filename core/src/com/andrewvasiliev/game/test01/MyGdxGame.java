@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+//Todo: возможно для отрисовки использовать PolygonRegion (https://stackoverflow.com/questions/15733442/drawing-filled-polygon-with-libgdx и https://gamedev.stackexchange.com/questions/108476/how-to-draw-a-polygon-with-picture-in-libgdx)
 //Todo: может, если все соседи твоего цвета, то вместо ячейки рисовать квадрат размером 100%, чтобы меньше треугольников было? а то фпс падает чем больше захватываешь
 //Todo: + изменить расположение для треугольных ячеек (сделать в виде цветка)
 //Todo: + сделать какой-то базовый класс для генерации и рисования поля

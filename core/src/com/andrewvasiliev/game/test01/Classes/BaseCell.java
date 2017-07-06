@@ -270,15 +270,18 @@ public class BaseCell  /*implements Disposable*/ {
                 nidx = (n - 3) < 0 ? n + 3 : n - 3;
                 break;
         }
+        int bidx2X = bidx + bidx; //bidx * 2;
+        int nidx2X = nidx + nidx; //nidx * 2;
+
         if (cellShape == Const.CellShape.TRIANGLE) {
             inSR.triangle(
-                    bx + coord[bidx * 2] * minScale            , by + coord[bidx * 2 + 1] * scale_biy,
+                    bx + coord[bidx2X] * minScale              , by + coord[bidx2X + 1] * scale_biy,
                     bx + coord[FixIdx(bidx + 1) * 2] * minScale, by + coord[FixIdx(bidx + 1) * 2 + 1] * scale_biy,
                     nx + coord[((niy == -1.0f) ? FixIdx(nidx+1) : nidx) * 2] * minScale, ny + coord[((niy == -1.0f) ? FixIdx(nidx+1) : nidx) * 2 + 1] * scale_niy
             );
             inSR.triangle(
-                    bx + coord[bidx * 2] * minScale            , by + coord[bidx * 2 + 1] * scale_biy,
-                    nx + coord[nidx * 2] * minScale            , ny + coord[nidx * 2 + 1] * scale_niy,
+                    bx + coord[bidx2X] * minScale              , by + coord[bidx2X + 1] * scale_biy,
+                    nx + coord[nidx2X] * minScale              , ny + coord[nidx2X + 1] * scale_niy,
                     nx + coord[FixIdx(nidx + 1) * 2] * minScale, ny + coord[FixIdx(nidx + 1) * 2 + 1] * scale_niy
             );
 
@@ -294,21 +297,21 @@ public class BaseCell  /*implements Disposable*/ {
 
             if (prevNearby) {
                 inSR.triangle(
-                        bx + coord[bidx * 2] * minScale, by + coord[bidx * 2 + 1] * scale_biy,
-                        nx + coord[nidx * 2]           , ny + coord[nidx * 2 + 1] * niy,
-                        nx + coord[nidx * 2] * minScale, ny + coord[nidx * 2 + 1] * scale_niy
+                        bx + coord[bidx2X] * minScale, by + coord[bidx2X + 1] * scale_biy,
+                        nx + coord[nidx2X]           , ny + coord[nidx2X + 1] * niy,
+                        nx + coord[nidx2X] * minScale, ny + coord[nidx2X + 1] * scale_niy
                 );
             }
 
         } else {
             inSR.triangle(
-                    bx + coord[bidx * 2] * minScale            , by + coord[bidx * 2 + 1] * scale_biy,
+                    bx + coord[bidx2X] * minScale              , by + coord[bidx2X + 1] * scale_biy,
                     bx + coord[FixIdx(bidx + 1) * 2] * minScale, by + coord[FixIdx(bidx + 1) * 2 + 1] * scale_biy,
-                    nx + coord[nidx * 2] * minScale            , ny + coord[nidx * 2 + 1] * scale_niy
+                    nx + coord[nidx2X] * minScale              , ny + coord[nidx2X + 1] * scale_niy
             );
             inSR.triangle(
-                    bx + coord[bidx * 2] * minScale            , by + coord[bidx * 2 + 1] * scale_biy,
-                    nx + coord[nidx * 2] * minScale            , ny + coord[nidx * 2 + 1] * scale_niy,
+                    bx + coord[bidx2X] * minScale              , by + coord[bidx2X + 1] * scale_biy,
+                    nx + coord[nidx2X] * minScale              , ny + coord[nidx2X + 1] * scale_niy,
                     nx + coord[FixIdx(nidx + 1) * 2] * minScale, ny + coord[FixIdx(nidx + 1) * 2 + 1] * scale_niy
                     //nx + coord[((nidx + 1) % vertexCount) * 2] * minScale, ny + coord[((nidx + 1) % vertexCount) * 2 + 1] * scale_niy
             );
@@ -318,12 +321,12 @@ public class BaseCell  /*implements Disposable*/ {
                 inSR.triangle(
                         bx + coord[FixIdx(bidx + 1) * 2] * minScale, by + coord[FixIdx(bidx + 1) * 2 + 1] * scale_biy,
                         bx + coord[FixIdx(bidx + 1) * 2]           , by + coord[FixIdx(bidx + 1) * 2 + 1] * biy,
-                        nx + coord[nidx * 2] * minScale            , ny + coord[nidx * 2 + 1] * scale_niy
+                        nx + coord[nidx2X] * minScale              , ny + coord[nidx2X + 1] * scale_niy
                 );
             }
             if (prevNearby) {
                 inSR.triangle(
-                        bx + coord[bidx * 2] * minScale            , by + coord[bidx * 2 + 1] * scale_biy,
+                        bx + coord[bidx2X] * minScale              , by + coord[bidx2X + 1] * scale_biy,
                         nx + coord[FixIdx(nidx + 1) * 2]           , ny + coord[FixIdx(nidx + 1) * 2 + 1] * niy,
                         nx + coord[FixIdx(nidx + 1) * 2] * minScale, ny + coord[FixIdx(nidx + 1) * 2 + 1] * scale_niy
                 );
