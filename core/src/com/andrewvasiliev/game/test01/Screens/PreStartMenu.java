@@ -125,13 +125,13 @@ public class PreStartMenu implements Screen {
 
         //-- тип ячеек
         Label lblFieldType = new Label("Тип ячеек", locGame.skin, "default");
-        AniButton btnRectangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RECTANGLE);
+        AniButton btnRectangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RECTANGLE, locGame);
         btnRectangle.add(new Label(" ", locGame.skin, "default"));
-        AniButton btnTriangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.TRIANGLE);
+        AniButton btnTriangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.TRIANGLE, locGame);
         btnTriangle.add(new Label(" ", locGame.skin, "default"));
-        AniButton btnRhombus = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RHOMBUS);
+        AniButton btnRhombus = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RHOMBUS, locGame);
         btnRhombus.add(new Label(" ", locGame.skin, "default"));
-        AniButton btnHex = new AniButton(locGame.skin, "toggleButton", Const.CellShape.HEX);
+        AniButton btnHex = new AniButton(locGame.skin, "toggleButton", Const.CellShape.HEX, locGame);
         btnHex.add(new Label(" ", locGame.skin, "default"));
         btnGroupFielType = new ButtonGroup(btnRectangle, btnTriangle, btnRhombus, btnHex);
         btnGroupFielType.setMaxCheckCount(1);

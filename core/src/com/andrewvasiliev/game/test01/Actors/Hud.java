@@ -20,7 +20,7 @@ public class Hud extends Actor {
     public float diametrH;
     public Vector2[] colorButton;
     private GameFieldScreen locScreen;
-    private ShapeRenderer sr;
+    //private ShapeRenderer sr;
     public int colorIdx; // номер нажатой кнопки/цвета
 
 
@@ -65,34 +65,34 @@ public class Hud extends Actor {
                 return true;
             }
         });
-        sr = locScreen.shapeRenderer;
+        //sr = locScreen.shapeRenderer;
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.end();
-        sr.begin(ShapeRenderer.ShapeType.Filled);
+        locScreen.locGame.sr.begin(ShapeRenderer.ShapeType.Filled);
         //рисуем полосы заработанных очков
         float _scoreX = hudWidth * locScreen.locGame.plr[0].score /(float)(locScreen.locGame.plr[0].score + locScreen.locGame.plr[1].score);
-        sr.setColor(Const.colorArr[locScreen.locGame.plr[0].colorIdx]);
-        sr.rect(leftX, hudHeight/2f, _scoreX, hudHeight/2f);
-        sr.setColor(Const.colorArr[locScreen.locGame.plr[1].colorIdx]);
-        sr.rect(leftX+_scoreX, hudHeight/2f, hudWidth-_scoreX, hudHeight/2f);
+        locScreen.locGame.sr.setColor(Const.colorArr[locScreen.locGame.plr[0].colorIdx]);
+        locScreen.locGame.sr.rect(leftX, hudHeight/2f, _scoreX, hudHeight/2f);
+        locScreen.locGame.sr.setColor(Const.colorArr[locScreen.locGame.plr[1].colorIdx]);
+        locScreen.locGame.sr.rect(leftX+_scoreX, hudHeight/2f, hudWidth-_scoreX, hudHeight/2f);
         //рисуем отметки посередине полос очков
         _scoreX = hudWidth/2f+leftX;
-        sr.setColor(Color.BLACK);
-        sr.triangle(_scoreX, hudHeight/2f+10f,  _scoreX-10f, hudHeight/2f, _scoreX+10f, hudHeight/2f);
-        sr.triangle(_scoreX, hudHeight-10f,  _scoreX-10f, hudHeight, _scoreX+10f, hudHeight);
+        locScreen.locGame.sr.setColor(Color.BLACK);
+        locScreen.locGame.sr.triangle(_scoreX, hudHeight/2f+10f,  _scoreX-10f, hudHeight/2f, _scoreX+10f, hudHeight/2f);
+        locScreen.locGame.sr.triangle(_scoreX, hudHeight-10f,  _scoreX-10f, hudHeight, _scoreX+10f, hudHeight);
 
         //рисуем цветные кнопки
         for (int i=0; i< Const.ColorCount; i++) {
             //не рисуем цвета, которые сейчас заняты игроками
             if ((locScreen.locGame.plr[0].colorIdx == i)||((locScreen.locGame.plr[1].colorIdx == i))) { continue;}
 
-            sr.setColor(Const.colorArr[i]);
-            sr.ellipse(colorButton[i].x, colorButton[i].y, diametrH, diametrV*0.9f);
+            locScreen.locGame.sr.setColor(Const.colorArr[i]);
+            locScreen.locGame.sr.ellipse(colorButton[i].x, colorButton[i].y, diametrH, diametrV*0.9f);
         }
-        sr.end();
+        locScreen.locGame.sr.end();
         batch.begin();
         super.draw(batch, parentAlpha);
     }

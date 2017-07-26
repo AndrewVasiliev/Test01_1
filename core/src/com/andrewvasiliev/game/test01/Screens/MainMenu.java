@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.StringBuilder;
 
 /**
  * Created by ava on 06.01.17.
@@ -30,8 +31,10 @@ public class MainMenu implements Screen {
     //public BackgroundActor backgroundActor;
     //private BackgroundField bf;
     private Label lblFps;
+    private StringBuilder sb;
 
     public MainMenu(MyGdxGame myGdxGame) {
+        sb = new StringBuilder();
         locGame = myGdxGame;
 
         stage = new Stage (locGame.view);
@@ -84,7 +87,7 @@ public class MainMenu implements Screen {
 
         //backgroundActor = new BackgroundActor(locGame);
         //backgroundActor.setPosition(0, 0);
-        BackgroundField bf = new BackgroundField(locGame.sr, 0, 0, locGame.view.getScreenWidth(), locGame.view.getScreenHeight());
+        BackgroundField bf = new BackgroundField(locGame, 0, 0, locGame.view.getScreenWidth(), locGame.view.getScreenHeight());
         bf.GenerateField(12, Const.CellShape.HEX, false);
 
         //stage.addActor(backgroundActor);
@@ -123,7 +126,8 @@ public class MainMenu implements Screen {
     @Override
     public void render(float delta) {
 
-        lblFps.setText("FPS:"+Integer.toString (Gdx.graphics.getFramesPerSecond()));
+        sb.setLength(0);
+        lblFps.setText(sb.append("FPS:").append(Gdx.graphics.getFramesPerSecond()));
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);

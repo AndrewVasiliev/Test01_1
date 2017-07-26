@@ -30,6 +30,8 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Timer;
 
+import java.util.Formatter;
+import java.util.Locale;
 import java.util.Random;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
@@ -41,7 +43,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 public class GameFieldScreen implements Screen {
     public MyGdxGame locGame;
     //private float locWidthMeter, locHeightMeter;
-    public ShapeRenderer shapeRenderer;
+    //public ShapeRenderer shapeRenderer;
     private Stage mainFieldStage;
     //private BackgroundActor background;
     private GameField gamefield;
@@ -66,8 +68,11 @@ public class GameFieldScreen implements Screen {
 
     private Label lblFps;
     private String glProfileInfo;
+    private StringBuilder stf;
 
     public GameFieldScreen(MyGdxGame myGdxGame) {
+        stf = new StringBuilder();
+
         locGame = myGdxGame;
         float locWidthMeter = locGame.iWidthMeter;
         float locHeightMeter = locGame.iHeightMeter;
@@ -97,7 +102,7 @@ public class GameFieldScreen implements Screen {
         WinningDialog.button("Вернуться в меню", false).row();
 
         //shapeRenderer = new ShapeRenderer();
-        shapeRenderer = locGame.sr;
+        //shapeRenderer = locGame.sr;
 
         mainFieldStage = new Stage(locGame.view);
 
@@ -293,7 +298,7 @@ public class GameFieldScreen implements Screen {
         gamefield.dispose();
         hud.dispose();
         mainFieldStage.dispose();
-        shapeRenderer.dispose();
+        //shapeRenderer.dispose();
         //batch.dispose();
         //img.dispose();
     }
@@ -381,7 +386,10 @@ public class GameFieldScreen implements Screen {
             for (int j = 0; j < locCells.length; j++) {
                 locCells[j].owner = inCells[j].owner;
                 locCells[j].colorIdx = inCells[j].colorIdx;
-                locCells[j].nearby = inCells[j].nearby.clone();
+//может не обязательно делать полную копию?
+// может достаточно ссылки? соседи, то не меняются.
+                //locCells[j].nearby = inCells[j].nearby.clone();
+                locCells[j].nearby = inCells[j].nearby;
             }
             //кол-во очков до хода очередным цветом
             prevScore = gamefield.CountScore(plrIdx, locCells);
@@ -423,7 +431,7 @@ public class GameFieldScreen implements Screen {
 
         x = hud.colorButton[idx].x + hud.diametrH/2.0f;
         y = hud.colorButton[idx].y;
-        popUpScores.setText("+" + Integer.toString(deltaScore));
+        popUpScores.setText(String.format("+%d", deltaScore));
         popUpScores.setPosition(x, y);
 
         MoveToAction moveAction = new MoveToAction();
@@ -457,8 +465,8 @@ public class GameFieldScreen implements Screen {
                     //всплывающее кол-во очков над нажатой кнопкой
                     PopUpScores(hud.colorIdx, deltaScore);
                     //меняем вол-во очков
-                    plrScore[0].setText(Integer.toString(locGame.plr[0].score));
-                    plrScore[1].setText(Integer.toString(locGame.plr[1].score));
+                    plrScore[0].setText(String.format("%d",locGame.plr[0].score));
+                    plrScore[1].setText(String.format("%d",locGame.plr[1].score));
                     //передаем ход следующему игроку
                     int prevIdx = currentPlayer; //если следующему игроку уже некуда будет ходить, то текущий игрок атоматически забирает остальное пространство, чтобы не тянуть время
                     currentPlayer += 1;
@@ -482,8 +490,8 @@ public class GameFieldScreen implements Screen {
                         }
                         locGame.plr[0].score = gamefield.CountScore(0, gamefield.cells);
                         locGame.plr[1].score = gamefield.CountScore(1, gamefield.cells);
-                        plrScore[0].setText(Integer.toString(locGame.plr[0].score));
-                        plrScore[1].setText(Integer.toString(locGame.plr[1].score));
+                        plrScore[0].setText(String.format("%d",locGame.plr[0].score));
+                        plrScore[1].setText(String.format("%d",locGame.plr[1].score));
                         //выведем сообщение о победителе и спросим "продолжать или выйти в меню"
                         if (locGame.plr[0].score == locGame.plr[1].score) {
                             lblWinningDialog.setText("Победила");
@@ -515,13 +523,19 @@ public class GameFieldScreen implements Screen {
             }
         }
 
-        //lblFps.setText("FPS:"+Integer.toString (Gdx.graphics.getFramesPerSecond()));
-        lblFps.setText(glProfileInfo);
+        stf.setLength(0);
+        lblFps.setText(stf.append("FPS:")
+                .append(Gdx.graphics.getFramesPerSecond())
+                .append(" vertexcount:")
+                .append(GLProfiler.vertexCount.count)
+                .append(" vertextotal:")
+                .append(GLProfiler.vertexCount.total));
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         locGame.camera.update();
-        shapeRenderer.setProjectionMatrix(locGame.camera.combined);
+        locGame.sr.setProjectionMatrix(locGame.camera.combined);
+        locGame.psb.setProjectionMatrix(locGame.camera.combined);
 
         mainFieldStage.act(delta);
 
@@ -530,11 +544,18 @@ public class GameFieldScreen implements Screen {
 
         mainFieldStage.draw();
 
-        glProfileInfo = "FPS:"+Integer.toString (Gdx.graphics.getFramesPerSecond())
-                //+ "calls: " + Integer.toString(GLProfiler.calls)
-                //+ " drawCalls: " + Integer.toString(GLProfiler.drawCalls)
-                + " vertexcount:" + Integer.toString(GLProfiler.vertexCount.count)
-                + " vertextotal:" + Float.toString(GLProfiler.vertexCount.total);
+/*        glProfileInfo = String.format(Locale.ENGLISH,"FPS:%d vertexcount:%d vertextotal:%f"
+                ,Gdx.graphics.getFramesPerSecond()
+                ,GLProfiler.vertexCount.count
+                ,GLProfiler.vertexCount.total);
+*/
+/*
+        glProfileInfo = stf.format("FPS:%d vertexcount:%d vertextotal:%f"
+                ,Gdx.graphics.getFramesPerSecond()
+                ,GLProfiler.vertexCount.count
+                ,GLProfiler.vertexCount.total).toString();
+*/
+
     }
 
     @Override

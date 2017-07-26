@@ -1,5 +1,6 @@
 package com.andrewvasiliev.game.test01.Actors;
 
+import com.andrewvasiliev.game.test01.MyGdxGame;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -12,8 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 
 public class BackgroundField  extends BaseField {
 
-    public BackgroundField(ShapeRenderer inSR, float x, float y, float width, float height) {
-        super (inSR, x, y, width, height, false);
+    public BackgroundField(/*ShapeRenderer inSR*/MyGdxGame lg, float x, float y, float width, float height) {
+        super (lg, x, y, width, height, false);
 
         SetSolidMode(true);
         setBounds(x, y, width, height);

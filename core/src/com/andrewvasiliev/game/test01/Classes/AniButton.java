@@ -1,5 +1,6 @@
 package com.andrewvasiliev.game.test01.Classes;
 
+import com.andrewvasiliev.game.test01.MyGdxGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -11,15 +12,15 @@ import com.badlogic.gdx.utils.Disposable;
  * Created by AvA on 18.02.2017.
  */
 
-public class AniButton extends Button implements Disposable {
-    private ShapeRenderer sr;
+public class AniButton extends Button /*implements Disposable */{
+    //private ShapeRenderer sr;
     private AniCell aniCell;
     private float aniZoom = 0.7f;
 
-    public AniButton(Skin skin, String styleName, Const.CellShape inCellType) {
+    public AniButton(Skin skin, String styleName, Const.CellShape inCellType, /*ShapeRenderer sr*/ MyGdxGame lg) {
         super(skin, styleName);
-        sr = new ShapeRenderer();
-        aniCell = new AniCell (inCellType, sr);
+        //sr = new ShapeRenderer();
+        aniCell = new AniCell (inCellType, lg);
         CorrectAniPosition();
         CorrectAniZoom(aniZoom);
         aniCell.setAnimationSpeed(0.8f);
@@ -81,8 +82,8 @@ public class AniButton extends Button implements Disposable {
         batch.begin();
     }
 
-    @Override
+/*    @Override
     public void dispose() {
         sr.dispose();
-    }
+    }*/
 }

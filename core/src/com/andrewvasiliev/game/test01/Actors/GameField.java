@@ -23,7 +23,7 @@ public class GameField extends BaseField {
     private int ColorCarouselIdx;
 
     public GameField(GameFieldScreen gameFieldScreen, float x, float y, float width, float height) {
-        super (gameFieldScreen.shapeRenderer, x, y, width, height, true);
+        super (gameFieldScreen.locGame, x, y, width, height, true);
         locScreen = gameFieldScreen;
         SetAnimationSpeed(0.5f);
     }

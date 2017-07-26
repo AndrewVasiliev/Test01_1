@@ -3,10 +3,22 @@ package com.andrewvasiliev.game.test01.Classes;
 //import com.badlogic.gdx.utils.Disposable;
 
 
+import com.andrewvasiliev.game.test01.MyGdxGame;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by AvA on 18.02.2017.
@@ -16,7 +28,7 @@ public class BaseCell  /*implements Disposable*/ {
     private Const.CellShape cellShape;
     private float coord[];
     private int vertexCount, vertexCount2x;
-    private float locHeight;
+    private float locHeight, locWidth;
     private int phaseCount;
 
 
@@ -37,10 +49,18 @@ public class BaseCell  /*implements Disposable*/ {
     //private boolean animNonStop;
     private float maxScale, minScale;
     private float sqrt3;
+    private MyGdxGame locGame;
+
+    Map<Color,TextureRegion> TextureRegionMap;
+    List<short[]> EarClippingList;
+    List<float[]> PhaseCoordList;
+    Map<Long,PolygonRegion> PolygonRegionMap;
 
 
-    public BaseCell(Const.CellShape inCellShape, float inWidth/*, float inHeight*/) {
+
+    public BaseCell(Const.CellShape inCellShape, float inWidth/*, float inHeight*/, MyGdxGame lg) {
         sqrt3 = (float)Math.sqrt(3f);
+        locGame = lg;
         cellShape = inCellShape;
         locHeight = 1.0f;
         //invertY = 1.0f; //не перевернуто по вертикали
@@ -52,7 +72,51 @@ public class BaseCell  /*implements Disposable*/ {
         maxScale = 1.0f;
         minScale = 0.9f;
         InitCellCoord(inCellShape);
+        locWidth = inWidth;
         CorrectSize(inWidth/*, inHeight*/); //в зависимости от фигуры, высота будет отличаться
+        if (locGame.UsePolygon) {
+            TextureRegionMap=new HashMap<Color,TextureRegion>();
+            EarClippingList = new ArrayList<short[]>();
+            PhaseCoordList = new ArrayList<float[]>();
+            PolygonRegionMap=new HashMap<Long,PolygonRegion>();
+            GeneratePolygonData();
+        }
+    }
+
+    private TextureRegion GetTextureRegion (Color inColor) {
+        if (!TextureRegionMap.containsKey(inColor)) {
+            Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+            pix.setColor(inColor);
+            pix.fill();
+            //Texture t = new Texture(pix);
+            //t.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+            TextureRegionMap.put(inColor, new TextureRegion(/*t*/new Texture(pix)));
+            pix.dispose();
+        }
+        return TextureRegionMap.get(inColor);
+    }
+
+    private void GeneratePolygonData () {
+        int coordIdx = 0;
+        for (int i=0; i<phaseCount; i++) {
+            PhaseCoordList.add(new float[vertexCount2x]);
+
+            for (int ncoor = 0; ncoor < vertexCount; ncoor++) {
+                PhaseCoordList.get(i)[ncoor * 2] = coord[coordIdx++];
+                PhaseCoordList.get(i)[ncoor * 2 + 1] = coord[coordIdx++];
+            }
+            EarClippingList.add(new EarClippingTriangulator().computeTriangles(PhaseCoordList.get(i)).toArray());
+        }
+    }
+
+    private PolygonRegion GetPolygonRegion (Color inColor, int phaseIdx) {
+        long hash = (long)inColor.toIntBits() << 32 | phaseIdx;
+
+        if (!PolygonRegionMap.containsKey(hash)) {
+            PolygonRegionMap.put(hash, new PolygonRegion(GetTextureRegion(inColor),
+                    PhaseCoordList.get(phaseIdx), EarClippingList.get(phaseIdx)));
+        }
+        return PolygonRegionMap.get(hash);
     }
 
     /*private int GetNextIdxColor () {
@@ -214,40 +278,73 @@ public class BaseCell  /*implements Disposable*/ {
        return phaseCount;
     }
 
-    private void DrawShape (float locX, float locY, float invertY, float scale, int idx, ShapeRenderer inSR) {
+    public void FillFullCell (float locX, float locY, float cellWidth, float cellHeight, int colorIdx) {
+
+        if (locGame.UsePolygon) { return; }
+
+        float dx = cellWidth / 2.0f;
+        float dy = cellHeight / 2.0f;
+        float x1 = locX - dx;
+        float y1 = locY + dy;
+        float x3 = locX + dx;
+        float y3 = locY - dy;
+        locGame.sr.setColor(Const.colorArr[colorIdx]);
+        locGame.sr.triangle(x1, y1,  x1, y3,  x3, y3);
+        locGame.sr.triangle(x1, y1,  x3, y1,  x3, y3);
+    }
+
+    private void DrawShape (float locX, float locY, float invertY, float scale, int idx) {
         float scale_invertY = scale * invertY;
         int k2, k;
         for (k = 2; k<vertexCount; k++) {
             k2 = k + k;
-            inSR.triangle(
-                    locX + coord[idx] * /*scale_invertY*/ scale,          locY + coord[idx + 1] * scale_invertY,
-                    locX + coord[idx + k2] * /*scale_invertY*/ scale,     locY + coord[idx + k2 + 1] * scale_invertY,
-                    locX + coord[idx + k2 - 2] * /*scale_invertY*/ scale, locY + coord[idx + k2 - 1] * scale_invertY);
+            locGame.sr.triangle(
+                    locX + coord[idx] * scale,          locY + coord[idx + 1] * scale_invertY,
+                    locX + coord[idx + k2] * scale,     locY + coord[idx + k2 + 1] * scale_invertY,
+                    locX + coord[idx + k2 - 2] * scale, locY + coord[idx + k2 - 1] * scale_invertY
+            );
         }
     }
 
-    public void draw (float x, float y, float invertY, int phaseIdx, int colorIdx, int colorIdxNext, ShapeRenderer inSR, Color borderColor, boolean useBorderColor) {
-        int idx = (phaseIdx==-1 ? 0 : phaseIdx) * vertexCount2x; //номер фазы анимации * vetrexCount * 2 (это x и y)
 
-        //отрисуем фигуру заполненными треугольниками
-        //сначала отрисуем полную фигуру
-        if (useBorderColor) {
-            inSR.setColor(borderColor);
-            DrawShape(x, y, invertY, maxScale, idx, inSR);
-        }
+    private void DrawPolyShape (float locX, float locY, float invertY, float scale, int phaseIdx, Color inColor) {
 
-        //теперь чуть меньшую, чтоб получился контур
-        if (phaseIdx >= phaseCount/2) {
-            //цвет с другой стороны
-            inSR.setColor(Const.colorArr[colorIdxNext]);
+        phaseIdx = phaseIdx == -1 ? 0 : phaseIdx;
+        //v1
+        //PolygonRegion polygonRegion = new PolygonRegion(GetTextureRegion(inColor), PhaseCoordList.get(phaseIdx), EarClippingList.get(phaseIdx));
+        //locGame.psb.draw(polygonRegion, locX, locY, scale, scale);
+
+        //v2
+        locGame.psb.draw(GetPolygonRegion(inColor, phaseIdx), locX, locY, scale, scale);
+    }
+
+    public void draw (float x, float y, float invertY, int phaseIdx, int colorIdx, int colorIdxNext,Color borderColor, boolean useBorderColor) {
+
+        if (locGame.UsePolygon) {
+            if (useBorderColor) {
+                DrawPolyShape(x, y, invertY, maxScale, phaseIdx, borderColor);
+            }
+            DrawPolyShape(x, y, invertY, minScale, phaseIdx, Const.colorArr[phaseIdx >= phaseCount / 2 ? colorIdxNext : colorIdx]);
         } else {
-            inSR.setColor(Const.colorArr[colorIdx]);
+            int idx = (phaseIdx == -1 ? 0 : phaseIdx) * vertexCount2x; //номер фазы анимации * vetrexCount * 2 (это x и y)
+
+            //отрисуем фигуру заполненными треугольниками
+            //сначала отрисуем полную фигуру
+            if (useBorderColor) {
+                locGame.sr.setColor(borderColor);
+                DrawShape(x, y, invertY, maxScale, idx);
+            }
+            //теперь чуть меньшую, чтоб получился контур
+            locGame.sr.setColor(Const.colorArr[phaseIdx >= phaseCount / 2 ? colorIdxNext : colorIdx]);
+            DrawShape(x, y, invertY, minScale, idx);
         }
-        DrawShape(x, y, invertY, minScale, idx, inSR);
     }
 
-    public void drawbridge(ShapeRenderer inSR, float bx, float by, float biy, int n, float nx, float ny, float niy,
+    public void drawbridge(float bx, float by, float biy, int n, float nx, float ny, float niy,
                            boolean prevNearby, boolean nextNearby) {
+
+        if (locGame.UsePolygon) { return; }
+
         int bidx = 0; //первая вершина стороны базовой фигуры для рисования перемычки
         int nidx = 0; //первая вершина стороны соседней фигуры для рисования перемычки
         float scale_biy = minScale * biy;
@@ -274,12 +371,12 @@ public class BaseCell  /*implements Disposable*/ {
         int nidx2X = nidx + nidx; //nidx * 2;
 
         if (cellShape == Const.CellShape.TRIANGLE) {
-            inSR.triangle(
+            locGame.sr.triangle(
                     bx + coord[bidx2X] * minScale              , by + coord[bidx2X + 1] * scale_biy,
                     bx + coord[FixIdx(bidx + 1) * 2] * minScale, by + coord[FixIdx(bidx + 1) * 2 + 1] * scale_biy,
                     nx + coord[((niy == -1.0f) ? FixIdx(nidx+1) : nidx) * 2] * minScale, ny + coord[((niy == -1.0f) ? FixIdx(nidx+1) : nidx) * 2 + 1] * scale_niy
             );
-            inSR.triangle(
+            locGame.sr.triangle(
                     bx + coord[bidx2X] * minScale              , by + coord[bidx2X + 1] * scale_biy,
                     nx + coord[nidx2X] * minScale              , ny + coord[nidx2X + 1] * scale_niy,
                     nx + coord[FixIdx(nidx + 1) * 2] * minScale, ny + coord[FixIdx(nidx + 1) * 2 + 1] * scale_niy
@@ -287,7 +384,7 @@ public class BaseCell  /*implements Disposable*/ {
 
             //ушки у перемычек
             if (nextNearby) {
-                inSR.triangle(
+                locGame.sr.triangle(
                         bx + coord[FixIdx(bidx + 1) * 2] * minScale, by + coord[FixIdx(bidx + 1) * 2 + 1] * scale_biy,
                         bx + coord[FixIdx(bidx + 1) * 2]           , by + coord[FixIdx(bidx + 1) * 2 + 1] * biy,
                         nx + coord[FixIdx(nidx + 1) * 2] * minScale, ny + coord[FixIdx(nidx + 1) * 2 + 1] * scale_niy
@@ -296,7 +393,7 @@ public class BaseCell  /*implements Disposable*/ {
 
 
             if (prevNearby) {
-                inSR.triangle(
+                locGame.sr.triangle(
                         bx + coord[bidx2X] * minScale, by + coord[bidx2X + 1] * scale_biy,
                         nx + coord[nidx2X]           , ny + coord[nidx2X + 1] * niy,
                         nx + coord[nidx2X] * minScale, ny + coord[nidx2X + 1] * scale_niy
@@ -304,12 +401,12 @@ public class BaseCell  /*implements Disposable*/ {
             }
 
         } else {
-            inSR.triangle(
+            locGame.sr.triangle(
                     bx + coord[bidx2X] * minScale              , by + coord[bidx2X + 1] * scale_biy,
                     bx + coord[FixIdx(bidx + 1) * 2] * minScale, by + coord[FixIdx(bidx + 1) * 2 + 1] * scale_biy,
                     nx + coord[nidx2X] * minScale              , ny + coord[nidx2X + 1] * scale_niy
             );
-            inSR.triangle(
+            locGame.sr.triangle(
                     bx + coord[bidx2X] * minScale              , by + coord[bidx2X + 1] * scale_biy,
                     nx + coord[nidx2X] * minScale              , ny + coord[nidx2X + 1] * scale_niy,
                     nx + coord[FixIdx(nidx + 1) * 2] * minScale, ny + coord[FixIdx(nidx + 1) * 2 + 1] * scale_niy
@@ -318,14 +415,14 @@ public class BaseCell  /*implements Disposable*/ {
 
             //ушки у перемычек
             if (nextNearby) {
-                inSR.triangle(
+                locGame.sr.triangle(
                         bx + coord[FixIdx(bidx + 1) * 2] * minScale, by + coord[FixIdx(bidx + 1) * 2 + 1] * scale_biy,
                         bx + coord[FixIdx(bidx + 1) * 2]           , by + coord[FixIdx(bidx + 1) * 2 + 1] * biy,
                         nx + coord[nidx2X] * minScale              , ny + coord[nidx2X + 1] * scale_niy
                 );
             }
             if (prevNearby) {
-                inSR.triangle(
+                locGame.sr.triangle(
                         bx + coord[bidx2X] * minScale              , by + coord[bidx2X + 1] * scale_biy,
                         nx + coord[FixIdx(nidx + 1) * 2]           , ny + coord[FixIdx(nidx + 1) * 2 + 1] * niy,
                         nx + coord[FixIdx(nidx + 1) * 2] * minScale, ny + coord[FixIdx(nidx + 1) * 2 + 1] * scale_niy

@@ -10,6 +10,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -44,13 +45,18 @@ public class MyGdxGame extends Game {
     public Player plr[]; //массив игроков
     public int maxPlr = 2; //максимальное количество игроков в игре
     public ShapeRenderer sr;
+    public PolygonSpriteBatch psb;
+    public boolean UsePolygon;
+
 
 
 
 
 	@Override
 	public void create () {
+        UsePolygon = false;
         sr = new ShapeRenderer();
+        psb = new PolygonSpriteBatch();
 
         //вариант с использованием всей площади устройства
         //iWidthMeter = Gdx.graphics.getWidth();
@@ -83,8 +89,10 @@ public class MyGdxGame extends Game {
         parameter.size = (int)(32 * ratio);
         //parameter.borderColor = Color.BLACK;
         parameter.color = Color.WHITE;
-        parameter.borderColor = Color.BLACK;
-        parameter.borderWidth = 1;
+        //parameter.borderColor = Color.BLACK;
+        //parameter.borderWidth = 1;
+        parameter.borderColor = Color.valueOf("00000080");
+        parameter.borderWidth = 2f;
         BitmapFont normalFont = generator.generateFont(parameter);
         skin.add("normalFont", normalFont);
 
@@ -117,6 +125,7 @@ public class MyGdxGame extends Game {
 	@Override
 	public void dispose () {
         //skin.dispose();
+        sr.dispose();
         super.dispose();
 	}
 }

@@ -3,6 +3,7 @@ package com.andrewvasiliev.game.test01.Actors;
 import com.andrewvasiliev.game.test01.Classes.BaseCell;
 import com.andrewvasiliev.game.test01.Classes.Const;
 import com.andrewvasiliev.game.test01.Classes.MyCell;
+import com.andrewvasiliev.game.test01.MyGdxGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -26,7 +27,8 @@ public class BaseField  extends Actor {
     public  MyCell[] cells;
     public int NOBODYCELL = -1; //ячейка никому не принадлежит
 
-    private ShapeRenderer sr;
+    //private ShapeRenderer sr;
+    private MyGdxGame locGame;
     private float leftX, leftY, widthX, heightY;
     private int phaseCount;
     private float animationSpeed = 1.0f; //0.5f; //за сколько секунд должна закончиться анимация
@@ -36,7 +38,7 @@ public class BaseField  extends Actor {
     private boolean isSolidField = false; // если true, то области с одним цветом сливаются
     private boolean isGameField = false; //если true, то поле для игрового экрана
 
-    public BaseField(ShapeRenderer inSR, float x, float y, float width, float height, boolean inGameField) {
+    public BaseField(/*ShapeRenderer inSR*/MyGdxGame lg, float x, float y, float width, float height, boolean inGameField) {
         leftX = x;
         leftY = y;
         widthX = width;
@@ -45,7 +47,8 @@ public class BaseField  extends Actor {
         countRow = 0;
         borderColor = Color.WHITE;
         isGameField = inGameField;
-        sr = inSR;
+        //sr = inSR;
+        locGame = lg;
         setBounds(x, y, width, height);
     }
 
@@ -65,7 +68,7 @@ public class BaseField  extends Actor {
             cellWidth = widthX / countCol / 1.5f;
         }
 
-        cell = new BaseCell(cellShape, cellWidth);
+        cell = new BaseCell(cellShape, cellWidth, locGame);
         cell.setScale(1.0f, 0.9f);
         phaseCount = cell.GetPhaseCount();
         cellHeight = (float) Math.floor(cell.GetHeight());
@@ -277,7 +280,11 @@ public class BaseField  extends Actor {
         int i;
         //boolean even;
         batch.end();
-        sr.begin(ShapeRenderer.ShapeType.Filled);
+        if (locGame.UsePolygon) {
+            locGame.psb.begin();
+        } else {
+            locGame.sr.begin(ShapeRenderer.ShapeType.Filled);
+        }
         //sr.begin(ShapeRenderer.ShapeType.Line);
         for (int m=0; m<countRow; m++) {
             for (int j=0; j<countCol; j++) {
@@ -303,22 +310,13 @@ public class BaseField  extends Actor {
                     }
                 }
 
-/*  //как-то не очень хочется передавать сюда GameFieldScreen. надо подумать, как выделять захваченное текущим игроком
-                if ((isGameField) && (locScreen.currentPlayer == cells[i].owner)) {
-                    borderColor = Color.WHITE; // ячейка активного игрока
-                } else {
-                    borderColor = Const.borderColor;
-                }
-  */
-
                 //для уменьшения количества треугольников, попробуем отрисовывать для ячеек, у которых все соседи того же цвета
                 //и состояние покоя, просто квадрат, занимающий все место
                 if (isInnerCell(i) && (cells[i].phaseIdx == -1)) {
                     //рисуем квадрат размером в ячейку
-                    sr.setColor(Const.colorArr[cells[i].colorIdx]);
-                    FillFullCell(i);
+                    cell.FillFullCell(cells[i].x, cells[i].y, cellWidth, cellHeight, cells[i].colorIdx);
                 } else {
-                    cell.draw(cells[i].x, cells[i].y, cells[i].invertY, cells[i].phaseIdx, cells[i].colorIdx, cells[i].colorIdxNext, sr, borderColor, currPlayer == cells[i].owner);
+                    cell.draw(cells[i].x, cells[i].y, cells[i].invertY, cells[i].phaseIdx, cells[i].colorIdx, cells[i].colorIdxNext, borderColor, currPlayer == cells[i].owner);
 
                     //отрисовка перемычек для слияния одинаковых цветов в единое целое
                     if (isSolidField && (cells[i].phaseIdx == -1)) {
@@ -334,7 +332,6 @@ public class BaseField  extends Actor {
                                 continue;
                             }
                             cell.drawbridge(
-                                    sr,
                                     cells[i].x, cells[i].y, cells[i].invertY, k,
                                     cells[ni].x, cells[ni].y, cells[ni].invertY,
                                     isColorMatch(ni, cells[i].nearby[(k - 1) < 0 ? (maxNearby - 1) : (k - 1)]), isColorMatch(ni, cells[i].nearby[(k + 1) == maxNearby ? 0 : (k + 1)]));
@@ -343,19 +340,12 @@ public class BaseField  extends Actor {
                 }
             }
         }
-        sr.end();
+        if (locGame.UsePolygon) {
+            locGame.psb.end();
+        } else {
+            locGame.sr.end();
+        }
         batch.begin();
-    }
-
-    private void FillFullCell (int idx) {
-        float dx = cellWidth / 2.0f;
-        float dy = cellHeight / 2.0f;
-        float x1 = cells[idx].x - dx;
-        float y1 = cells[idx].y + dy;
-        float x3 = cells[idx].x + dx;
-        float y3 = cells[idx].y - dy;
-        sr.triangle(x1, y1,  x1, y3,  x3, y3);
-        sr.triangle(x1, y1,  x3, y1,  x3, y3);
     }
 
     private boolean isInnerCell (int idx) {

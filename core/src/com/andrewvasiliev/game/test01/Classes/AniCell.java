@@ -2,6 +2,7 @@ package com.andrewvasiliev.game.test01.Classes;
 
 //import com.badlogic.gdx.utils.Disposable;
 
+import com.andrewvasiliev.game.test01.MyGdxGame;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
@@ -10,7 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class AniCell  /*implements Disposable*/ {
     private Const.CellShape cellShape;
-    private ShapeRenderer sr;
+    //private ShapeRenderer sr;
 
     private float x,y;           //координаты центра ячейки
     private float invertY;
@@ -21,10 +22,12 @@ public class AniCell  /*implements Disposable*/ {
     private boolean animNonStop;
     private float maxScale, minScale;
     private BaseCell cell;
+    private MyGdxGame locGame;
 
 
-    public AniCell(Const.CellShape inCellShape, ShapeRenderer inSR) {
-        sr = inSR;
+    public AniCell(Const.CellShape inCellShape, /*ShapeRenderer inSR*/MyGdxGame lg) {
+        //sr = inSR;
+        locGame = lg;
         cellShape = inCellShape;
         invertY = 1.0f; //не перевернуто по вертикали
         phaseIdx = -1; //состояние покоя
@@ -74,11 +77,11 @@ public class AniCell  /*implements Disposable*/ {
         float zoom = inWidth < inHeight ? inWidth : inHeight;
         zoom = zoom * inAniZoom; //100 это ширина и высота фигуры при прерасчете
 
-        cell = new BaseCell(cellShape, zoom);
+        cell = new BaseCell(cellShape, zoom, locGame);
     }
 
     private void InitCellCoord (Const.CellShape inCellShape) {
-        cell = new BaseCell(inCellShape, 100);
+        cell = new BaseCell(inCellShape, 100, locGame);
     }
 
     public void draw (float deltaTime) {
@@ -98,11 +101,17 @@ public class AniCell  /*implements Disposable*/ {
                 }
             }
         }
-
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        cell.draw(x, y, invertY, phaseIdx, colorIdx, colorIdxNext, sr, Const.borderColor, true);
-        sr.end();
-
+        if (locGame.UsePolygon) {
+            locGame.psb.begin();
+        } else {
+            locGame.sr.begin(ShapeRenderer.ShapeType.Filled);
+        }
+        cell.draw(x, y, invertY, phaseIdx, colorIdx, colorIdxNext, Const.borderColor, true);
+        if (locGame.UsePolygon) {
+            locGame.psb.end();
+        } else {
+            locGame.sr.end();
+        }
     }
 
 //    @Override
