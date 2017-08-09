@@ -51,11 +51,11 @@ public class PreStartMenu implements Screen {
         //table.debugAll();
         float cnPad = 5;
 
-        Label lblGameType = new Label("Игра против", locGame.skin, "default");
+        Label lblGameType = new Label(locGame.StrRes.get("PlayerVs")/*"Игра против"*/, locGame.skin, "default");
         btnPvP = new Button(locGame.skin, "toggleButton");
-        btnPvP.add(new Label("Игрока", locGame.skin, "default"));
+        btnPvP.add(new Label(locGame.StrRes.get("vsPlayer")/*"Игрока"*/, locGame.skin, "default"));
         Button btnPvAI = new Button(locGame.skin, "toggleButton");
-        btnPvAI.add(new Label("Андроида", locGame.skin, "default"));
+        btnPvAI.add(new Label(locGame.StrRes.get("vsAndroid")/*"Андроида"*/, locGame.skin, "default"));
         Table tblGameType = new Table();
         tblGameType.add(btnPvP).pad(cnPad);
         tblGameType.add(btnPvAI).pad(cnPad);
@@ -65,8 +65,8 @@ public class PreStartMenu implements Screen {
         btnGroupGameType.setMinCheckCount(1);
         btnGroupGameType.setUncheckLast(true);
 
-        lblPlayer1 = new Label("Имя игрока 1", locGame.skin, "default");
-        edPlayer1 = new TextField("Игрок 1", locGame.skin, "default" );
+        lblPlayer1 = new Label(locGame.StrRes.get("Player1Name")/*"Имя игрока 1"*/, locGame.skin, "default");
+        edPlayer1 = new TextField(locGame.StrRes.get("Player1")/*"Игрок 1"*/, locGame.skin, "default" );
         edPlayer1.setMaxLength(15);
         edPlayer1.setOnscreenKeyboard(new TextField.OnscreenKeyboard() {
             @Override
@@ -86,8 +86,8 @@ public class PreStartMenu implements Screen {
             }
         });
 
-        lblPlayer2 = new Label("Имя игрока 2", locGame.skin, "default");
-        edPlayer2 = new TextField("Игрок 2", locGame.skin, "default" );
+        lblPlayer2 = new Label(locGame.StrRes.get("Player2Name")/*"Имя игрока 2"*/, locGame.skin, "default");
+        edPlayer2 = new TextField(locGame.StrRes.get("Player2")/*"Игрок 2"*/, locGame.skin, "default" );
         edPlayer2.setMaxLength(15);
         edPlayer2.setOnscreenKeyboard(new TextField.OnscreenKeyboard() {
             @Override
@@ -107,13 +107,13 @@ public class PreStartMenu implements Screen {
             }
         });
 
-        Label lblDifficulty = new Label("Сложность Андроида", locGame.skin, "default");
+        Label lblDifficulty = new Label(locGame.StrRes.get("AndroidDifficult")/*"Сложность Андроида"*/, locGame.skin, "default");
         Button btnEasy = new Button(locGame.skin, "toggleButton");
-        btnEasy.add(new Label("Легкий", locGame.skin, "default"));
+        btnEasy.add(new Label(locGame.StrRes.get("EasyDifficult")/*"Легкий"*/, locGame.skin, "default"));
         Button btnMid = new Button(locGame.skin, "toggleButton");
-        btnMid.add(new Label("Средний", locGame.skin, "default"));
+        btnMid.add(new Label(locGame.StrRes.get("AverageDifficult")/*"Средний"*/, locGame.skin, "default"));
         Button btnHard= new Button(locGame.skin, "toggleButton");
-        btnHard.add(new Label("Тяжелый", locGame.skin, "default"));
+        btnHard.add(new Label(locGame.StrRes.get("HardDifficult")/*"Тяжелый"*/, locGame.skin, "default"));
         btnGroupDifficulty = new ButtonGroup(btnEasy, btnMid, btnHard);
         btnGroupDifficulty.setMaxCheckCount(1);
         btnGroupDifficulty.setMinCheckCount(1);
@@ -124,7 +124,7 @@ public class PreStartMenu implements Screen {
         tblDifficulty.add(btnHard).align(Align.left).pad(cnPad);
 
         //-- тип ячеек
-        Label lblFieldType = new Label("Тип ячеек", locGame.skin, "default");
+        Label lblFieldType = new Label(locGame.StrRes.get("CellType")/*"Тип ячеек"*/, locGame.skin, "default");
         AniButton btnRectangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.RECTANGLE, locGame);
         btnRectangle.add(new Label(" ", locGame.skin, "default"));
         AniButton btnTriangle = new AniButton(locGame.skin, "toggleButton", Const.CellShape.TRIANGLE, locGame);
@@ -145,7 +145,7 @@ public class PreStartMenu implements Screen {
         tblFieldType.add(btnHex).align(Align.left).pad(cnPad);
 
         //-- размер поля
-        Label lblFieldSize = new Label("Размер поля", locGame.skin, "default");
+        Label lblFieldSize = new Label(locGame.StrRes.get("FieldSize")/*"Размер поля"*/, locGame.skin, "default");
         Button btnSmall = new Button(locGame.skin, "toggleButton");
         btnSmall.add(new Label("S", locGame.skin, "default"));
         Button btnMiddle = new Button(locGame.skin, "toggleButton");
@@ -166,8 +166,8 @@ public class PreStartMenu implements Screen {
         tblFieldSize.add(btnLarge).align(Align.left).pad(cnPad);
         tblFieldSize.add(btnXLarge).align(Align.left).pad(cnPad);
 
-        TextButton btnStartGame = new TextButton("Начать игру", locGame.skin, "default");
-        TextButton btnCancel = new TextButton("Назад", locGame.skin, "default");
+        TextButton btnStartGame = new TextButton(locGame.StrRes.get("StartGame")/*"Начать игру"*/, locGame.skin, "default");
+        TextButton btnCancel = new TextButton(locGame.StrRes.get("Back")/*"Назад"*/, locGame.skin, "default");
 
         btnCancel.addListener(new ClickListener() {
                 @Override

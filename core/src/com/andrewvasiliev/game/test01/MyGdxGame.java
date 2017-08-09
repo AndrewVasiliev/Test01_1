@@ -1,12 +1,15 @@
 package com.andrewvasiliev.game.test01;
 
+import com.andrewvasiliev.game.test01.Classes.Const;
 import com.andrewvasiliev.game.test01.Classes.Player;
 import com.andrewvasiliev.game.test01.Screens.MainMenu;
 import com.andrewvasiliev.game.test01.Screens.GameFieldScreen;
 import com.andrewvasiliev.game.test01.Screens.PreStartMenu;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -15,8 +18,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.util.Locale;
 
 //Todo: возможно для отрисовки использовать PolygonRegion (https://stackoverflow.com/questions/15733442/drawing-filled-polygon-with-libgdx и https://gamedev.stackexchange.com/questions/108476/how-to-draw-a-polygon-with-picture-in-libgdx)
 //Todo: может, если все соседи твоего цвета, то вместо ячейки рисовать квадрат размером 100%, чтобы меньше треугольников было? а то фпс падает чем больше захватываешь
@@ -32,6 +38,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 //Todo: устаканить размеры полей (s,m,l,xl)
 //Todo: AI
 //Todo: + возможно стартовые позиции лучше поставить не в углах, а по середине вверху и внизу
+//Todo: сохранять введенные имена игроков в настройках
 
 
 public class MyGdxGame extends Game {
@@ -47,8 +54,7 @@ public class MyGdxGame extends Game {
     public ShapeRenderer sr;
     public PolygonSpriteBatch psb;
     public boolean UsePolygon;
-
-
+    public I18NBundle StrRes;
 
 
 
@@ -56,7 +62,9 @@ public class MyGdxGame extends Game {
 	public void create () {
         UsePolygon = false;
         sr = new ShapeRenderer();
-        psb = new PolygonSpriteBatch();
+        if (UsePolygon) {
+            psb = new PolygonSpriteBatch();
+        }
 
         //вариант с использованием всей площади устройства
         //iWidthMeter = Gdx.graphics.getWidth();
@@ -98,6 +106,26 @@ public class MyGdxGame extends Game {
 
         skin.load(Gdx.files.internal("skin/uiskin.json"));
 
+
+        Preferences prefs = Gdx.app.getPreferences(Const.PreferencesName);
+        // посмотрим какой язык указанн в настройках
+        String Lang = prefs.getString("Language","");
+Lang = "en";
+        FileHandle baseFileHandle = Gdx.files.internal("i18n/StrRes");
+        // если в настройках пусто, то пытаемся подгрузить локализацию текущего языка Android
+        Locale locale = new Locale( Lang == "" ? Locale.getDefault().getLanguage() : Lang );
+        StrRes = I18NBundle.createBundle(baseFileHandle, locale);
+        // после загрузки языковых ресурсов, посмотрим какой язык загрузился
+        if (locale.getLanguage() == "") {
+            //загрузились ресурсы по-умолчанию, значит текущего языка Android нет в ресурсах
+            //установим в настройках английский язык, т.к. он в файле по-умолчанию
+            prefs.putString("Language", "en");
+            prefs.flush();
+        } else if (Lang != locale.getLanguage()) {
+            //т.к. язык, сохраненный в настройках не совпадает с загруженным, то сохраним новый язык
+            prefs.putString("Language", locale.getDefault().getLanguage());
+            prefs.flush();
+        }
 
 
         plr = new Player[maxPlr];

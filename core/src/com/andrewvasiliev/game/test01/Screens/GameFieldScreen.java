@@ -81,7 +81,7 @@ public class GameFieldScreen implements Screen {
         lblNextPlayerDialog = new Label("", locGame.skin, "popupMessage");
         NextPlayerMoveDialog.text(lblNextPlayerDialog);
 
-        WinningDialog= new Dialog("Результаты:", locGame.skin, "result_window"){
+        WinningDialog= new Dialog(locGame.StrRes.get("Result")/*"Результаты:"*/, locGame.skin, "result_window"){
             protected void result(Object object) {
                 this.hide();
                 System.out.println("Chosen: " + object);
@@ -98,8 +98,8 @@ public class GameFieldScreen implements Screen {
         WinningDialog.getContentTable().add(lblWinningDialog).row();
         WinningDialog.getContentTable().add(lblWinningName).row();
         WinningDialog.getButtonTable().padTop(25);
-        WinningDialog.button("Сыграть еще", true).row();
-        WinningDialog.button("Вернуться в меню", false).row();
+        WinningDialog.button(locGame.StrRes.get("PlayMore")/*"Сыграть еще"*/, true).row();
+        WinningDialog.button(locGame.StrRes.get("ReturnToMenu")/*"Вернуться в меню"*/, false).row();
 
         //shapeRenderer = new ShapeRenderer();
         //shapeRenderer = locGame.sr;
@@ -322,7 +322,7 @@ public class GameFieldScreen implements Screen {
     }
 
     private void PrintNextPlayerName() {
-        lblNextPlayerDialog.setText(" Ходит " + locGame.plr[currentPlayer].name+" ");
+        lblNextPlayerDialog.setText(locGame.StrRes.format("NextTurn", locGame.plr[currentPlayer].name)/*" Ходит " + locGame.plr[currentPlayer].name+" "*/);
         NextPlayerMoveDialog.show(mainFieldStage);
         Timer.schedule(new Timer.Task() {
             @Override
@@ -494,10 +494,10 @@ public class GameFieldScreen implements Screen {
                         plrScore[1].setText(String.format("%d",locGame.plr[1].score));
                         //выведем сообщение о победителе и спросим "продолжать или выйти в меню"
                         if (locGame.plr[0].score == locGame.plr[1].score) {
-                            lblWinningDialog.setText("Победила");
-                            lblWinningName.setText("ДРУЖБА !!!");
+                            lblWinningDialog.setText(locGame.StrRes.get("FriendshipWins1")/*"Победила"*/);
+                            lblWinningName.setText(locGame.StrRes.get("FriendshipWins2")/*"ДРУЖБА !!!"*/);
                         } else {
-                            lblWinningDialog.setText("Победил(а)");
+                            lblWinningDialog.setText(locGame.StrRes.get("WinnerIs")/*"Победил(а)"*/);
                             if (locGame.plr[0].score > locGame.plr[1].score) {
                                 lblWinningName.setText(locGame.plr[0].name);
                             } else {
@@ -535,7 +535,9 @@ public class GameFieldScreen implements Screen {
 
         locGame.camera.update();
         locGame.sr.setProjectionMatrix(locGame.camera.combined);
-        locGame.psb.setProjectionMatrix(locGame.camera.combined);
+        if (locGame.UsePolygon) {
+            locGame.psb.setProjectionMatrix(locGame.camera.combined);
+        }
 
         mainFieldStage.act(delta);
 

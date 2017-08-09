@@ -46,9 +46,11 @@ public class MainMenu implements Screen {
         //table.align(Align.center|Align.top);
         //table.setPosition(0, stage.getHeight());
 
-        resumeGame = new TextButton("Продолжить игру", locGame.skin, "menuStyle");
-        TextButton startButton = new TextButton("Начать игру", locGame.skin, "menuStyle");
-        TextButton quitButton = new TextButton("Выйти из игры", locGame.skin, "menuStyle");
+        resumeGame = new TextButton(locGame.StrRes.get("ResumeGame")/*"Продолжить игру"*/, locGame.skin, "menuStyle");
+        String StartGameStr = locGame.StrRes.get("StartGame");
+        TextButton startButton = new TextButton(StartGameStr/*"Начать игру"*/, locGame.skin, "menuStyle");
+        String ExitGameStr = locGame.StrRes.get("ExitGame");
+        TextButton quitButton = new TextButton(ExitGameStr/*"Выйти из игры"*/, locGame.skin, "menuStyle");
 
         table.padTop(30);
         table.add(resumeGame).padBottom(30);
