@@ -33,4 +33,31 @@ com.badlogic.gdx.graphics.Color: {
         default: { font: default-font, fontColor: black , background: textbox_02, cursor: textbox_cursor_02 },
     }
 
+com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
+	default: {
+		background: textbox_01,
+		hScroll: scroll_back_hor,
+		hScrollKnob: scroll_back_hor,
+		vScroll: scroll_back_ver,
+		vScrollKnob: scroll_back_ver
+	},
+}
+com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
+	default: {
+		font: default-font,
+		fontColorSelected: { a: 1, b: 1, g: 0.2, r: 1 },
+		fontColorUnselected: { a: 1, b: 1, g: 1, r: 1 },
+		selection: textbox_01
+	},
+}
+com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
+	default: {
+		font: default-font,
+		fontColor: { a: 1, b: 1, g: 1, r: 1 },
+		background: selectbox_01,
+		scrollStyle: default,
+		listStyle: default,
+		backgroundOpen: textbox_01
+	}
+}
 }

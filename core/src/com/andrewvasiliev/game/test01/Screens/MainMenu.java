@@ -49,6 +49,8 @@ public class MainMenu implements Screen {
         resumeGame = new TextButton(locGame.StrRes.get("ResumeGame")/*"Продолжить игру"*/, locGame.skin, "menuStyle");
         String StartGameStr = locGame.StrRes.get("StartGame");
         TextButton startButton = new TextButton(StartGameStr/*"Начать игру"*/, locGame.skin, "menuStyle");
+        String OptionsStr = locGame.StrRes.get("Options");
+        TextButton optionButton = new TextButton(OptionsStr, locGame.skin, "menuStyle");
         String ExitGameStr = locGame.StrRes.get("ExitGame");
         TextButton quitButton = new TextButton(ExitGameStr/*"Выйти из игры"*/, locGame.skin, "menuStyle");
 
@@ -56,6 +58,8 @@ public class MainMenu implements Screen {
         table.add(resumeGame).padBottom(30);
         table.row();
         table.add(startButton).padBottom(30);
+        table.row();
+        table.add(optionButton).padBottom(30);
         table.row();
         table.add(quitButton);
 
@@ -76,6 +80,14 @@ public class MainMenu implements Screen {
                }
            }
         );
+        optionButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                locGame.setScreen(locGame.OptionsMenu);
+            }
+        });
+
+
         quitButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {

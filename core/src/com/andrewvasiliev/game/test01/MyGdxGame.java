@@ -4,6 +4,7 @@ import com.andrewvasiliev.game.test01.Classes.Const;
 import com.andrewvasiliev.game.test01.Classes.Player;
 import com.andrewvasiliev.game.test01.Screens.MainMenu;
 import com.andrewvasiliev.game.test01.Screens.GameFieldScreen;
+import com.andrewvasiliev.game.test01.Screens.OptionsScreen;
 import com.andrewvasiliev.game.test01.Screens.PreStartMenu;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -45,6 +46,7 @@ public class MyGdxGame extends Game {
     public int iWidthMeter, iHeightMeter;
 	public GameFieldScreen gameScreen;
     public PreStartMenu preStartMenu;
+    public OptionsScreen OptionsMenu;
     public Screen mainMenu;
     public Skin skin;
     public OrthographicCamera camera;
@@ -110,7 +112,7 @@ public class MyGdxGame extends Game {
         Preferences prefs = Gdx.app.getPreferences(Const.PreferencesName);
         // посмотрим какой язык указанн в настройках
         String Lang = prefs.getString("Language","");
-Lang = "en";
+Lang = "ru";
         FileHandle baseFileHandle = Gdx.files.internal("i18n/StrRes");
         // если в настройках пусто, то пытаемся подгрузить локализацию текущего языка Android
         Locale locale = new Locale( Lang == "" ? Locale.getDefault().getLanguage() : Lang );
@@ -139,6 +141,7 @@ Lang = "en";
         mainMenu = new MainMenu(this);
         gameScreen = new GameFieldScreen(this);
         preStartMenu = new PreStartMenu(this);
+        OptionsMenu = new OptionsScreen(this);
 
         //gameScreen.StartGame();
 		this.setScreen(mainMenu);

@@ -234,11 +234,11 @@ public class PreStartMenu implements Screen {
         //тип ячеек
         //table.row().minHeight(btnPvP.getHeight());
         table.add(lblFieldType).align(Align.right).pad(cnPad);
-        table.add(tblFieldType);
+        table.add(tblFieldType).align(Align.left);
         table.row();
         //размер поля
         table.add(lblFieldSize).align(Align.right).pad(cnPad);
-        table.add(tblFieldSize);
+        table.add(tblFieldSize).align(Align.left);;
         table.row();
 
 
