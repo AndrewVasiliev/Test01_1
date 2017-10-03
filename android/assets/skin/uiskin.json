@@ -45,15 +45,15 @@ com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
 	default: {
 		font: default-font,
-		fontColorSelected: { a: 1, b: 1, g: 0.2, r: 1 },
-		fontColorUnselected: { a: 1, b: 1, g: 1, r: 1 },
+		fontColorSelected: black,
+		fontColorUnselected: white,
 		selection: textbox_01
 	},
 }
 com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 	default: {
 		font: default-font,
-		fontColor: { a: 1, b: 1, g: 1, r: 1 },
+		fontColor: black,
 		background: selectbox_01,
 		scrollStyle: default,
 		listStyle: default,

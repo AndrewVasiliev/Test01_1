@@ -238,7 +238,7 @@ public class PreStartMenu implements Screen {
         table.row();
         //размер поля
         table.add(lblFieldSize).align(Align.right).pad(cnPad);
-        table.add(tblFieldSize).align(Align.left);;
+        table.add(tblFieldSize).align(Align.left);
         table.row();
 
 

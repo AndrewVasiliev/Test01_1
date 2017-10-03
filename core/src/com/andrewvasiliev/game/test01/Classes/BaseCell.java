@@ -28,7 +28,7 @@ public class BaseCell  /*implements Disposable*/ {
     private Const.CellShape cellShape;
     private float coord[];
     private int vertexCount, vertexCount2x;
-    private float locHeight, locWidth;
+    private float locHeight/*, locWidth*/;
     private int phaseCount;
 
 
@@ -72,7 +72,7 @@ public class BaseCell  /*implements Disposable*/ {
         maxScale = 1.0f;
         minScale = 0.9f;
         InitCellCoord(inCellShape);
-        locWidth = inWidth;
+        //locWidth = inWidth;
         CorrectSize(inWidth/*, inHeight*/); //в зависимости от фигуры, высота будет отличаться
         if (locGame.UsePolygon) {
             TextureRegionMap=new HashMap<Color,TextureRegion>();

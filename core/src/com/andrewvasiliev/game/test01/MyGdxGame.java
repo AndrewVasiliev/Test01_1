@@ -115,15 +115,15 @@ public class MyGdxGame extends Game {
 Lang = "ru";
         FileHandle baseFileHandle = Gdx.files.internal("i18n/StrRes");
         // если в настройках пусто, то пытаемся подгрузить локализацию текущего языка Android
-        Locale locale = new Locale( Lang == "" ? Locale.getDefault().getLanguage() : Lang );
+        Locale locale = new Locale(Lang.equals("") ? Locale.getDefault().getLanguage() : Lang );
         StrRes = I18NBundle.createBundle(baseFileHandle, locale);
         // после загрузки языковых ресурсов, посмотрим какой язык загрузился
-        if (locale.getLanguage() == "") {
+        if (locale.getLanguage().equals("")) {
             //загрузились ресурсы по-умолчанию, значит текущего языка Android нет в ресурсах
             //установим в настройках английский язык, т.к. он в файле по-умолчанию
             prefs.putString("Language", "en");
             prefs.flush();
-        } else if (Lang != locale.getLanguage()) {
+        } else if (!Lang.equals(locale.getLanguage())) {
             //т.к. язык, сохраненный в настройках не совпадает с загруженным, то сохраним новый язык
             prefs.putString("Language", locale.getDefault().getLanguage());
             prefs.flush();

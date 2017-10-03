@@ -20,7 +20,7 @@ import java.util.Random;
 
 public class GameField extends BaseField {
     private GameFieldScreen locScreen;
-    private int ColorCarouselIdx;
+    //private int ColorCarouselIdx;
 
     public GameField(GameFieldScreen gameFieldScreen, float x, float y, float width, float height) {
         super (gameFieldScreen.locGame, x, y, width, height, true);
@@ -32,7 +32,7 @@ public class GameField extends BaseField {
     public void GenerateField (int countColIn, Const.CellShape cellShape, boolean isResumed) {
         super.GenerateField (countColIn, cellShape, isResumed);
         SetPlayerInfo(countCol, countRow);
-        ColorCarouselIdx = 0;
+        //ColorCarouselIdx = 0;
     }
 
     private void SetPlayerInfo (int numCol, int numRow) { //!!!
