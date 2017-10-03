@@ -36,7 +36,7 @@ public class OptionsScreen implements Screen {
 
         Label lblLanguage = new Label(locGame.StrRes.get("lblLanguage"), locGame.skin, "default");
         SelectBox sbLanguage = new SelectBox(locGame.skin, "default");
-        sbLanguage.setItems(new String[] {"Item 1", "Item 2", "Item 3"});
+        sbLanguage.setItems(new String[] {"Русский", "English", "Deutsch", "Español"});
 
 
         TextButton btnBack = new TextButton(locGame.StrRes.get("Back"), locGame.skin, "default");

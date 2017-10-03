@@ -86,10 +86,11 @@ public class MyGdxGame extends Game {
         skin = new Skin();
         skin.addRegions(new TextureAtlas("skin/ui-orange.atlas"));
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("skin/GTRS_RtpA.ttf"));
+//        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("skin/GTRS_RtpA.ttf"));
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("skin/Scada_bold.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         //generator.DEFAULT_CHARS
-        parameter.characters += "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+        parameter.characters += "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюяÄäÖöÜüßÑñóáéú";
         float ratio = Gdx.graphics.getWidth() / 960f;
 
         parameter.size = (int)(48 * ratio);
@@ -112,7 +113,7 @@ public class MyGdxGame extends Game {
         Preferences prefs = Gdx.app.getPreferences(Const.PreferencesName);
         // посмотрим какой язык указанн в настройках
         String Lang = prefs.getString("Language","");
-Lang = "ru";
+Lang = "es";
         FileHandle baseFileHandle = Gdx.files.internal("i18n/StrRes");
         // если в настройках пусто, то пытаемся подгрузить локализацию текущего языка Android
         Locale locale = new Locale(Lang.equals("") ? Locale.getDefault().getLanguage() : Lang );
