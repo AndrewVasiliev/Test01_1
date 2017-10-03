@@ -57,6 +57,7 @@ public class MyGdxGame extends Game {
     public PolygonSpriteBatch psb;
     public boolean UsePolygon;
     public I18NBundle StrRes;
+    public Preferences Settings;
 
 
 
@@ -110,10 +111,10 @@ public class MyGdxGame extends Game {
         skin.load(Gdx.files.internal("skin/uiskin.json"));
 
 
-        Preferences prefs = Gdx.app.getPreferences(Const.PreferencesName);
+        Settings = Gdx.app.getPreferences(Const.PreferencesName);
         // посмотрим какой язык указанн в настройках
-        String Lang = prefs.getString("Language","");
-Lang = "es";
+        String Lang = Settings.getString("Language","");
+//Lang = "ru";
         FileHandle baseFileHandle = Gdx.files.internal("i18n/StrRes");
         // если в настройках пусто, то пытаемся подгрузить локализацию текущего языка Android
         Locale locale = new Locale(Lang.equals("") ? Locale.getDefault().getLanguage() : Lang );
@@ -122,12 +123,12 @@ Lang = "es";
         if (locale.getLanguage().equals("")) {
             //загрузились ресурсы по-умолчанию, значит текущего языка Android нет в ресурсах
             //установим в настройках английский язык, т.к. он в файле по-умолчанию
-            prefs.putString("Language", "en");
-            prefs.flush();
+            Settings.putString("Language", "en");
+            Settings.flush();
         } else if (!Lang.equals(locale.getLanguage())) {
             //т.к. язык, сохраненный в настройках не совпадает с загруженным, то сохраним новый язык
-            prefs.putString("Language", locale.getDefault().getLanguage());
-            prefs.flush();
+            Settings.putString("Language", locale.getDefault().getLanguage());
+            Settings.flush();
         }
 
 

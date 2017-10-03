@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
@@ -23,6 +25,8 @@ import com.badlogic.gdx.utils.Align;
 public class OptionsScreen implements Screen {
     private MyGdxGame locGame;
     private Stage stage;
+    final String[] langCaption = {"Русский", "English", "Deutsch", "Español"};
+    final String[] langCode = {"ru", "en", "de", "es"};
 
     private BackgroundActor backgroundActor;
 
@@ -35,9 +39,32 @@ public class OptionsScreen implements Screen {
         float cnPad = 5;
 
         Label lblLanguage = new Label(locGame.StrRes.get("lblLanguage"), locGame.skin, "default");
-        SelectBox sbLanguage = new SelectBox(locGame.skin, "default");
-        sbLanguage.setItems(new String[] {"Русский", "English", "Deutsch", "Español"});
+        final SelectBox sbLanguage = new SelectBox(locGame.skin, "default");
+        sbLanguage.setItems(langCaption);
+        String locale = locGame.StrRes.getLocale().getLanguage();
 
+        for (int i = 0; i < langCode.length; i++) {
+            if (langCode[i].equals(locale)) {
+                sbLanguage.setSelectedIndex(i);
+                break;
+            }
+        }
+
+        sbLanguage.addListener(new ChangeListener() {
+            public void changed (ChangeEvent event, Actor actor) {
+                String selectedLanguage = sbLanguage.getSelected().toString();
+                //System.out.println("selected language " + selectedLanguage);
+                //System.out.println("langCaption.length " + langCaption.length);
+                for (int i = 0; i < langCaption.length; i++) {
+                    if (langCaption[i].equals(selectedLanguage)) {
+                        //System.out.println("saving langcode " + langCode[i]);
+                        locGame.Settings.putString("Language", langCode[i]);
+                        locGame.Settings.flush();;
+                        break;
+                    }
+                }
+            }
+        });
 
         TextButton btnBack = new TextButton(locGame.StrRes.get("Back"), locGame.skin, "default");
         btnBack.addListener(new ClickListener() {
