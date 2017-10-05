@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -38,6 +39,7 @@ public class OptionsScreen implements Screen {
         table.setFillParent(true);
         float cnPad = 5;
 
+        //выбор языка
         Label lblLanguage = new Label(locGame.StrRes.get("lblLanguage"), locGame.skin, "default");
         final SelectBox sbLanguage = new SelectBox(locGame.skin, "default");
         sbLanguage.setItems(langCaption);
@@ -59,13 +61,39 @@ public class OptionsScreen implements Screen {
                     if (langCaption[i].equals(selectedLanguage)) {
                         //System.out.println("saving langcode " + langCode[i]);
                         locGame.Settings.putString("Language", langCode[i]);
-                        locGame.Settings.flush();;
+                        locGame.Settings.flush();
                         break;
                     }
                 }
             }
         });
 
+        //вкл/выкл звуковых эффектов
+        Label lblSound =  new Label(locGame.StrRes.get("lblSound"), locGame.skin, "default");
+        final CheckBox cbxSound = new CheckBox("", locGame.skin, "default");
+        cbxSound.setChecked(locGame.Settings.getBoolean("EnableSounds"));
+        cbxSound.addListener(new ChangeListener() {
+                                 public void changed(ChangeEvent event, Actor actor) {
+                                     locGame.Settings.putBoolean("EnableSounds", cbxSound.isChecked());
+                                     locGame.Settings.flush();
+                                 }
+                             }
+        );
+
+        //вкл/выкл музыки
+        Label lblMusic =  new Label(locGame.StrRes.get("lblMusic"), locGame.skin, "default");
+        final CheckBox cbxMusic = new CheckBox("", locGame.skin, "default");
+        cbxMusic.setChecked(locGame.Settings.getBoolean("EnableMusic"));
+        cbxMusic.addListener(new ChangeListener() {
+                                 public void changed(ChangeEvent event, Actor actor) {
+                                     locGame.Settings.putBoolean("EnableMusic", cbxMusic.isChecked());
+                                     locGame.Settings.flush();
+                                 }
+                             }
+        );
+
+
+        //кнопка назад
         TextButton btnBack = new TextButton(locGame.StrRes.get("Back"), locGame.skin, "default");
         btnBack.addListener(new ClickListener() {
                                   @Override
@@ -78,6 +106,12 @@ public class OptionsScreen implements Screen {
 
         table.add(lblLanguage).align(Align.right).pad(cnPad);
         table.add(sbLanguage).align(Align.left);
+        table.row();
+        table.add(lblSound).align(Align.right).pad(cnPad);
+        table.add(cbxSound).align(Align.left);
+        table.row();
+        table.add(lblMusic).align(Align.right).pad(cnPad);
+        table.add(cbxMusic).align(Align.left);
         table.row();
         //кнопка Назад
         table.add(btnBack).width(btnBack.getWidth()).align(Align.left).padTop(20);
